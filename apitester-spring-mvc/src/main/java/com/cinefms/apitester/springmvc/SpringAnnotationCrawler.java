@@ -1,24 +1,32 @@
 package com.cinefms.apitester.springmvc;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import org.javaruntype.type.TypeParameter;
+import org.javaruntype.type.Types;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.ApplicationListener;
-import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.cinefms.apitester.core.AbstractApiCrawler;
 import com.cinefms.apitester.model.info.ApiCall;
+import com.cinefms.apitester.model.info.ApiCallParameter;
 
 @Component
-public class SpringAnnotationCrawler extends AbstractApiCrawler implements ApplicationContextAware, ApplicationListener<ContextRefreshedEvent> {
+public class SpringAnnotationCrawler extends AbstractApiCrawler implements ApplicationContextAware {
 
 	private ApplicationContext applicationContext;
 	
@@ -33,10 +41,6 @@ public class SpringAnnotationCrawler extends AbstractApiCrawler implements Appli
 
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
-	}
-
-	public void onApplicationEvent(ContextRefreshedEvent arg0) {
-		triggerScan();
 	}
 
 	public void triggerScan() {
@@ -86,6 +90,8 @@ public class SpringAnnotationCrawler extends AbstractApiCrawler implements Appli
 									a.setHandlerClass(handlerClass);
 									a.setHandlerMethod(handlerMethod);
 									a.setMethod(method.toString());
+									a.setRequestParameters(getRequestParameters(m));
+									a.setPathParameters(getPathParameters(m));
 									out.add(a);
 								}
 							}
@@ -96,9 +102,56 @@ public class SpringAnnotationCrawler extends AbstractApiCrawler implements Appli
 					e2.printStackTrace();
 				}
 			}
-		}		
+		}
 		
 		return out;
 	}
+
+	public List<ApiCallParameter> getRequestParameters(Method m) {
+		List<ApiCallParameter> out = new ArrayList<ApiCallParameter>();
+		
+		return out;
+	}
+	
+	public List<ApiCallParameter> getPathParameters(Method m) {
+		List<ApiCallParameter> out = new ArrayList<ApiCallParameter>();
+		Annotation[][] anns = m.getParameterAnnotations(); 
+		Type[] params = m.getGenericParameterTypes();
+		String[] paramNames = new LocalVariableTableParameterNameDiscoverer().getParameterNames(m);
+		for(int i=0;i<params.length;i++) {
+			
+			PathVariable p = null;
+			
+			for(Annotation a : anns[i]) {
+				if (a.annotationType() == PathVariable.class) {
+					p = (PathVariable)a;
+				}
+			}
+			
+			if(p!=null) {
+				ApiCallParameter acp = new ApiCallParameter();
+				@SuppressWarnings("unchecked")
+				org.javaruntype.type.Type<String> strType = (org.javaruntype.type.Type<String>) Types.forJavaLangReflectType(params[i]);
+				String paramClass = strType.getRawClass().getCanonicalName();
+				if(Collection.class.isAssignableFrom(strType.getRawClass())) {
+					acp.set collection = true;
+					for(TypeParameter<?> tp : strType.getTypeParameters()) {
+						paramClass = tp.getType().getName();
+					}
+				}
+				String paramType = "";
+				boolean required = true;
+	
+				String field = "[unknown]";
+				if(paramNames !=null && paramNames.length==params.length) {
+					field = paramNames[i];
+				}
+				acp.setParameterName(field);
+			}
+			
+		}
+		return out;
+	}
+	
 
 }

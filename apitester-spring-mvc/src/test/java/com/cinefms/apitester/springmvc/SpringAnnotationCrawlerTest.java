@@ -50,6 +50,18 @@ public class SpringAnnotationCrawlerTest {
 		assertEquals("/b/z", calls.get(5).getFullPath());
 	}
 	
+	@Test
+	public void testPathParametersExpectTwoSuccess() {
+		SpringAnnotationCrawler sac = new SpringAnnotationCrawler();
+		List<Object> controllers = new ArrayList<Object>();
+		controllers.add(new TestController4());
+		List<ApiCall> calls = sac.scanControllers(controllers);
+		assertNotNull(calls);
+		assertEquals(1, calls.size());
+		assertEquals("/x/{id}/sub/{value}", calls.get(0).getFullPath());
+		assertEquals(2, calls.get(0).getPathParameters().size());
+	}
+	
 	
 	
 }
