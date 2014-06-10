@@ -1,0 +1,24 @@
+{
+  "name": "apitester",
+  "version": "0.0.0",
+  "homepage": "https://github.com/rmalchow/spring-api-tester",
+  "authors": [
+    "ruben malchow <ruben.malchow@gmail.com>"
+  ],
+  "main": "main.js",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.2.17",
+    "bootstrap": "~3.1.1",
+    "lodash": "~2.4.1",
+    "restangular": "~1.4.0"
+  }
+}

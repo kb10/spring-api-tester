@@ -20,6 +20,12 @@
 			<artifactId>apitester-spring-mvc</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>cinefms-apitester</groupId>
+			<artifactId>apitester-webapp</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<type>war</type>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>apitester-webapp-example</finalName>

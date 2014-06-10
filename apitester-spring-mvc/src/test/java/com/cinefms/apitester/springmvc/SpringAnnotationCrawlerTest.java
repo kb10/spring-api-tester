@@ -34,6 +34,22 @@ public class SpringAnnotationCrawlerTest {
 		assertEquals("GET", calls.get(0).getMethod());
 	}
 
+	@Test
+	public void testSimpleClassExtractionExpectManyCallsSuccess() {
+		SpringAnnotationCrawler sac = new SpringAnnotationCrawler();
+		List<Object> controllers = new ArrayList<Object>();
+		controllers.add(new TestController3());
+		List<ApiCall> calls = sac.scanControllers(controllers);
+		assertNotNull(calls);
+		assertEquals(6, calls.size());
+		assertEquals("/a/x", calls.get(0).getFullPath());
+		assertEquals("/a/y", calls.get(1).getFullPath());
+		assertEquals("/a/z", calls.get(2).getFullPath());
+		assertEquals("/b/x", calls.get(3).getFullPath());
+		assertEquals("/b/y", calls.get(4).getFullPath());
+		assertEquals("/b/z", calls.get(5).getFullPath());
+	}
+	
 	
 	
 }
