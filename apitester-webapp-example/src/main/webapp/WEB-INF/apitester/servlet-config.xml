@@ -31,7 +31,7 @@
 	<!-- component scan for api tester service -->
     <context:component-scan base-package="com.cinefms.apitester.core" />
 
-	<!-- component scan for controllers -->
+	<!-- component scan for controllers & scanner -->
     <context:component-scan base-package="com.cinefms.apitester.springmvc" />
 
 	<!-- setup message converters and request maping for api tester servlet -->
