@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>cinefms-apitester</groupId>
+	<artifactId>apitester-parent</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<properties>
+		<org.springframework.version>3.2.0.RELEASE</org.springframework.version>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	<modules>
+		<module>apitester-annotations</module>
+		<module>apitester-core</module>
+		<module>apitester-webapp</module>
+		<module>apitester-model</module>
+		<module>apitester-examples</module>
+		<module>apitester-webapp-example</module>
+		<module>apitester-spring-mvc</module>
+	</modules>
+</project>

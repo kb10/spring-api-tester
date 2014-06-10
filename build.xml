@@ -1,0 +1,19 @@
+<project>
+
+	<property file="build.${user.name}.properties" />
+	<property file="build.properties" />
+
+	<target name="build">
+		<exec executable="${mvn_executable}">
+			<arg value="clean"/>
+			<arg value="install"/>
+		</exec>
+		<mkdir dir="${webapps}/ROOT"/>
+		<sync todir="${webapps}/ROOT">
+			<fileset dir="apitester-webapp-example/target/apitester-webapp-example"/>
+		</sync>
+
+		
+	</target>
+
+</project>
