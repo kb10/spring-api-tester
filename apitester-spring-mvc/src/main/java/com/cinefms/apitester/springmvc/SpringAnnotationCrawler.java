@@ -45,13 +45,21 @@ public class SpringAnnotationCrawler extends AbstractApiCrawler implements Appli
 	}
 	
 	public List<ApiCall> scanControllers(List<Object> controllers) {
+
 		List<ApiCall> out = new ArrayList<ApiCall>();
 		
 		for(Object controller : controllers) {
 
 			String handlerClass = controller.getClass().getName();  
-		
+
 			Method[] methods = controller.getClass().getMethods();
+			
+			String[] basePaths = new String[] { "" };
+
+			RequestMapping rmType = controller.getClass().getAnnotation(RequestMapping.class); 
+			if(rmType!=null) {
+				basePaths = rmType.value();
+			}
 			
 			for(Method m : methods) {
 				try {
@@ -69,13 +77,26 @@ public class SpringAnnotationCrawler extends AbstractApiCrawler implements Appli
 							requestMethods.add(rm);
 						}
 						
+						for(String basePath : basePaths) {
+							for(String path : rmm.value()) {
+								for(RequestMethod method : requestMethods) {
+									ApiCall a = new ApiCall();
+									a.setBasePath(basePath);
+									a.setFullPath(basePath+path);
+									a.setHandlerClass(handlerClass);
+									a.setHandlerMethod(handlerMethod);
+									a.setMethod(method.toString());
+									out.add(a);
+								}
+							}
+						}
 					}
 					
 				} catch (Exception e2) {
 					e2.printStackTrace();
 				}
 			}
-		}
+		}		
 		
 		return out;
 	}

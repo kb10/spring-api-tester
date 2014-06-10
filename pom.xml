@@ -26,4 +26,5 @@
 		<module>apitester-webapp-example</module>
 		<module>apitester-spring-mvc</module>
 	</modules>
+	<name>apitester-parent</name>
 </project>

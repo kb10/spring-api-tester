@@ -29,6 +29,9 @@ public class SpringAnnotationCrawlerTest {
 		List<ApiCall> calls = sac.scanControllers(controllers);
 		assertNotNull(calls);
 		assertEquals(1, calls.size());
+		assertEquals("/blah", calls.get(0).getFullPath());
+		assertEquals("", calls.get(0).getBasePath());
+		assertEquals("GET", calls.get(0).getMethod());
 	}
 
 	
