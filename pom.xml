@@ -103,7 +103,7 @@
 						<featureBranchPrefix>feature/</featureBranchPrefix>
 						<releaseBranchPrefix>release/</releaseBranchPrefix>
 						<hotfixBranchPrefix>hotfix/</hotfixBranchPrefix>
-						<versionTagPrefix>smp-</versionTagPrefix>
+						<versionTagPrefix>release-</versionTagPrefix>
 					</flowInitContext>
 				</configuration>
 			</plugin>
