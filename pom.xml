@@ -7,6 +7,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<properties>
+		<dev.nexus.host>http://fg-nexus-dev.etower.pek.mcon.net</dev.nexus.host>
 		<org.springframework.version>3.2.0.RELEASE</org.springframework.version>
 		<surefire.plugin.version>2.16</surefire.plugin.version>
 	</properties>
@@ -37,6 +38,25 @@
 		<module>apitester-webapp-example</module>
 		<module>apitester-spring-mvc</module>
 	</modules>
+	<scm>
+		<connection>scm:git:https://stash.mcon-group.com/scm/uvfg/uv-fg-be-apitester.git</connection>
+		<developerConnection>scm:git:https://stash.mcon-group.com/scm/uvfg/uv-fg-be-apitester.git</developerConnection>
+		<url>https://github.com/rmalchow/spring-api-tester</url>
+	</scm>
+	<distributionManagement>
+		<repository>
+			<id>fg-release</id>
+			<name>smp release repo</name>
+			<url>${dev.nexus.host}/nexus/content/repositories/smp-release/</url>
+			<uniqueVersion>false</uniqueVersion>
+		</repository>
+		<snapshotRepository>
+			<id>fg-snapshot</id>
+			<name>smp snapshot repo</name>
+			<url>${dev.nexus.host}/nexus/content/repositories/smp-snapshot/</url>
+			<uniqueVersion>false</uniqueVersion>
+		</snapshotRepository>
+	</distributionManagement>
 	<build>
 		<plugins>
 			<plugin>
