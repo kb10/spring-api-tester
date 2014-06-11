@@ -58,8 +58,22 @@ public class SpringAnnotationCrawlerTest {
 		List<ApiCall> calls = sac.scanControllers(controllers);
 		assertNotNull(calls);
 		assertEquals(1, calls.size());
-		assertEquals("/x/{id}/sub/{value}", calls.get(0).getFullPath());
-		assertEquals(2, calls.get(0).getPathParameters().size());
+		assertEquals("/x/{id}/sub/{value}/xxx/{a}", calls.get(0).getFullPath());
+		assertEquals(3, calls.get(0).getPathParameters().size());
+		// first param
+		assertEquals(String.class.getCanonicalName(), calls.get(0).getPathParameters().get(0).getParameterType().getClassName());
+
+		// second param
+		assertEquals(String.class.getCanonicalName(), calls.get(0).getPathParameters().get(1).getParameterType().getClassName());
+		assertEquals(true, calls.get(0).getPathParameters().get(1).isCollection());
+		assertEquals(null, calls.get(0).getPathParameters().get(1).getDefaultValue());
+		assertEquals("value", calls.get(0).getPathParameters().get(1).getParameterName());
+
+		// thrid param
+		assertEquals("int", calls.get(0).getPathParameters().get(2).getParameterType().getClassName());
+		assertEquals(false, calls.get(0).getPathParameters().get(2).isCollection());
+		assertEquals(null, calls.get(0).getPathParameters().get(2).getDefaultValue());
+		assertEquals("a", calls.get(0).getPathParameters().get(2).getParameterName());
 	}
 	
 	

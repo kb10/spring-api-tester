@@ -16,14 +16,13 @@ import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.cinefms.apitester.core.AbstractApiCrawler;
 import com.cinefms.apitester.model.info.ApiCall;
 import com.cinefms.apitester.model.info.ApiCallParameter;
+import com.cinefms.apitester.model.info.ApiObject;
 
 @Component
 public class SpringAnnotationCrawler extends AbstractApiCrawler implements ApplicationContextAware {
@@ -130,23 +129,34 @@ public class SpringAnnotationCrawler extends AbstractApiCrawler implements Appli
 			
 			if(p!=null) {
 				ApiCallParameter acp = new ApiCallParameter();
+				acp.setMandatory(true);
+				acp.setCollection(false);
+				
+				acp.setParameterType(new ApiObject());
 				@SuppressWarnings("unchecked")
 				org.javaruntype.type.Type<String> strType = (org.javaruntype.type.Type<String>) Types.forJavaLangReflectType(params[i]);
 				String paramClass = strType.getRawClass().getCanonicalName();
+				acp.getParameterType().setClassName(paramClass);
 				if(Collection.class.isAssignableFrom(strType.getRawClass())) {
-					acp.set collection = true;
+					acp.setCollection(true);
+					acp.getParameterType().setClassName(paramClass);
 					for(TypeParameter<?> tp : strType.getTypeParameters()) {
 						paramClass = tp.getType().getName();
+						acp.getParameterType().setClassName(paramClass);
 					}
 				}
-				String paramType = "";
-				boolean required = true;
-	
+
+				
 				String field = "[unknown]";
 				if(paramNames !=null && paramNames.length==params.length) {
 					field = paramNames[i];
 				}
+				if(p.value()!=null && p.value().length()>0) {
+					field = p.value();
+				}
 				acp.setParameterName(field);
+				
+				out.add(acp);
 			}
 			
 		}

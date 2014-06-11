@@ -14,6 +14,7 @@ public class ApiCallParameter {
 	
 	private boolean mandatory;
 	private boolean deprecated;
+	private boolean collection;
 	
 	public ApiCallParameter() {
 	}
@@ -71,6 +72,14 @@ public class ApiCallParameter {
 	}
 	public void setDeprecated(boolean deprecated) {
 		this.deprecated = deprecated;
+	}
+
+	public boolean isCollection() {
+		return collection;
+	}
+
+	public void setCollection(boolean collection) {
+		this.collection = collection;
 	}
 	
 
