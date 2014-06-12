@@ -40,6 +40,16 @@ public class ApitesterService implements ApplicationContextAware {
 		}
 		return calls;
 	}
+	
+	public List<String> getBasePaths(boolean includeDeprecated) {
+		List<String> out = new ArrayList<String>();
+		for(ApiCall ac : getCalls(includeDeprecated, null)) {
+			if(!out.contains(ac.getBasePath())) {
+				out.add(ac.getBasePath());
+			}
+		}
+		return out;
+	}
 
 	public List<ApiCall> getCalls(boolean includeDeprecated, String searchTerm) {
 		List<ApiCall> out = new ArrayList<ApiCall>();
@@ -54,7 +64,5 @@ public class ApitesterService implements ApplicationContextAware {
 		}
 		return out;
 	}
-	
-	
 
 }

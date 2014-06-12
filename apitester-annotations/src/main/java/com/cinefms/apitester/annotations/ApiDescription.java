@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 @Target(value={ ElementType.PARAMETER, ElementType.METHOD } )
 public @interface ApiDescription {
 
-	String value();
+	String value() default "";
 	String since() default "0.0";
 	String format() default "";
 	String deprecatedSince() default "";

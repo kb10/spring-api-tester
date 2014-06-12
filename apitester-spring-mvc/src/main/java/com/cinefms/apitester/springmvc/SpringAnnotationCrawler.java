@@ -18,7 +18,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import com.cinefms.apitester.annotations.ApiDescription;
 import com.cinefms.apitester.model.ApiCrawler;
 import com.cinefms.apitester.model.info.ApiCall;
 import com.cinefms.apitester.model.info.ApiCallParameter;
@@ -125,12 +127,14 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 	}
 
 	public List<ApiCallParameter> getRequestParameters(Method m) {
-		List<ApiCallParameter> out = new ArrayList<ApiCallParameter>();
-		
-		return out;
+		return getApiCalls(m, false);
 	}
 	
 	public List<ApiCallParameter> getPathParameters(Method m) {
+		return getApiCalls(m, true);
+	}
+	
+	private List<ApiCallParameter> getApiCalls(Method m, boolean path) {
 		List<ApiCallParameter> out = new ArrayList<ApiCallParameter>();
 		Annotation[][] anns = m.getParameterAnnotations(); 
 		Type[] params = m.getGenericParameterTypes();
@@ -138,16 +142,39 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 		for(int i=0;i<params.length;i++) {
 			
 			PathVariable p = null;
+			RequestParam r = null;
+			Deprecated d = null;
+			ApiDescription ad = null;
 			
 			for(Annotation a : anns[i]) {
 				if (a.annotationType() == PathVariable.class) {
 					p = (PathVariable)a;
 				}
+				if (a.annotationType() == RequestParam.class) {
+					r = (RequestParam)a;
+				}
+				if (a.annotationType() == Deprecated.class) {
+					d = (Deprecated)a;
+				}
+				if (a.annotationType() == ApiDescription.class) {
+					ad = (ApiDescription)a;
+				}
+			}
+			if(p!=null) {
+				System.err.println(paramNames[i]+" / path variable");
+			}
+			if(r!=null) {
+				System.err.println(paramNames[i]+" / request param");
 			}
 			
-			if(p!=null) {
+			if((p!=null && path) || (r!=null && !path)) {
 				ApiCallParameter acp = new ApiCallParameter();
-				acp.setMandatory(true);
+				if(p!=null) {
+					acp.setMandatory(true);
+				} else if (r!=null) {
+					acp.setMandatory(r.required());
+					acp.setDefaultValue(r.defaultValue());
+				}
 				acp.setCollection(false);
 				
 				acp.setParameterType(new ApiObject());
@@ -169,17 +196,39 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 				if(paramNames !=null && paramNames.length==params.length) {
 					field = paramNames[i];
 				}
-				if(p.value()!=null && p.value().length()>0) {
+				if(p!=null && p.value()!=null && p.value().length()>0) {
 					field = p.value();
+				} else if(r!=null) {
+					if(r.value()!=null && r.value().length()>0) {
+						field = r.value();
+					}
+					acp.setDefaultValue(r.defaultValue());
 				}
-				acp.setParameterName(field);
+				if(d!=null) {
+					acp.setDeprecated(true);
+				}
+				if(ad!=null) {
+					acp.setDescription(ad.value());
+					if(ad.format().length()>0) {
+						acp.setFormat(ad.format());
+					}
+					if(ad.since().length()>0) {
+						acp.setSince(ad.since());
+					}
+					acp.setDeprecatedSince(ad.deprecatedSince());
+					if(ad.deprecatedSince()!=null && ad.deprecatedSince().length()>0) {
+						acp.setDeprecated(true);
+					}
+				}
 				
+				acp.setParameterName(field);
 				out.add(acp);
 			}
 			
 		}
-		return out;
+		return out;		
 	}
 	
-
+	
+	
 }
