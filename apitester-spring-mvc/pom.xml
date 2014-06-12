@@ -3,24 +3,24 @@
   <parent>
     <groupId>cinefms-apitester</groupId>
     <artifactId>apitester-parent</artifactId>
-    <version>0.0.1.10-SNAPSHOT</version>
+    <version>0.0.1.10</version>
   </parent>
   <artifactId>apitester-spring-mvc</artifactId>
   <dependencies>
   	<dependency>
   		<groupId>cinefms-apitester</groupId>
   		<artifactId>apitester-annotations</artifactId>
-  		<version>0.0.1.10-SNAPSHOT</version>
+  		<version>0.0.1.10</version>
   	</dependency>
   	<dependency>
   		<groupId>cinefms-apitester</groupId>
   		<artifactId>apitester-model</artifactId>
-  		<version>0.0.1.10-SNAPSHOT</version>
+  		<version>0.0.1.10</version>
   	</dependency>
   	<dependency>
   		<groupId>cinefms-apitester</groupId>
   		<artifactId>apitester-core</artifactId>
-  		<version>0.0.1.10-SNAPSHOT</version>
+  		<version>0.0.1.10</version>
   	</dependency>
   	
 		<dependency>
