@@ -3,20 +3,25 @@
 	<parent>
 		<groupId>cinefms-apitester</groupId>
 		<artifactId>apitester-parent</artifactId>
-		<version>0.0.1.7</version>
+		<version>0.0.1.10</version>
 	</parent>
 	<artifactId>apitester-core</artifactId>
 
 	<dependencies>
 		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.1.0</version>
+		</dependency>
+		<dependency>
 			<groupId>cinefms-apitester</groupId>
 			<artifactId>apitester-annotations</artifactId>
-			<version>0.0.1.7</version>
+			<version>0.0.1.10</version>
 		</dependency>
 		<dependency>
 			<groupId>cinefms-apitester</groupId>
 			<artifactId>apitester-model</artifactId>
-			<version>0.0.1.7</version>
+			<version>0.0.1.10</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>

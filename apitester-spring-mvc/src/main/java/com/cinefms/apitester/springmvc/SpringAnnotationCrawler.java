@@ -19,34 +19,36 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.cinefms.apitester.core.AbstractApiCrawler;
+import com.cinefms.apitester.model.ApiCrawler;
 import com.cinefms.apitester.model.info.ApiCall;
 import com.cinefms.apitester.model.info.ApiCallParameter;
 import com.cinefms.apitester.model.info.ApiObject;
 
 @Component
-public class SpringAnnotationCrawler extends AbstractApiCrawler implements ApplicationContextAware {
+public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAware {
 
+	
+	
 	private ApplicationContext applicationContext;
 	
 	private List<ApiCall> apiCalls = null;
 	
 	public List<ApiCall> getApiCalls() {
 		if(apiCalls==null) {
-			triggerScan();
+			List<Object> controllers = new ArrayList<Object>(applicationContext.getBeansWithAnnotation(Controller.class).values());
+			apiCalls = scanControllers(controllers);
 		}
 		return apiCalls;
+	}
+
+	public ApplicationContext getApplicationContext() {
+		return applicationContext;
 	}
 
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
 	}
 
-	public void triggerScan() {
-		List<Object> controllers = new ArrayList<Object>(applicationContext.getBeansWithAnnotation(Controller.class).values());
-		apiCalls = scanControllers(controllers);
-	}
-	
 	public List<ApiCall> scanControllers(List<Object> controllers) {
 
 		List<ApiCall> out = new ArrayList<ApiCall>();
@@ -57,11 +59,11 @@ public class SpringAnnotationCrawler extends AbstractApiCrawler implements Appli
 
 			Method[] methods = controller.getClass().getMethods();
 			
-			String[] basePaths = new String[] { "" };
+			String[] classLevelPaths = new String[] { "" };
 
 			RequestMapping rmType = controller.getClass().getAnnotation(RequestMapping.class); 
 			if(rmType!=null) {
-				basePaths = rmType.value();
+				classLevelPaths = rmType.value();
 			}
 			
 			for(Method m : methods) {
@@ -79,20 +81,27 @@ public class SpringAnnotationCrawler extends AbstractApiCrawler implements Appli
 						for(RequestMethod rm : rmm.method()) {
 							requestMethods.add(rm);
 						}
-						
-						for(String basePath : basePaths) {
+
+						List<String> allPaths = new ArrayList<String>();
+						for(String basePath : classLevelPaths) {
 							for(String path : rmm.value()) {
-								for(RequestMethod method : requestMethods) {
-									ApiCall a = new ApiCall();
-									a.setBasePath(basePath);
-									a.setFullPath(basePath+path);
-									a.setHandlerClass(handlerClass);
-									a.setHandlerMethod(handlerMethod);
-									a.setMethod(method.toString());
-									a.setRequestParameters(getRequestParameters(m));
-									a.setPathParameters(getPathParameters(m));
-									out.add(a);
-								}
+								allPaths.add((basePath+path).replaceAll("//+", "/"));
+							}
+						}
+						
+						for(String path : allPaths) {
+							for(RequestMethod method : requestMethods) {
+								ApiCall a = new ApiCall();
+								String fullPath = path;
+								a.setFullPath(fullPath);
+								String basePath = getBasePath(path);
+								a.setBasePath(basePath);
+								a.setHandlerClass(handlerClass);
+								a.setHandlerMethod(handlerMethod);
+								a.setMethod(method.toString());
+								a.setRequestParameters(getRequestParameters(m));
+								a.setPathParameters(getPathParameters(m));
+								out.add(a);
 							}
 						}
 					}
@@ -104,6 +113,15 @@ public class SpringAnnotationCrawler extends AbstractApiCrawler implements Appli
 		}
 		
 		return out;
+	}
+	
+	public String getPath(String path) {
+		String out = path.replaceAll("/+", "/");
+		return out;
+	}
+
+	public String getBasePath(String path) {
+		return getPath(path.replaceAll("/*\\{.*", ""));
 	}
 
 	public List<ApiCallParameter> getRequestParameters(Method m) {
