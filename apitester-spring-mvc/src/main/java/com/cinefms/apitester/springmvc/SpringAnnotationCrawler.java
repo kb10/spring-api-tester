@@ -35,7 +35,8 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 	
 	public List<ApiCall> getApiCalls() {
 		if(apiCalls==null) {
-			triggerScan();
+			List<Object> controllers = new ArrayList<Object>(applicationContext.getBeansWithAnnotation(Controller.class).values());
+			apiCalls = scanControllers(controllers);
 		}
 		return apiCalls;
 	}
@@ -48,11 +49,6 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 		this.applicationContext = applicationContext;
 	}
 
-	public void triggerScan() {
-		List<Object> controllers = new ArrayList<Object>(applicationContext.getBeansWithAnnotation(Controller.class).values());
-		apiCalls = scanControllers(controllers);
-	}
-	
 	public List<ApiCall> scanControllers(List<Object> controllers) {
 
 		List<ApiCall> out = new ArrayList<ApiCall>();

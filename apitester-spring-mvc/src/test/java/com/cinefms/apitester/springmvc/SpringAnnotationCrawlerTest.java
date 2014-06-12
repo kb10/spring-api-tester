@@ -3,6 +3,7 @@ package com.cinefms.apitester.springmvc;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,12 +57,13 @@ public class SpringAnnotationCrawlerTest {
 	public void testAppContextScan() {
 		ApplicationContext ac = Mockito.mock(ApplicationContext.class);
 		Map<String,Object> a = new HashMap<String, Object>();
-		a.put("aaa", new TestController1());
+		a.put("aaa", new TestController2());
 		Mockito.when(ac.getBeansWithAnnotation(Controller.class)).thenReturn(a);
 		SpringAnnotationCrawler sac = new SpringAnnotationCrawler();
 		sac.setApplicationContext(ac);
 		List<ApiCall> calls = sac.getApiCalls();
-		assertEquals(1, calls);
+		verify(ac, times(1)).getBeansWithAnnotation(Controller.class);
+		assertEquals(1, calls.size());
 	}
 
 
