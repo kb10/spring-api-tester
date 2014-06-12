@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ValueConstants;
 import org.springframework.web.context.support.GenericWebApplicationContext;
 
 import com.cinefms.apitester.model.info.ApiCall;
@@ -148,6 +149,33 @@ public class SpringAnnotationCrawlerTest {
 		assertEquals("/aaa", calls.get(1).getBasePath());
 	}
 	
+	
+	@Test
+	public void testRequestParameters() {
+		SpringAnnotationCrawler sac = new SpringAnnotationCrawler();
+		List<Object> controllers = new ArrayList<Object>();
+		controllers.add(new TestController7());
+		List<ApiCall> calls = sac.scanControllers(controllers);
+		assertEquals(1, calls.size());
+		assertEquals(5, calls.get(0).getRequestParameters().size());
+		//
+		assertEquals("id", calls.get(0).getRequestParameters().get(0).getParameterName());
+		assertEquals(String.class.getCanonicalName(), calls.get(0).getRequestParameters().get(0).getParameterType().getClassName());
+		assertEquals(false, calls.get(0).getRequestParameters().get(0).isCollection());
+		assertEquals(true, calls.get(0).getRequestParameters().get(0).isMandatory());
+		assertEquals(true, calls.get(0).getRequestParameters().get(0).isDeprecated());
+		assertEquals("dd-mm-yyyy", calls.get(0).getRequestParameters().get(0).getFormat());
+		assertEquals(ValueConstants.DEFAULT_NONE,calls.get(0).getRequestParameters().get(0).getDefaultValue());
+		//
+		assertEquals("id2", calls.get(0).getRequestParameters().get(1).getParameterName());
+		assertEquals(String.class.getCanonicalName(), calls.get(0).getRequestParameters().get(1).getParameterType().getClassName());
+		assertEquals(false, calls.get(0).getRequestParameters().get(1).isCollection());
+		assertEquals(false, calls.get(0).getRequestParameters().get(1).isMandatory());
+		assertEquals(false, calls.get(0).getRequestParameters().get(1).isDeprecated());
+		assertEquals("0.9", calls.get(0).getRequestParameters().get(1).getSince());
+		assertNull(calls.get(0).getRequestParameters().get(1).getFormat());
+		assertEquals(ValueConstants.DEFAULT_NONE,calls.get(0).getRequestParameters().get(1).getDefaultValue());
+	}
 	
 	
 }

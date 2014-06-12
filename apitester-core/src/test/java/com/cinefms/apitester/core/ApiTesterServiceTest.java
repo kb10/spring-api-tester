@@ -56,4 +56,58 @@ public class ApiTesterServiceTest {
 		
 	}
 	
+	@Test
+	public void testCollectApiCallsExpectBasePaths() {
+		ApiCrawler aCrawl = mock(ApiCrawler.class);
+		List<ApiCall> calls = new ArrayList<ApiCall>();
+		for(String[] s : new String[][] {
+				{"/a","/a/{id}"},
+				{"/b","/b/{id}"},
+				{"/a","/a/{id}/sub"},
+			}) {
+			ApiCall ac = new ApiCall();
+			ac.setBasePath(s[0]);
+			ac.setFullPath(s[1]);
+			calls.add(ac);
+		}
+		when(aCrawl.getApiCalls()).thenReturn(calls);
+
+		Map<String,ApiCrawler> crawlers = new HashMap<String,ApiCrawler>();
+		crawlers.put("a",aCrawl);
+		
+		ApplicationContext ac = mock(ApplicationContext.class);
+		when(ac.getBeansOfType(any(Class.class))).thenReturn(crawlers);
+		
+		ApitesterService as = new ApitesterService();
+		as.setApplicationContext(ac);
+		calls.get(0).setDeprecated(true);
+		calls.get(1).setDeprecated(true);
+		calls.get(2).setDeprecated(true);
+		{
+			List<String> basePaths = as.getBasePaths(true);
+			assertEquals(2, basePaths.size());
+		}
+		calls.get(0).setDeprecated(false);
+		calls.get(1).setDeprecated(false);
+		calls.get(2).setDeprecated(true);
+		{
+			List<String> basePaths = as.getBasePaths(false);
+			assertEquals(2, basePaths.size());
+		}
+		calls.get(0).setDeprecated(true);
+		calls.get(1).setDeprecated(true);
+		calls.get(2).setDeprecated(true);
+		{
+			List<String> basePaths = as.getBasePaths(false);
+			assertEquals(0, basePaths.size());
+		}
+		calls.get(0).setDeprecated(true);
+		calls.get(1).setDeprecated(false);
+		calls.get(2).setDeprecated(true);
+		{
+			List<String> basePaths = as.getBasePaths(false);
+			assertEquals(1, basePaths.size());
+		}
+	}
+	
 }
