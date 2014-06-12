@@ -19,13 +19,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.cinefms.apitester.core.AbstractApiCrawler;
+import com.cinefms.apitester.model.ApiCrawler;
 import com.cinefms.apitester.model.info.ApiCall;
 import com.cinefms.apitester.model.info.ApiCallParameter;
 import com.cinefms.apitester.model.info.ApiObject;
 
 @Component
-public class SpringAnnotationCrawler extends AbstractApiCrawler implements ApplicationContextAware {
+public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAware {
 
 	
 	
