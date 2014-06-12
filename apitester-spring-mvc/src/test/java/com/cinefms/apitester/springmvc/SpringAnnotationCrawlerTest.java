@@ -1,18 +1,33 @@
 package com.cinefms.apitester.springmvc;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
+import org.mockito.Mockito;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.context.support.GenericWebApplicationContext;
 
 import com.cinefms.apitester.model.info.ApiCall;
 
 public class SpringAnnotationCrawlerTest {
 
+	@Test
+	public void testAppContextGetterSetter() {
+		SpringAnnotationCrawler sac = new SpringAnnotationCrawler();
+		assertNull(sac.getApplicationContext());
+		sac.setApplicationContext(new GenericWebApplicationContext());
+		assertNotNull(sac.getApplicationContext());
+	}
+
+	
 	@Test
 	public void testPathCanonicalization() {
 		SpringAnnotationCrawler sac = new SpringAnnotationCrawler();
@@ -36,6 +51,19 @@ public class SpringAnnotationCrawlerTest {
 			assertEquals(e.getValue(), sac.getBasePath(e.getKey()));
 		}
 	}
+
+	@Test
+	public void testAppContextScan() {
+		ApplicationContext ac = Mockito.mock(ApplicationContext.class);
+		Map<String,Object> a = new HashMap<String, Object>();
+		a.put("aaa", new TestController1());
+		Mockito.when(ac.getBeansWithAnnotation(Controller.class)).thenReturn(a);
+		SpringAnnotationCrawler sac = new SpringAnnotationCrawler();
+		sac.setApplicationContext(ac);
+		List<ApiCall> calls = sac.getApiCalls();
+		assertEquals(1, calls);
+	}
+
 
 	@Test
 	public void testSimpleClassExtractionExpectEmptyListSuccess() {

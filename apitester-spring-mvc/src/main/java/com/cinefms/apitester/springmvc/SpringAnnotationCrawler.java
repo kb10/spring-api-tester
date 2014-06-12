@@ -40,6 +40,10 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 		return apiCalls;
 	}
 
+	public ApplicationContext getApplicationContext() {
+		return applicationContext;
+	}
+
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
 	}
