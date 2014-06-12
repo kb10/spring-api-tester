@@ -2,11 +2,11 @@ package com.cinefms.apitester.model.info;
 
 public class ApiResult {
 
-	public ApiObject returnClass;
-	public String exception;
-	public String status;
-	public int statusCode;
-	public boolean collection;
+	private ApiObject returnClass;
+	private String exception;
+	private String status;
+	private int statusCode;
+	private boolean collection;
 
 	public ApiObject getReturnClass() {
 		return returnClass;

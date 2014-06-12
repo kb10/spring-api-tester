@@ -2,7 +2,7 @@ package com.cinefms.apitester.model.info;
 
 public class ApiObject {
 	
-	public String className;
+	private String className;
 
 	public String getClassName() {
 		return className;

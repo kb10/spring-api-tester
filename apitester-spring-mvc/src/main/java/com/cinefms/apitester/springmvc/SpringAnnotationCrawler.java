@@ -27,6 +27,8 @@ import com.cinefms.apitester.model.info.ApiObject;
 @Component
 public class SpringAnnotationCrawler extends AbstractApiCrawler implements ApplicationContextAware {
 
+	
+	
 	private ApplicationContext applicationContext;
 	
 	private List<ApiCall> apiCalls = null;
