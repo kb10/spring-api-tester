@@ -59,11 +59,11 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 
 			Method[] methods = controller.getClass().getMethods();
 			
-			String[] basePaths = new String[] { "" };
+			String[] classLevelPaths = new String[] { "" };
 
 			RequestMapping rmType = controller.getClass().getAnnotation(RequestMapping.class); 
 			if(rmType!=null) {
-				basePaths = rmType.value();
+				classLevelPaths = rmType.value();
 			}
 			
 			for(Method m : methods) {
@@ -81,20 +81,27 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 						for(RequestMethod rm : rmm.method()) {
 							requestMethods.add(rm);
 						}
-						
-						for(String basePath : basePaths) {
+
+						List<String> allPaths = new ArrayList<String>();
+						for(String basePath : classLevelPaths) {
 							for(String path : rmm.value()) {
-								for(RequestMethod method : requestMethods) {
-									ApiCall a = new ApiCall();
-									a.setBasePath(basePath);
-									a.setFullPath(basePath+path);
-									a.setHandlerClass(handlerClass);
-									a.setHandlerMethod(handlerMethod);
-									a.setMethod(method.toString());
-									a.setRequestParameters(getRequestParameters(m));
-									a.setPathParameters(getPathParameters(m));
-									out.add(a);
-								}
+								allPaths.add((basePath+path).replaceAll("//+", "/"));
+							}
+						}
+						
+						for(String path : allPaths) {
+							for(RequestMethod method : requestMethods) {
+								ApiCall a = new ApiCall();
+								String fullPath = path;
+								a.setFullPath(fullPath);
+								String basePath = getBasePath(path);
+								a.setBasePath(basePath);
+								a.setHandlerClass(handlerClass);
+								a.setHandlerMethod(handlerMethod);
+								a.setMethod(method.toString());
+								a.setRequestParameters(getRequestParameters(m));
+								a.setPathParameters(getPathParameters(m));
+								out.add(a);
 							}
 						}
 					}
@@ -106,6 +113,15 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 		}
 		
 		return out;
+	}
+	
+	public String getPath(String path) {
+		String out = path.replaceAll("/+", "/");
+		return out;
+	}
+
+	public String getBasePath(String path) {
+		return getPath(path.replaceAll("/*\\{.*", ""));
 	}
 
 	public List<ApiCallParameter> getRequestParameters(Method m) {
