@@ -4,11 +4,11 @@
 	<parent>
 		<groupId>com.cinefms.apitester</groupId>
 		<artifactId>apitester-parent</artifactId>
-		<version>0.0.1.13</version>
+		<version>0.0.1.15-SNAPSHOT</version>
 	</parent>
 	<groupId>com.cinefms.apitester</groupId>
 	<artifactId>apitester-webapp-example</artifactId>
-	<version>0.0.1.13</version>
+	<version>0.0.1.15-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<name>apitester-webapp-example Maven Webapp</name>
 	<url>http://maven.apache.org</url>
@@ -16,12 +16,12 @@
 		<dependency>
 			<groupId>com.cinefms.apitester</groupId>
 			<artifactId>apitester-spring-mvc</artifactId>
-			<version>0.0.1.13</version>
+			<version>0.0.1.15-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.cinefms.apitester</groupId>
 			<artifactId>apitester-webapp</artifactId>
-			<version>0.0.1.13</version>
+			<version>0.0.1.15-SNAPSHOT</version>
 			<type>war</type>
 		</dependency>
 	</dependencies>
