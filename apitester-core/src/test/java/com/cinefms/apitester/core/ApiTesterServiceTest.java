@@ -29,6 +29,11 @@ public class ApiTesterServiceTest {
 		}
 		calls.get(0).setDeprecated(true);
 		calls.get(3).setDeprecated(true);
+
+		calls.get(0).setMethod("GET");
+		calls.get(1).setMethod("PUT");
+		calls.get(2).setMethod("POST");
+		calls.get(3).setMethod("OPTIONS");
 		
 		when(aCrawl.getApiCalls()).thenReturn(calls);
 
@@ -41,18 +46,22 @@ public class ApiTesterServiceTest {
 		ApitesterService as = new ApitesterService();
 		as.setApplicationContext(ac);
 		List<ApiCall> callsOut;
-		callsOut = as.getCalls(true, null);
+		callsOut = as.getCalls(true, null,null);
 		assertEquals(4, callsOut.size());
 		assertEquals("/a", callsOut.get(0).getFullPath());
 		assertEquals("/b", callsOut.get(1).getFullPath());
 		assertEquals("/c", callsOut.get(2).getFullPath());
 		assertEquals("/d", callsOut.get(3).getFullPath());
-		callsOut = as.getCalls(false, null);
+		callsOut = as.getCalls(false, null,null);
 		assertEquals(2, callsOut.size());
-		callsOut = as.getCalls(true, "a");
+		callsOut = as.getCalls(true, "a",null);
 		assertEquals(1, callsOut.size());
-		callsOut = as.getCalls(false, "a");
+		callsOut = as.getCalls(false, "a",null);
 		assertEquals(0, callsOut.size());
+		callsOut = as.getCalls(true,null,new String[] {"DELETE"});
+		assertEquals(0, callsOut.size());
+		callsOut = as.getCalls(true,null,new String[] {"OPTIONS"});
+		assertEquals(1, callsOut.size());
 		
 	}
 	

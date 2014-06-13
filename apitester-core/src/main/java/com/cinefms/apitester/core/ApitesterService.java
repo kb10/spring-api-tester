@@ -43,7 +43,7 @@ public class ApitesterService implements ApplicationContextAware {
 	
 	public List<String> getBasePaths(boolean includeDeprecated) {
 		List<String> out = new ArrayList<String>();
-		for(ApiCall ac : getCalls(includeDeprecated, null)) {
+		for(ApiCall ac : getCalls(includeDeprecated, null, null)) {
 			if(!out.contains(ac.getBasePath())) {
 				out.add(ac.getBasePath());
 			}
@@ -51,13 +51,23 @@ public class ApitesterService implements ApplicationContextAware {
 		return out;
 	}
 
-	public List<ApiCall> getCalls(boolean includeDeprecated, String searchTerm) {
+	public List<ApiCall> getCalls(boolean includeDeprecated, String searchTerm, String[] requestMethods) {
 		List<ApiCall> out = new ArrayList<ApiCall>();
+		List<String> rms = null;
+		if(requestMethods!=null) {
+			rms = new ArrayList<String>();
+			for(String rm : requestMethods) {
+				rms.add(rm);
+			}
+		}
 		for(ApiCall ac : getCallsInternal()) {
 			if(!includeDeprecated && ac.isDeprecated()) {
 				continue;
 			}
 			if(searchTerm!=null && !ac.getFullPath().toLowerCase().contains(searchTerm.toLowerCase())) {
+				continue;
+			}
+			if(rms!=null && !rms.contains(ac.getMethod())) {
 				continue;
 			}
 			out.add(ac);
