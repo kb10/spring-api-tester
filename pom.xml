@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>cinefms-apitester</groupId>
 	<artifactId>apitester-parent</artifactId>
-	<version>0.0.1.14</version>
+	<version>0.0.1.15-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<properties>
 		<dev.nexus.host>http://fg-nexus-dev.etower.pek.mcon.net</dev.nexus.host>
