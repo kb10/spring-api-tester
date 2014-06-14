@@ -1,4 +1,4 @@
-package com.cinefms.apitester.springmvc;
+package com.cinefms.apitester.springmvc.crawlers;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -222,7 +222,7 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 						field = r.value();
 					}
 					acp.setMandatory(r.required());
-					if(r.defaultValue()!=null && r.defaultValue()!=ValueConstants.DEFAULT_NONE) {
+					if(r.defaultValue()!=null && r.defaultValue().compareTo(ValueConstants.DEFAULT_NONE)!=0) {
 						acp.setDefaultValue(r.defaultValue());
 					}
 				}

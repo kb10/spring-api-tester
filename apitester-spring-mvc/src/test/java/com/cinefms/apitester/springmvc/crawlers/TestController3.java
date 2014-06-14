@@ -1,4 +1,4 @@
-package com.cinefms.apitester.springmvc;
+package com.cinefms.apitester.springmvc.crawlers;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

@@ -1,4 +1,4 @@
-package com.cinefms.apitester.springmvc;
+package com.cinefms.apitester.springmvc.crawlers;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ValueConstants;
 import org.springframework.web.context.support.GenericWebApplicationContext;
 
 import com.cinefms.apitester.model.info.ApiCall;
+import com.cinefms.apitester.springmvc.crawlers.SpringAnnotationCrawler;
 
 public class SpringAnnotationCrawlerTest {
 
