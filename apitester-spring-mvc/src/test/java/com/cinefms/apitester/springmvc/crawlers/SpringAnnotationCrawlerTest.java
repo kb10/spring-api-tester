@@ -166,7 +166,7 @@ public class SpringAnnotationCrawlerTest {
 		assertEquals(true, calls.get(0).getRequestParameters().get(0).isMandatory());
 		assertEquals(true, calls.get(0).getRequestParameters().get(0).isDeprecated());
 		assertEquals("dd-mm-yyyy", calls.get(0).getRequestParameters().get(0).getFormat());
-		assertEquals(ValueConstants.DEFAULT_NONE,calls.get(0).getRequestParameters().get(0).getDefaultValue());
+		assertEquals(null,calls.get(0).getRequestParameters().get(0).getDefaultValue());
 		//
 		assertEquals("id2", calls.get(0).getRequestParameters().get(1).getParameterName());
 		assertEquals(String.class.getCanonicalName(), calls.get(0).getRequestParameters().get(1).getParameterType().getClassName());
@@ -175,7 +175,7 @@ public class SpringAnnotationCrawlerTest {
 		assertEquals(false, calls.get(0).getRequestParameters().get(1).isDeprecated());
 		assertEquals("0.9", calls.get(0).getRequestParameters().get(1).getSince());
 		assertNull(calls.get(0).getRequestParameters().get(1).getFormat());
-		assertEquals(ValueConstants.DEFAULT_NONE,calls.get(0).getRequestParameters().get(1).getDefaultValue());
+		assertEquals(null,calls.get(0).getRequestParameters().get(1).getDefaultValue());
 	}
 	
 	
@@ -207,6 +207,118 @@ public class SpringAnnotationCrawlerTest {
 		assertEquals("child", calls.get(0).getNameSpace());
 		assertEquals("[default]", calls.get(1).getNameSpace());
 
+	}
+
+	@Test
+	public void testReturnTypeExpectSimpleString() {
+		ApplicationContext acc = mock(ApplicationContext.class);
+		
+		Map<String,Object> aMap = new HashMap<String, Object>();
+		Object a = new TestController8();
+		aMap.put("a",a);
+
+		when(acc.getBeansWithAnnotation(Controller.class)).thenReturn(aMap);
+		
+		SpringAnnotationCrawler sac = new SpringAnnotationCrawler();
+		sac.setApplicationContext(acc);
+
+		List<ApiCall> calls = sac.getApiCalls();
+
+		assertEquals(1, calls.size());
+		//
+		assertEquals("java.lang.String", calls.get(0).getReturnType().getReturnClass().getClassName());
+		assertEquals(false, calls.get(0).getReturnType().isCollection());
+
+	}
+	
+	@Test
+	public void testReturnTypeExpectCollection() {
+		ApplicationContext acc = mock(ApplicationContext.class);
+		
+		Map<String,Object> aMap = new HashMap<String, Object>();
+		Object a = new TestController9();
+		aMap.put("a",a);
+		
+		when(acc.getBeansWithAnnotation(Controller.class)).thenReturn(aMap);
+		
+		SpringAnnotationCrawler sac = new SpringAnnotationCrawler();
+		sac.setApplicationContext(acc);
+		
+		List<ApiCall> calls = sac.getApiCalls();
+		
+		assertEquals(1, calls.size());
+		//
+		assertEquals("java.lang.String", calls.get(0).getReturnType().getReturnClass().getClassName());
+		assertEquals(true, calls.get(0).getReturnType().isCollection());
+		
+	}
+	
+	@Test
+	public void testReturnTypeExpectVoid() {
+		ApplicationContext acc = mock(ApplicationContext.class);
+		
+		Map<String,Object> aMap = new HashMap<String, Object>();
+		Object a = new TestController10();
+		aMap.put("a",a);
+		
+		when(acc.getBeansWithAnnotation(Controller.class)).thenReturn(aMap);
+		
+		SpringAnnotationCrawler sac = new SpringAnnotationCrawler();
+		sac.setApplicationContext(acc);
+		
+		List<ApiCall> calls = sac.getApiCalls();
+		
+		assertEquals(1, calls.size());
+		//
+		assertEquals("void", calls.get(0).getReturnType().getReturnClass().getClassName());
+		assertEquals(false, calls.get(0).getReturnType().isCollection());
+		
+	}
+	
+	
+	@Test
+	public void testReturnTypeExpectMap() {
+		ApplicationContext acc = mock(ApplicationContext.class);
+		
+		Map<String,Object> aMap = new HashMap<String, Object>();
+		Object a = new TestController11();
+		aMap.put("a",a);
+		
+		when(acc.getBeansWithAnnotation(Controller.class)).thenReturn(aMap);
+		
+		SpringAnnotationCrawler sac = new SpringAnnotationCrawler();
+		sac.setApplicationContext(acc);
+		
+		List<ApiCall> calls = sac.getApiCalls();
+		
+		assertEquals(1, calls.size());
+		//
+		assertEquals("java.util.Map", calls.get(0).getReturnType().getReturnClass().getClassName());
+		assertEquals(false, calls.get(0).getReturnType().isCollection());
+		
+	}
+	
+	
+	@Test
+	public void testRequestBodyExpectTrueFalse() {
+		ApplicationContext acc = mock(ApplicationContext.class);
+		
+		Map<String,Object> aMap = new HashMap<String, Object>();
+		Object a = new TestController11();
+		aMap.put("a",a);
+		
+		when(acc.getBeansWithAnnotation(Controller.class)).thenReturn(aMap);
+		
+		SpringAnnotationCrawler sac = new SpringAnnotationCrawler();
+		sac.setApplicationContext(acc);
+		
+		List<ApiCall> calls = sac.getApiCalls();
+		
+		assertEquals(1, calls.size());
+		//
+		assertEquals("com.cinefms.apitester.model.info.ApiObject", calls.get(0).getRequestBodyParameters().get(0).getParameterType().getClassName());
+		assertEquals("com.cinefms.apitester.model.info.ApiObject", calls.get(0).getRequestBodyParameters().get(1).getParameterType().getClassName());
+		
 	}
 	
 	

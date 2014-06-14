@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import com.cinefms.apitester.model.ApiCrawler;
 import com.cinefms.apitester.model.info.ApiCall;
+import com.cinefms.apitester.model.info.ApiObject;
 
 @Component
 public class ApitesterService implements ApplicationContextAware {
@@ -57,9 +60,9 @@ public class ApitesterService implements ApplicationContextAware {
 		return calls;
 	}
 	
-	public List<String> getBasePaths(boolean includeDeprecated) {
+	public List<String> getBasePaths(String contextId, boolean includeDeprecated) {
 		List<String> out = new ArrayList<String>();
-		for(ApiCall ac : getCalls(includeDeprecated, null, null)) {
+		for(ApiCall ac : getCalls(contextId, includeDeprecated, null, null)) {
 			if(!out.contains(ac.getBasePath())) {
 				out.add(ac.getBasePath());
 			}
@@ -67,7 +70,26 @@ public class ApitesterService implements ApplicationContextAware {
 		return out;
 	}
 
-	public List<ApiCall> getCalls(boolean includeDeprecated, String searchTerm, String[] requestMethods) {
+	
+	public List<String> getContextIds() {
+		List<String> out = new ArrayList<String>();
+		for(ApiCall ac : getCallsInternal()) {
+			if(!out.contains(ac.getNameSpace())) {
+				out.add(ac.getNameSpace());
+			}
+		}
+		return out;
+	}
+
+	public List<ApiObject> getObjects() {
+		Set<ApiObject> out = new TreeSet<ApiObject>();
+		for(ApiCall ac : getCallsInternal()) {
+			out.addAll(ac.getApiObjects());
+		}
+		return new ArrayList<ApiObject>(out);
+	}
+
+	public List<ApiCall> getCalls(String contextId,boolean includeDeprecated, String searchTerm, String[] requestMethods) {
 		List<ApiCall> out = new ArrayList<ApiCall>();
 		List<String> rms = null;
 		if(requestMethods!=null) {
@@ -77,6 +99,9 @@ public class ApitesterService implements ApplicationContextAware {
 			}
 		}
 		for(ApiCall ac : getCallsInternal()) {
+			if(contextId!=null && contextId.compareTo(ac.getNameSpace())!=0) {
+				continue;
+			}
 			if(!includeDeprecated && ac.isDeprecated()) {
 				continue;
 			}

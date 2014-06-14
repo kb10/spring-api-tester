@@ -2,6 +2,8 @@ package com.cinefms.apitester.model.info;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class ApiCall {
 	
@@ -24,6 +26,7 @@ public class ApiCall {
 	
 	private List<ApiCallParameter> pathParameters = new ArrayList<ApiCallParameter>();
 	private List<ApiCallParameter> requestParameters = new ArrayList<ApiCallParameter>();
+	private List<ApiCallParameter> requestBodyParameters = new ArrayList<ApiCallParameter>();
 	
 	private ApiResult returnType;
 	
@@ -153,11 +156,35 @@ public class ApiCall {
 	}
 
 	public String getNameSpace() {
-		return nameSpace;
+		return nameSpace==null?"":nameSpace;
 	}
 
 	public void setNameSpace(String nameSpace) {
 		this.nameSpace = nameSpace;
 	}
+	
+	
+	public List<ApiObject> getApiObjects() {
+		Set<ApiObject> out = new TreeSet<ApiObject>();
+		for(ApiCallParameter acp : getRequestParameters()) {
+			out.add(acp.getParameterType());
+		}
+		for(ApiCallParameter acp : getPathParameters()) {
+			out.add(acp.getParameterType());
+		}
+		if(getReturnType()!=null && getReturnType().getReturnClass()!=null) {
+			out.add(getReturnType().getReturnClass());
+		}
+		return new ArrayList<ApiObject>(out);
+	}
+
+	public List<ApiCallParameter> getRequestBodyParameters() {
+		return requestBodyParameters;
+	}
+
+	public void setRequestBodyParameters(List<ApiCallParameter> requestBodyParameters) {
+		this.requestBodyParameters = requestBodyParameters;
+	}
+	
 
 }
