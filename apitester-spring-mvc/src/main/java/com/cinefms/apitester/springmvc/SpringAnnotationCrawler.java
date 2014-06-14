@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.javaruntype.type.TypeParameter;
 import org.javaruntype.type.Types;
 import org.springframework.beans.BeansException;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ValueConstants;
 
 import com.cinefms.apitester.annotations.ApiDescription;
 import com.cinefms.apitester.model.ApiCrawler;
@@ -29,7 +32,7 @@ import com.cinefms.apitester.model.info.ApiObject;
 @Component
 public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAware {
 
-	
+	private static Log log = LogFactory.getLog(SpringAnnotationCrawler.class);
 	
 	private ApplicationContext applicationContext;
 	
@@ -37,8 +40,17 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 	
 	public List<ApiCall> getApiCalls() {
 		if(apiCalls==null) {
-			List<Object> controllers = new ArrayList<Object>(applicationContext.getBeansWithAnnotation(Controller.class).values());
-			apiCalls = scanControllers(controllers);
+			apiCalls = new ArrayList<ApiCall>();
+			ApplicationContext ctx = applicationContext;
+			do {
+				apiCalls.addAll(scanControllers(ctx));
+				ctx = ctx.getParent();
+			} while(ctx!=null);
+			log.info(" ############################################################### ");
+			log.info(" ##  ");
+			log.info(" ##  FOUND "+apiCalls.size()+" API CALLS");
+			log.info(" ##  ");
+			log.info(" ############################################################### ");
 		}
 		return apiCalls;
 	}
@@ -51,13 +63,24 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 		this.applicationContext = applicationContext;
 	}
 
-	public List<ApiCall> scanControllers(List<Object> controllers) {
+	public List<ApiCall> scanControllers(ApplicationContext ctx) {
+		String namespace = "[default]";
+		if(ctx.getId()!=null) {
+			namespace = ctx.getId();
+		}
+		return scanControllers(namespace, new ArrayList<Object>(ctx.getBeansWithAnnotation(Controller.class).values()));
+	}
+	
+	public List<ApiCall> scanControllers(String namespace, List<Object> controllers) {
+		System.err.println("application: ----  "+namespace+" / "+controllers.size()+" controllers ");
 
 		List<ApiCall> out = new ArrayList<ApiCall>();
 		
 		for(Object controller : controllers) {
 
 			String handlerClass = controller.getClass().getName();  
+
+			log.info(" ##  FOUND "+controllers.size()+" CONTROLLERS ... "+handlerClass);
 
 			Method[] methods = controller.getClass().getMethods();
 			
@@ -94,6 +117,7 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 						for(String path : allPaths) {
 							for(RequestMethod method : requestMethods) {
 								ApiCall a = new ApiCall();
+								a.setNameSpace(namespace);
 								String fullPath = path;
 								a.setFullPath(fullPath);
 								String basePath = getBasePath(path);
@@ -169,12 +193,6 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 			
 			if((p!=null && path) || (r!=null && !path)) {
 				ApiCallParameter acp = new ApiCallParameter();
-				if(p!=null) {
-					acp.setMandatory(true);
-				} else if (r!=null) {
-					acp.setMandatory(r.required());
-					acp.setDefaultValue(r.defaultValue());
-				}
 				acp.setCollection(false);
 				
 				acp.setParameterType(new ApiObject());
@@ -196,13 +214,17 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 				if(paramNames !=null && paramNames.length==params.length) {
 					field = paramNames[i];
 				}
-				if(p!=null && p.value()!=null && p.value().length()>0) {
+				if(path && p!=null && p.value()!=null && p.value().length()>0) {
 					field = p.value();
-				} else if(r!=null) {
+					acp.setMandatory(true);
+				} else if(!path && r!=null) {
 					if(r.value()!=null && r.value().length()>0) {
 						field = r.value();
 					}
-					acp.setDefaultValue(r.defaultValue());
+					acp.setMandatory(r.required());
+					if(r.defaultValue()!=null && r.defaultValue()!=ValueConstants.DEFAULT_NONE) {
+						acp.setDefaultValue(r.defaultValue());
+					}
 				}
 				if(d!=null) {
 					acp.setDeprecated(true);

@@ -19,6 +19,10 @@ public class ApiTesterController {
 	@Autowired
 	private ApitesterService apitesterService;
 
+	public ApiTesterController() {
+		System.err.println(ApiTesterController.class.getCanonicalName()+" initialized ... ");
+	}
+	
 	public ApitesterService getApitesterService() {
 		return apitesterService;
 	}

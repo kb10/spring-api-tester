@@ -73,7 +73,7 @@ public class SpringAnnotationCrawlerTest {
 		SpringAnnotationCrawler sac = new SpringAnnotationCrawler();
 		List<Object> controllers = new ArrayList<Object>();
 		controllers.add(new TestController1());
-		List<ApiCall> calls = sac.scanControllers(controllers);
+		List<ApiCall> calls = sac.scanControllers("A",controllers);
 		assertNotNull(calls);
 		assertEquals(0, calls.size());
 	}
@@ -83,7 +83,7 @@ public class SpringAnnotationCrawlerTest {
 		SpringAnnotationCrawler sac = new SpringAnnotationCrawler();
 		List<Object> controllers = new ArrayList<Object>();
 		controllers.add(new TestController2());
-		List<ApiCall> calls = sac.scanControllers(controllers);
+		List<ApiCall> calls = sac.scanControllers("A",controllers);
 		assertNotNull(calls);
 		assertEquals(1, calls.size());
 		assertEquals("/blah", calls.get(0).getFullPath());
@@ -96,7 +96,7 @@ public class SpringAnnotationCrawlerTest {
 		SpringAnnotationCrawler sac = new SpringAnnotationCrawler();
 		List<Object> controllers = new ArrayList<Object>();
 		controllers.add(new TestController3());
-		List<ApiCall> calls = sac.scanControllers(controllers);
+		List<ApiCall> calls = sac.scanControllers("A",controllers);
 		assertNotNull(calls);
 		assertEquals(6, calls.size());
 		assertEquals("/a/x", calls.get(0).getFullPath());
@@ -112,7 +112,7 @@ public class SpringAnnotationCrawlerTest {
 		SpringAnnotationCrawler sac = new SpringAnnotationCrawler();
 		List<Object> controllers = new ArrayList<Object>();
 		controllers.add(new TestController4());
-		List<ApiCall> calls = sac.scanControllers(controllers);
+		List<ApiCall> calls = sac.scanControllers("A",controllers);
 		assertNotNull(calls);
 		assertEquals(1, calls.size());
 		assertEquals("/x", calls.get(0).getBasePath());
@@ -140,7 +140,7 @@ public class SpringAnnotationCrawlerTest {
 		List<Object> controllers = new ArrayList<Object>();
 		controllers.add(new TestController5());
 		controllers.add(new TestController6());
-		List<ApiCall> calls = sac.scanControllers(controllers);
+		List<ApiCall> calls = sac.scanControllers("A",controllers);
 		assertNotNull(calls);
 		assertEquals(2, calls.size());
 		assertEquals("/aaa/x/{id}", calls.get(0).getFullPath());
@@ -155,7 +155,7 @@ public class SpringAnnotationCrawlerTest {
 		SpringAnnotationCrawler sac = new SpringAnnotationCrawler();
 		List<Object> controllers = new ArrayList<Object>();
 		controllers.add(new TestController7());
-		List<ApiCall> calls = sac.scanControllers(controllers);
+		List<ApiCall> calls = sac.scanControllers("A",controllers);
 		assertEquals(1, calls.size());
 		assertEquals(5, calls.get(0).getRequestParameters().size());
 		//
@@ -176,6 +176,38 @@ public class SpringAnnotationCrawlerTest {
 		assertNull(calls.get(0).getRequestParameters().get(1).getFormat());
 		assertEquals(ValueConstants.DEFAULT_NONE,calls.get(0).getRequestParameters().get(1).getDefaultValue());
 	}
+	
+	
+	@Test
+	public void testParentContextExpectNamespaces() {
+		ApplicationContext acp = mock(ApplicationContext.class);
+		when(acp.getApplicationName()).thenReturn(null);
+		ApplicationContext acc = mock(ApplicationContext.class);
+		when(acc.getId()).thenReturn("child");
+		when(acc.getParent()).thenReturn(acp);
+		
+		Object a = new TestController2();
+		Map<String,Object> aMap = new HashMap<String, Object>();
+		aMap.put("a",a);
+		when(acc.getBeansWithAnnotation(Controller.class)).thenReturn(aMap);
+
+		Object b = new TestController2();
+		Map<String,Object> bMap = new HashMap<String, Object>();
+		bMap.put("b",b);
+		when(acp.getBeansWithAnnotation(Controller.class)).thenReturn(bMap);
+		
+		SpringAnnotationCrawler sac = new SpringAnnotationCrawler();
+		sac.setApplicationContext(acc);
+
+		List<ApiCall> calls = sac.getApiCalls();
+
+		assertEquals(2, calls.size());
+		//
+		assertEquals("child", calls.get(0).getNameSpace());
+		assertEquals("[default]", calls.get(1).getNameSpace());
+
+	}
+	
 	
 	
 }

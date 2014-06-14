@@ -5,6 +5,7 @@ import java.util.List;
 
 public class ApiCall {
 	
+	private String nameSpace;
 	private String basePath;
 	private String fullPath;
 	private String description;
@@ -149,6 +150,14 @@ public class ApiCall {
 
 	public void setErrorReturnTypes(List<ApiResult> errorReturnTypes) {
 		this.errorReturnTypes = errorReturnTypes;
+	}
+
+	public String getNameSpace() {
+		return nameSpace;
+	}
+
+	public void setNameSpace(String nameSpace) {
+		this.nameSpace = nameSpace;
 	}
 
 }
