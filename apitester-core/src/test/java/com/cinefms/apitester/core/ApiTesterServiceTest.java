@@ -46,21 +46,21 @@ public class ApiTesterServiceTest {
 		ApitesterService as = new ApitesterService();
 		as.setApplicationContext(ac);
 		List<ApiCall> callsOut;
-		callsOut = as.getCalls(null,true, null,null);
+		callsOut = as.getCalls(null,null,true, null,null);
 		assertEquals(4, callsOut.size());
 		assertEquals("/a", callsOut.get(0).getFullPath());
 		assertEquals("/b", callsOut.get(1).getFullPath());
 		assertEquals("/c", callsOut.get(2).getFullPath());
 		assertEquals("/d", callsOut.get(3).getFullPath());
-		callsOut = as.getCalls(null,false, null,null);
+		callsOut = as.getCalls(null,null,false, null,null);
 		assertEquals(2, callsOut.size());
-		callsOut = as.getCalls(null,true, "a",null);
+		callsOut = as.getCalls(null,null,true, "a",null);
 		assertEquals(1, callsOut.size());
-		callsOut = as.getCalls(null,false, "a",null);
+		callsOut = as.getCalls(null,null,false, "a",null);
 		assertEquals(0, callsOut.size());
-		callsOut = as.getCalls(null,true,null,new String[] {"DELETE"});
+		callsOut = as.getCalls(null,null,true,null,new String[] {"DELETE"});
 		assertEquals(0, callsOut.size());
-		callsOut = as.getCalls(null,true,null,new String[] {"OPTIONS"});
+		callsOut = as.getCalls(null,null,true,null,new String[] {"OPTIONS"});
 		assertEquals(1, callsOut.size());
 		
 	}
@@ -158,8 +158,12 @@ public class ApiTesterServiceTest {
 			assertEquals(1, basePaths.size());
 		}
 		{
-			List<ApiCall> cs = as.getCalls("blah:foo",true,null,null);
+			List<ApiCall> cs = as.getCalls("blah:foo",null,true,null,null);
 			assertEquals(1, cs.size());
+		}
+		{
+			List<ApiCall> cs = as.getCalls(null,"/a",true,null,null);
+			assertEquals(3, cs.size());
 		}
 	}
 	

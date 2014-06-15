@@ -35,10 +35,10 @@ public class ApiTesterController {
 	@RequestMapping(value="/basepaths",method=RequestMethod.GET)
 	@ResponseBody
 	public List<String> getBasePaths(
-			@RequestParam(required=false) String contextId, 
+			@RequestParam(required=false) String context, 
 			@RequestParam(defaultValue="true") boolean includeDeprecated
 		) {
-		return apitesterService.getBasePaths(contextId,includeDeprecated);
+		return apitesterService.getBasePaths(context,includeDeprecated);
 	}
 
 	@RequestMapping(value="/contexts",method=RequestMethod.GET)
@@ -56,12 +56,13 @@ public class ApiTesterController {
 	@RequestMapping(value="/calls",method=RequestMethod.GET)
 	@ResponseBody
 	public List<ApiCall> getCalls(
-			@RequestParam(required=false) String contextId, 
+			@RequestParam(required=false) String context, 
+			@RequestParam(required=false) String basePath, 
 			@RequestParam(required=false,defaultValue="true") boolean includeDeprecated, 
 			@RequestParam(required=false) String searchTerm, 
 			@RequestParam(required=false,value="method") String[] requestMethods
 		) {
-		return apitesterService.getCalls(contextId,includeDeprecated, searchTerm, requestMethods);
+		return apitesterService.getCalls(context,basePath,includeDeprecated, searchTerm, requestMethods);
 	}
 	
 	

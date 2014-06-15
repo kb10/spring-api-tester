@@ -60,9 +60,9 @@ public class ApitesterService implements ApplicationContextAware {
 		return calls;
 	}
 	
-	public List<String> getBasePaths(String contextId, boolean includeDeprecated) {
+	public List<String> getBasePaths(String context, boolean includeDeprecated) {
 		List<String> out = new ArrayList<String>();
-		for(ApiCall ac : getCalls(contextId, includeDeprecated, null, null)) {
+		for(ApiCall ac : getCalls(context,null, includeDeprecated, null, null)) {
 			if(!out.contains(ac.getBasePath())) {
 				out.add(ac.getBasePath());
 			}
@@ -89,7 +89,7 @@ public class ApitesterService implements ApplicationContextAware {
 		return new ArrayList<ApiObject>(out);
 	}
 
-	public List<ApiCall> getCalls(String contextId,boolean includeDeprecated, String searchTerm, String[] requestMethods) {
+	public List<ApiCall> getCalls(String context,String basePath, boolean includeDeprecated, String searchTerm, String[] requestMethods) {
 		List<ApiCall> out = new ArrayList<ApiCall>();
 		List<String> rms = null;
 		if(requestMethods!=null) {
@@ -99,7 +99,10 @@ public class ApitesterService implements ApplicationContextAware {
 			}
 		}
 		for(ApiCall ac : getCallsInternal()) {
-			if(contextId!=null && contextId.compareTo(ac.getNameSpace())!=0) {
+			if(context!=null && context.compareTo(ac.getNameSpace())!=0) {
+				continue;
+			}
+			if(basePath!=null && ac.getBasePath().compareTo(basePath)!=0) {
 				continue;
 			}
 			if(!includeDeprecated && ac.isDeprecated()) {
