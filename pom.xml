@@ -113,10 +113,10 @@
 			<id>fms-apitester-release</id>
 			<url>https://infra.cinefms.com/nexus/content/repositories/apitester-release/</url>
 		</repository>
-		<snapshotRepository>
+		<repository>
 			<id>fms-apitester-snapshot</id>
 			<url>https://infra.cinefms.com/nexus/content/repositories/apitester-snapshot/</url>
-		</snapshotRepository>
+		</repository>
 	</repositories>	
 	<build>
 		<pluginManagement>
