@@ -33,7 +33,7 @@ public class ApiTesterController {
 		this.apitesterService = apitesterService;
 	}
 
-	@RequestMapping(value="/basepaths",method=RequestMethod.GET)
+	@RequestMapping(value="/basepaths",method=RequestMethod.GET,produces={"application/json"})
 	@ResponseBody
 	public List<String> getBasePaths(
 			@RequestParam(required=false) String context, 
@@ -42,31 +42,31 @@ public class ApiTesterController {
 		return apitesterService.getBasePaths(context,includeDeprecated);
 	}
 
-	@RequestMapping(value="/contexts",method=RequestMethod.GET)
+	@RequestMapping(value="/contexts",method=RequestMethod.GET,produces={"application/json"})
 	@ResponseBody
 	public List<String> getContexts() {
 		return apitesterService.getContextIds();
 	}
 
-	@RequestMapping(value="/objects",method=RequestMethod.GET)
+	@RequestMapping(value="/objects",method=RequestMethod.GET,produces={"application/json"})
 	@ResponseBody
 	public List<ApiObject> getObjects() {
 		return apitesterService.getObjects();
 	}
 
-	@RequestMapping(value="/objects/{className}",method=RequestMethod.GET)
+	@RequestMapping(value="/objects/{className}",method=RequestMethod.GET,produces={"application/json"})
 	@ResponseBody
 	public ApiObject getObject(@PathVariable String className) {
 		return apitesterService.getObject(className);
 	}
 	
-	@RequestMapping(value="/objects/{className}/details",method=RequestMethod.GET)
+	@RequestMapping(value="/objects/{className}/details",method=RequestMethod.GET,produces={"application/json"})
 	@ResponseBody
 	public Object getObjectDetails(@PathVariable String className) {
 		return apitesterService.getObjectDetails(className);
 	}
 	
-	@RequestMapping(value="/calls",method=RequestMethod.GET)
+	@RequestMapping(value="/calls",method=RequestMethod.GET,produces={"application/json"})
 	@ResponseBody
 	public List<ApiCall> getCalls(
 			@RequestParam(required=false) String context, 
