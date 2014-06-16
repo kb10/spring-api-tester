@@ -1,8 +1,11 @@
 package com.cinefms.apitester.springmvc.crawlers;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -94,7 +97,33 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 			}
 			
 			for(Method m : methods) {
+				
 				try {
+					
+					String description = null;
+					String deprecatedSince = null;
+					String since = null;
+					boolean deprecated = false;
+					if(m.getAnnotation(Deprecated.class)!=null) {
+						deprecated = true;
+					}
+					ApiDescription ad = m.getAnnotation(ApiDescription.class);
+					if(ad!=null) {
+						 if(ad.deprecatedSince().length()>0) {
+							 deprecatedSince = ad.deprecatedSince();
+								deprecated = true;
+						 }
+						 if(ad.since().length()>0) {
+							 since = ad.since();
+						 }
+						 if(ad.value().length()>0) {
+							 description = ad.value();
+						 }
+						 if(ad.file().length()>0) {
+							 description = loadResource(controller.getClass(), ad.file());
+						 }
+					}
+					
 					String handlerMethod = m.getName();
 					RequestMapping rmm = m.getAnnotation(RequestMapping.class); 
 					if(rmm!=null) {
@@ -123,6 +152,10 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 								String fullPath = path;
 								a.setFullPath(fullPath);
 								String basePath = getBasePath(path);
+								a.setDescription(description);
+								a.setDeprecated(deprecated);
+								a.setDeprecatedSince(deprecatedSince);
+								a.setSince(since);
 								a.setBasePath(basePath);
 								a.setHandlerClass(handlerClass);
 								a.setHandlerMethod(handlerMethod);
@@ -145,6 +178,24 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 		return out;
 	}
 	
+	private String loadResource(Class<?> thatClass, String file) {
+		try {
+			URL url = thatClass.getResource(file);
+			InputStream is = url.openStream(); //thatClass.getResourceAsStream(file);
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			byte[] buff = new byte[1024];
+			int a = 0;
+			while((a=is.read(buff))>-1) {
+				baos.write(buff,0,a);
+			}
+			return new String(baos.toByteArray(),"utf-8");
+		} catch (Exception e) {
+			log.error("error loading resource",e);
+			e.printStackTrace();
+			return "error loading resource: "+file;
+		}
+	}
+
 	public String getPath(String path) {
 		String out = path.replaceAll("/+", "/");
 		return out;

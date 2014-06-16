@@ -23,12 +23,6 @@
   		<version>0.0.1.18-SNAPSHOT</version>
   	</dependency>
   	
-		<dependency>
-			<groupId>org.javaruntype</groupId>
-			<artifactId>javaruntype</artifactId>
-			<version>1.2</version>
-			<scope>compile</scope>
-		</dependency>
 
 		<!-- SPRING -->
 		<dependency>

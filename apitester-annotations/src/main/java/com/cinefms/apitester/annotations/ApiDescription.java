@@ -12,6 +12,7 @@ public @interface ApiDescription {
 	String value() default "";
 	String since() default "0.0";
 	String format() default "";
+	String file() default "";
 	String deprecatedSince() default "";
 	
 }

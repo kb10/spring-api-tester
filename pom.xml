@@ -24,6 +24,12 @@
 		<sonar.jira.url>http://jira.crm-factory.com.cn/browse/BRONE</sonar.jira.url>
 
 	</properties>
+	<repositories>
+		<repository>
+			<id>apitester-release</id>
+			<url>https://infra.cinefms.com/nexus/content/shadows/</url>
+		</repository>
+	</repositories>
 	<licenses>
 		<license>
 			<name>MIT License</name>
@@ -39,6 +45,12 @@
 		</developer>
 	</developers>
 	<dependencies>
+		<dependency>
+			<groupId>org.javaruntype</groupId>
+			<artifactId>javaruntype</artifactId>
+			<version>1.2</version>
+			<scope>compile</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>
@@ -76,6 +88,7 @@
 		<developerConnection>scm:git:https://stash.mcon-group.com/scm/uvfg/uv-fg-be-apitester.git</developerConnection>
 		<url>https://github.com/rmalchow/spring-api-tester</url>
 	</scm>
+	<!-- 
 	<distributionManagement>
 		<repository>
 			<id>fg-release</id>
@@ -90,6 +103,21 @@
 			<uniqueVersion>false</uniqueVersion>
 		</snapshotRepository>
 	</distributionManagement>
+	 -->
+	<distributionManagement>
+		<repository>
+			<id>fms-release</id>
+			<name>smp release repo</name>
+			<url>https://infra.cinefms.com/nexus/content/repositories/apitester-release/</url>
+			<uniqueVersion>false</uniqueVersion>
+		</repository>
+		<snapshotRepository>
+			<id>fms-snapshot</id>
+			<name>smp snapshot repo</name>
+			<url>https://infra.cinefms.com/nexus/content/repositories/apitester-snapshot/</url>
+			<uniqueVersion>false</uniqueVersion>
+		</snapshotRepository>
+	</distributionManagement>	
 	<build>
 		<pluginManagement>
 			<plugins>

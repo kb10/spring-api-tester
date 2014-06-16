@@ -321,6 +321,34 @@ public class SpringAnnotationCrawlerTest {
 		
 	}
 	
+	@Test
+	public void testDescriptionInFileExpectSuccess() {
+		ApplicationContext acc = mock(ApplicationContext.class);
+		
+		Map<String,Object> aMap = new HashMap<String, Object>();
+		Object a = new TestController12();
+		aMap.put("a",a);
+		
+		when(acc.getBeansWithAnnotation(Controller.class)).thenReturn(aMap);
+		
+		SpringAnnotationCrawler sac = new SpringAnnotationCrawler();
+		sac.setApplicationContext(acc);
+		
+		List<ApiCall> calls = sac.getApiCalls();
+		
+		assertEquals(5, calls.size());
+		//
+		assertEquals("DESCRIPTION_A", calls.get(0).getDescription());
+		assertEquals("DESCRIPTION_B", calls.get(1).getDescription());
+		assertEquals("returns the A", calls.get(2).getDescription());
+		assertEquals("1.22", calls.get(3).getDeprecatedSince());
+		assertEquals("0.9", calls.get(3).getSince());
+		assertEquals(true, calls.get(3).isDeprecated());
+
+		assertEquals(true, calls.get(4).isDeprecated());
+		
+	}
+	
 	
 	
 }
