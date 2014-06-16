@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.cinefms.apitester</groupId>
 	<artifactId>apitester-parent</artifactId>
-	<version>0.0.1.15</version>
+	<version>0.0.1.18-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<properties>
 		<dev.nexus.host>http://fg-nexus-dev.etower.pek.mcon.net</dev.nexus.host>
@@ -25,6 +24,12 @@
 		<sonar.jira.url>http://jira.crm-factory.com.cn/browse/BRONE</sonar.jira.url>
 
 	</properties>
+	<repositories>
+		<repository>
+			<id>apitester-release</id>
+			<url>https://infra.cinefms.com/nexus/content/shadows/</url>
+		</repository>
+	</repositories>
 	<licenses>
 		<license>
 			<name>MIT License</name>
@@ -40,6 +45,12 @@
 		</developer>
 	</developers>
 	<dependencies>
+		<dependency>
+			<groupId>org.javaruntype</groupId>
+			<artifactId>javaruntype</artifactId>
+			<version>1.2</version>
+			<scope>compile</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>
@@ -77,6 +88,7 @@
 		<developerConnection>scm:git:https://stash.mcon-group.com/scm/uvfg/uv-fg-be-apitester.git</developerConnection>
 		<url>https://github.com/rmalchow/spring-api-tester</url>
 	</scm>
+	<!-- 
 	<distributionManagement>
 		<repository>
 			<id>fg-release</id>
@@ -91,6 +103,21 @@
 			<uniqueVersion>false</uniqueVersion>
 		</snapshotRepository>
 	</distributionManagement>
+	 -->
+	<distributionManagement>
+		<repository>
+			<id>fms-release</id>
+			<name>smp release repo</name>
+			<url>https://infra.cinefms.com/nexus/content/repositories/apitester-release/</url>
+			<uniqueVersion>false</uniqueVersion>
+		</repository>
+		<snapshotRepository>
+			<id>fms-snapshot</id>
+			<name>smp snapshot repo</name>
+			<url>https://infra.cinefms.com/nexus/content/repositories/apitester-snapshot/</url>
+			<uniqueVersion>false</uniqueVersion>
+		</snapshotRepository>
+	</distributionManagement>	
 	<build>
 		<pluginManagement>
 			<plugins>
@@ -180,19 +207,6 @@
 						<versionTagPrefix>release-</versionTagPrefix>
 					</flowInitContext>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-gpg-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>sign-artifacts</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>sign</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>

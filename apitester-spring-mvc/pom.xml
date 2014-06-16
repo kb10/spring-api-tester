@@ -3,32 +3,26 @@
   <parent>
     <groupId>com.cinefms.apitester</groupId>
     <artifactId>apitester-parent</artifactId>
-    <version>0.0.1.15</version>
+    <version>0.0.1.18-SNAPSHOT</version>
   </parent>
   <artifactId>apitester-spring-mvc</artifactId>
   <dependencies>
   	<dependency>
   		<groupId>com.cinefms.apitester</groupId>
   		<artifactId>apitester-annotations</artifactId>
-  		<version>0.0.1.15</version>
+  		<version>0.0.1.18-SNAPSHOT</version>
   	</dependency>
   	<dependency>
   		<groupId>com.cinefms.apitester</groupId>
   		<artifactId>apitester-model</artifactId>
-  		<version>0.0.1.15</version>
+  		<version>0.0.1.18-SNAPSHOT</version>
   	</dependency>
   	<dependency>
   		<groupId>com.cinefms.apitester</groupId>
   		<artifactId>apitester-core</artifactId>
-  		<version>0.0.1.15</version>
+  		<version>0.0.1.18-SNAPSHOT</version>
   	</dependency>
   	
-		<dependency>
-			<groupId>org.javaruntype</groupId>
-			<artifactId>javaruntype</artifactId>
-			<version>1.2</version>
-			<scope>compile</scope>
-		</dependency>
 
 		<!-- SPRING -->
 		<dependency>
