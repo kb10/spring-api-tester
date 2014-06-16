@@ -1,4 +1,4 @@
-package com.cinefms.apitester.springmvc;
+package com.cinefms.apitester.springmvc.crawlers;
 
 
 import java.util.List;

@@ -1,12 +1,17 @@
-package com.cinefms.apitester.springmvc;
+package com.cinefms.apitester.springmvc.crawlers;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.javaruntype.type.TypeParameter;
 import org.javaruntype.type.Types;
 import org.springframework.beans.BeansException;
@@ -16,20 +21,23 @@ import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ValueConstants;
 
 import com.cinefms.apitester.annotations.ApiDescription;
 import com.cinefms.apitester.model.ApiCrawler;
 import com.cinefms.apitester.model.info.ApiCall;
 import com.cinefms.apitester.model.info.ApiCallParameter;
 import com.cinefms.apitester.model.info.ApiObject;
+import com.cinefms.apitester.model.info.ApiResult;
 
 @Component
 public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAware {
 
-	
+	private static Log log = LogFactory.getLog(SpringAnnotationCrawler.class);
 	
 	private ApplicationContext applicationContext;
 	
@@ -37,8 +45,17 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 	
 	public List<ApiCall> getApiCalls() {
 		if(apiCalls==null) {
-			List<Object> controllers = new ArrayList<Object>(applicationContext.getBeansWithAnnotation(Controller.class).values());
-			apiCalls = scanControllers(controllers);
+			apiCalls = new ArrayList<ApiCall>();
+			ApplicationContext ctx = applicationContext;
+			do {
+				apiCalls.addAll(scanControllers(ctx));
+				ctx = ctx.getParent();
+			} while(ctx!=null);
+			log.info(" ############################################################### ");
+			log.info(" ##  ");
+			log.info(" ##  FOUND "+apiCalls.size()+" API CALLS");
+			log.info(" ##  ");
+			log.info(" ############################################################### ");
 		}
 		return apiCalls;
 	}
@@ -51,13 +68,24 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 		this.applicationContext = applicationContext;
 	}
 
-	public List<ApiCall> scanControllers(List<Object> controllers) {
+	public List<ApiCall> scanControllers(ApplicationContext ctx) {
+		String namespace = "[default]";
+		if(ctx.getId()!=null) {
+			namespace = ctx.getId();
+		}
+		return scanControllers(namespace, new ArrayList<Object>(ctx.getBeansWithAnnotation(Controller.class).values()));
+	}
+	
+	public List<ApiCall> scanControllers(String namespace, List<Object> controllers) {
+		System.err.println("application: ----  "+namespace+" / "+controllers.size()+" controllers ");
 
 		List<ApiCall> out = new ArrayList<ApiCall>();
 		
 		for(Object controller : controllers) {
 
 			String handlerClass = controller.getClass().getName();  
+
+			log.info(" ##  FOUND "+controllers.size()+" CONTROLLERS ... "+handlerClass);
 
 			Method[] methods = controller.getClass().getMethods();
 			
@@ -69,7 +97,33 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 			}
 			
 			for(Method m : methods) {
+				
 				try {
+					
+					String description = null;
+					String deprecatedSince = null;
+					String since = null;
+					boolean deprecated = false;
+					if(m.getAnnotation(Deprecated.class)!=null) {
+						deprecated = true;
+					}
+					ApiDescription ad = m.getAnnotation(ApiDescription.class);
+					if(ad!=null) {
+						 if(ad.deprecatedSince().length()>0) {
+							 deprecatedSince = ad.deprecatedSince();
+								deprecated = true;
+						 }
+						 if(ad.since().length()>0) {
+							 since = ad.since();
+						 }
+						 if(ad.value().length()>0) {
+							 description = ad.value();
+						 }
+						 if(ad.file().length()>0) {
+							 description = loadResource(controller.getClass(), ad.file());
+						 }
+					}
+					
 					String handlerMethod = m.getName();
 					RequestMapping rmm = m.getAnnotation(RequestMapping.class); 
 					if(rmm!=null) {
@@ -94,15 +148,22 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 						for(String path : allPaths) {
 							for(RequestMethod method : requestMethods) {
 								ApiCall a = new ApiCall();
+								a.setNameSpace(namespace);
 								String fullPath = path;
 								a.setFullPath(fullPath);
 								String basePath = getBasePath(path);
+								a.setDescription(description);
+								a.setDeprecated(deprecated);
+								a.setDeprecatedSince(deprecatedSince);
+								a.setSince(since);
 								a.setBasePath(basePath);
 								a.setHandlerClass(handlerClass);
 								a.setHandlerMethod(handlerMethod);
 								a.setMethod(method.toString());
 								a.setRequestParameters(getRequestParameters(m));
+								a.setRequestBodyParameters(getRequestBodyParameters(m));
 								a.setPathParameters(getPathParameters(m));
+								a.setReturnType(getResult(m));
 								out.add(a);
 							}
 						}
@@ -117,6 +178,24 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 		return out;
 	}
 	
+	private String loadResource(Class<?> thatClass, String file) {
+		try {
+			URL url = thatClass.getResource(file);
+			InputStream is = url.openStream(); //thatClass.getResourceAsStream(file);
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			byte[] buff = new byte[1024];
+			int a = 0;
+			while((a=is.read(buff))>-1) {
+				baos.write(buff,0,a);
+			}
+			return new String(baos.toByteArray(),"utf-8");
+		} catch (Exception e) {
+			log.error("error loading resource",e);
+			e.printStackTrace();
+			return "error loading resource: "+file;
+		}
+	}
+
 	public String getPath(String path) {
 		String out = path.replaceAll("/+", "/");
 		return out;
@@ -127,14 +206,18 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 	}
 
 	public List<ApiCallParameter> getRequestParameters(Method m) {
-		return getApiCalls(m, false);
+		return getApiCalls(m, false,false,true);
 	}
 	
 	public List<ApiCallParameter> getPathParameters(Method m) {
-		return getApiCalls(m, true);
+		return getApiCalls(m, true,false,false);
+	}
+
+	public List<ApiCallParameter> getRequestBodyParameters(Method m) {
+		return getApiCalls(m, false,true,false);
 	}
 	
-	private List<ApiCallParameter> getApiCalls(Method m, boolean path) {
+	private List<ApiCallParameter> getApiCalls(Method m, boolean path, boolean body, boolean request) {
 		List<ApiCallParameter> out = new ArrayList<ApiCallParameter>();
 		Annotation[][] anns = m.getParameterAnnotations(); 
 		Type[] params = m.getGenericParameterTypes();
@@ -143,6 +226,7 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 			
 			PathVariable p = null;
 			RequestParam r = null;
+			RequestBody rb = null;
 			Deprecated d = null;
 			ApiDescription ad = null;
 			
@@ -152,6 +236,9 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 				}
 				if (a.annotationType() == RequestParam.class) {
 					r = (RequestParam)a;
+				}
+				if (a.annotationType() == RequestBody.class) {
+					rb = (RequestBody)a;
 				}
 				if (a.annotationType() == Deprecated.class) {
 					d = (Deprecated)a;
@@ -167,16 +254,9 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 				System.err.println(paramNames[i]+" / request param");
 			}
 			
-			if((p!=null && path) || (r!=null && !path)) {
+			if((p!=null && path) || (r!=null && request) || (rb!=null && body)) {
 				ApiCallParameter acp = new ApiCallParameter();
-				if(p!=null) {
-					acp.setMandatory(true);
-				} else if (r!=null) {
-					acp.setMandatory(r.required());
-					acp.setDefaultValue(r.defaultValue());
-				}
 				acp.setCollection(false);
-				
 				acp.setParameterType(new ApiObject());
 				@SuppressWarnings("unchecked")
 				org.javaruntype.type.Type<String> strType = (org.javaruntype.type.Type<String>) Types.forJavaLangReflectType(params[i]);
@@ -196,13 +276,21 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 				if(paramNames !=null && paramNames.length==params.length) {
 					field = paramNames[i];
 				}
-				if(p!=null && p.value()!=null && p.value().length()>0) {
-					field = p.value();
-				} else if(r!=null) {
+				if(path && p!=null) {
+					if(p.value()!=null && p.value().length()>0) {
+						field = p.value();
+					}
+					acp.setMandatory(true);
+				} else if(request && r!=null) {
 					if(r.value()!=null && r.value().length()>0) {
 						field = r.value();
 					}
-					acp.setDefaultValue(r.defaultValue());
+					acp.setMandatory(r.required());
+					if(r.defaultValue()!=null && r.defaultValue().compareTo(ValueConstants.DEFAULT_NONE)!=0) {
+						acp.setDefaultValue(r.defaultValue());
+					}
+				} else if(body && rb!=null) {
+					acp.setMandatory(rb.required());
 				}
 				if(d!=null) {
 					acp.setDeprecated(true);
@@ -227,6 +315,25 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 			
 		}
 		return out;		
+	}
+	
+	public ApiResult getResult(Method m) {
+		ApiResult ar = new ApiResult();
+		ApiObject ao = new ApiObject();
+		ar.setReturnClass(ao);
+
+		org.javaruntype.type.Type<String> strType = (org.javaruntype.type.Type<String>) Types.forJavaLangReflectType(m.getGenericReturnType());
+		String paramClass = strType.getRawClass().getCanonicalName();
+		ao.setClassName(paramClass);
+		if(Collection.class.isAssignableFrom(strType.getRawClass())) {
+			ar.setCollection(true);
+			ao.setClassName(paramClass);
+			for(TypeParameter<?> tp : strType.getTypeParameters()) {
+				paramClass = tp.getType().getName();
+				ao.setClassName(paramClass);
+			}
+		}
+		return ar;
 	}
 	
 	
