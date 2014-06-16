@@ -82,7 +82,6 @@
 		<developerConnection>scm:git:https://stash.mcon-group.com/scm/uvfg/uv-fg-be-apitester.git</developerConnection>
 		<url>https://github.com/rmalchow/spring-api-tester</url>
 	</scm>
-	<!-- 
 	<distributionManagement>
 		<repository>
 			<id>fg-release</id>
@@ -97,7 +96,7 @@
 			<uniqueVersion>false</uniqueVersion>
 		</snapshotRepository>
 	</distributionManagement>
-	 -->
+	<!-- 
 	<distributionManagement>
 		<repository>
 			<id>fms-apitester-release</id>
@@ -108,6 +107,7 @@
 			<url>https://infra.cinefms.com/nexus/content/repositories/apitester-snapshot/</url>
 		</snapshotRepository>
 	</distributionManagement>
+	 -->
 	<repositories>
 		<repository>
 			<id>fms-apitester-release</id>
