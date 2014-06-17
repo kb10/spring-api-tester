@@ -43,7 +43,7 @@
 
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>classpath*:/apitester/config.xml</param-value>
+		<param-value>classpath*:**/config</param-value>
 	</context-param>
 
 	<listener>
