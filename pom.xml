@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.cinefms.apitester</groupId>
 	<artifactId>apitester-parent</artifactId>
-	<version>0.0.1.18-SNAPSHOT</version>
+	<version>0.8.0.19</version>
 	<packaging>pom</packaging>
 	<properties>
 		<dev.nexus.host>http://fg-nexus-dev.etower.pek.mcon.net</dev.nexus.host>
@@ -24,12 +24,6 @@
 		<sonar.jira.url>http://jira.crm-factory.com.cn/browse/BRONE</sonar.jira.url>
 
 	</properties>
-	<repositories>
-		<repository>
-			<id>apitester-release</id>
-			<url>https://infra.cinefms.com/nexus/content/shadows/</url>
-		</repository>
-	</repositories>
 	<licenses>
 		<license>
 			<name>MIT License</name>
@@ -106,18 +100,24 @@
 	 -->
 	<distributionManagement>
 		<repository>
-			<id>fms-release</id>
-			<name>smp release repo</name>
+			<id>apitester-release</id>
 			<url>https://infra.cinefms.com/nexus/content/repositories/apitester-release/</url>
-			<uniqueVersion>false</uniqueVersion>
 		</repository>
 		<snapshotRepository>
-			<id>fms-snapshot</id>
-			<name>smp snapshot repo</name>
+			<id>apitester-snapshot</id>
 			<url>https://infra.cinefms.com/nexus/content/repositories/apitester-snapshot/</url>
-			<uniqueVersion>false</uniqueVersion>
 		</snapshotRepository>
-	</distributionManagement>	
+	</distributionManagement>
+	<repositories>
+		<repository>
+			<id>apitester-release</id>
+			<url>https://infra.cinefms.com/nexus/content/repositories/apitester-release/</url>
+		</repository>
+		<repository>
+			<id>apitester-snapshot</id>
+			<url>https://infra.cinefms.com/nexus/content/repositories/apitester-snapshot/</url>
+		</repository>
+	</repositories>	
 	<build>
 		<pluginManagement>
 			<plugins>
