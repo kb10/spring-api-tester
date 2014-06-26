@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.cinefms.apitester.core.ApitesterService;
 import com.cinefms.apitester.model.info.ApiCall;
 import com.cinefms.apitester.model.info.ApiObject;
+import com.cinefms.apitester.model.myinfo.TestUser;
 
 @Controller
 @RequestMapping(value={""})
@@ -48,6 +50,30 @@ public class ApiTesterController {
 		return apitesterService.getContextIds();
 	}
 
+	@RequestMapping(value="/users",method=RequestMethod.OPTIONS,produces={"application/json"})
+	@ResponseBody
+	public List<String> listUsersOptions() {
+		return apitesterService.listUsersOptions();
+	}
+	
+	@RequestMapping(value="/users",method=RequestMethod.GET,produces={"application/json"})
+	@ResponseBody
+	public List<TestUser> listUsers() {
+		return apitesterService.listUsers();
+	}
+	
+	@RequestMapping(value="/users",method=RequestMethod.POST,produces={"application/json"})
+	@ResponseBody
+	public TestUser createUser(@RequestBody TestUser newUser) {
+		return apitesterService.createUser(newUser);
+	}
+	
+	@RequestMapping(value="/users/{id}",method=RequestMethod.PUT,produces={"application/json"})
+	@ResponseBody
+	public TestUser updateUser(@PathVariable int id, @RequestBody TestUser newUser) {
+		return apitesterService.updateUser(id, newUser);
+	}
+	
 	@RequestMapping(value="/objects",method=RequestMethod.GET,produces={"application/json"})
 	@ResponseBody
 	public List<ApiObject> getObjects() {
@@ -62,7 +88,10 @@ public class ApiTesterController {
 	
 	@RequestMapping(value="/objects/{className}/details",method=RequestMethod.GET,produces={"application/json"})
 	@ResponseBody
-	public Object getObjectDetails(@PathVariable String className) {
+	public Object getObjectDetails(@PathVariable String className,
+			@RequestParam(required=true, defaultValue="default") String requireParam,
+			@RequestParam(required=false) String optionalParam
+	) {
 		return apitesterService.getObjectDetails(className);
 	}
 	

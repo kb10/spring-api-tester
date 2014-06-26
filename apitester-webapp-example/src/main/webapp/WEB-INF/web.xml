@@ -8,6 +8,8 @@
 
 	<display-name></display-name>
 
+	<!--
+	
 	<servlet>
 		<servlet-name>apitester</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
@@ -21,7 +23,8 @@
 		<servlet-name>apitester</servlet-name>
 		<url-pattern>/apitester/api/*</url-pattern>
 	</servlet-mapping>
-
+	-->
+	
 	<servlet>
 		<servlet-name>jsp</servlet-name>
 		<servlet-class>org.apache.jasper.servlet.JspServlet</servlet-class>
@@ -43,7 +46,7 @@
 
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>classpath*:/apitester/config.xml</param-value>
+		<param-value>classpath*:**/config</param-value>
 	</context-param>
 
 	<listener>
