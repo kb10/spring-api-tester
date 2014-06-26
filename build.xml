@@ -8,12 +8,10 @@
 			<arg value="clean"/>
 			<arg value="install"/>
 		</exec>
-		<mkdir dir="${webapps}/ROOT"/>
-		<sync todir="${webapps}/ROOT">
+		<mkdir dir="${webapps}/apitester"/>
+		<sync todir="${webapps}/apitester">
 			<fileset dir="apitester-webapp-example/target/apitester-webapp-example"/>
-		</sync>
-
-		
+		</sync>	
 	</target>
 
 </project>
