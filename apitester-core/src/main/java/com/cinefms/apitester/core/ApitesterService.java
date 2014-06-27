@@ -257,6 +257,10 @@ public class ApitesterService implements ApplicationContextAware {
 		return new ArrayList<TestUser>();
 	}
 	
+	public boolean deleteUser(int id) {
+		return false;
+	}
+	
 	private class ApiObjectFieldInfo {
 
 		private String name;
@@ -302,5 +306,5 @@ public class ApitesterService implements ApplicationContextAware {
 
 
 	}
-	
+
 }
