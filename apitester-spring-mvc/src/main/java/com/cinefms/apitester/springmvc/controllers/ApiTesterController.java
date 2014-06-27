@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.cinefms.apitester.annotations.ApiDescription;
 import com.cinefms.apitester.core.ApitesterService;
 import com.cinefms.apitester.model.info.ApiCall;
 import com.cinefms.apitester.model.info.ApiObject;
@@ -72,6 +73,13 @@ public class ApiTesterController {
 	@ResponseBody
 	public TestUser updateUser(@PathVariable int id, @RequestBody TestUser newUser) {
 		return apitesterService.updateUser(id, newUser);
+	}
+	
+	@RequestMapping(value="/users/{id}",method=RequestMethod.DELETE,produces={"application/json"})
+	@ResponseBody
+	@ApiDescription(deprecatedSince="Friday June 27, 2014")
+	public boolean deleteUser(@PathVariable int id) {
+		return apitesterService.deleteUser(id);
 	}
 	
 	@RequestMapping(value="/objects",method=RequestMethod.GET,produces={"application/json"})
