@@ -168,25 +168,31 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 						}
 						
 						for(String path : allPaths) {
+							System.err.println(" ### METHODS ------------------------------------------");
+							String p = "";
+							System.err.println(" ### METHODS FOR "+path);
+							if(servletContext!=null) {
+								System.err.println(" ### METHODS FOR SC "+servletContext.getContextPath());
+								p = servletContext.getContextPath()+"/";
+							}
+							if(getPrefix()!=null) {
+								System.err.println(" ### METHODS FOR PF "+prefix);
+								p = p + "/"+getPrefix();
+							}
+							p = p+"/"+path;
+							String fullPath = p.replaceAll("/+", "/");
+							String basePath = getBasePath(fullPath);
+							System.err.println(" ### METHODS FOR FP "+fullPath);
+							System.err.println(" ### METHODS FOR BP "+basePath);
 							for(RequestMethod method : requestMethods) {
 								ApiCall a = new ApiCall();
 								a.setNameSpace(namespace);
-								String p = "";
-								if(servletContext!=null) {
-									p = servletContext.getContextPath()+"/";
-								}
-								if(getPrefix()!=null) {
-									p = p + "/"+getPrefix();
-								}
-								p = p+"/"+path;
-								String fullPath = p.replaceAll("/+", "/");
 								a.setFullPath(fullPath);
-								String basePath = getBasePath(path);
 								a.setDescription(description);
+								a.setBasePath(basePath);
 								a.setDeprecated(deprecated);
 								a.setDeprecatedSince(deprecatedSince);
 								a.setSince(since);
-								a.setBasePath(basePath);
 								a.setHandlerClass(handlerClass);
 								a.setHandlerMethod(handlerMethod);
 								a.setMethod(method.toString());

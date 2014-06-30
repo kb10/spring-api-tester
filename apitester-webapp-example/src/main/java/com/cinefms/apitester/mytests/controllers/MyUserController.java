@@ -22,7 +22,7 @@ public class MyUserController {
 	private IMyUserService myUserService;
 
 	public MyUserController() {
-		Thread.dumpStack();
+
 	}
 	
 	@RequestMapping(value="/users",method=RequestMethod.POST,produces={"application/json"})

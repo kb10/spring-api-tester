@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletContext;
+
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.context.ApplicationContext;
@@ -153,6 +155,34 @@ public class SpringAnnotationCrawlerTest {
 		assertEquals("/aaa/x", calls.get(0).getBasePath());
 		assertEquals("/aaa/{aaaId}/x/{id}", calls.get(1).getFullPath());
 		assertEquals("/aaa", calls.get(1).getBasePath());
+	}
+	
+	@Test
+	public void testBasepath() {
+		SpringAnnotationCrawler sac = new SpringAnnotationCrawler();
+		String x = sac.getBasePath("/asdasd/asdasd/das/{adsasd}/asdasd");
+		assertEquals("/asdasd/asdasd/das", x);
+	}
+	
+	@Test
+	public void testPrefixConfigAnnotationExpectTwoSuccess() {
+		SpringAnnotationCrawler sac = new SpringAnnotationCrawler();
+
+		// servlet context
+		ServletContext sc = mock(ServletContext.class);
+		when(sc.getContextPath()).thenReturn("/scpath");
+		sac.setServletContext(sc);
+
+		List<Object> controllers = new ArrayList<Object>();
+		controllers.add(new TestController5());
+		controllers.add(new TestController6());
+		List<ApiCall> calls = sac.scanControllers("A",controllers);
+		assertNotNull(calls);
+		assertEquals(2, calls.size());
+		assertEquals("/scpath/aaa/x/{id}", calls.get(0).getFullPath());
+		assertEquals("/scpath/aaa/x", calls.get(0).getBasePath());
+		assertEquals("/scpath/aaa/{aaaId}/x/{id}", calls.get(1).getFullPath());
+		assertEquals("/scpath/aaa", calls.get(1).getBasePath());
 	}
 	
 	
