@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.cinefms.apitester</groupId>
 	<artifactId>apitester-parent</artifactId>
-	<version>0.8.0.39</version>
+	<version>0.8.0.40</version>
 	<packaging>pom</packaging>
 	<properties>
 		<dev.nexus.host>http://fg-nexus-dev.etower.pek.mcon.net</dev.nexus.host>
@@ -73,7 +73,6 @@
 		<module>apitester-core</module>
 		<module>apitester-webapp</module>
 		<module>apitester-model</module>
-		<module>apitester-examples</module>
 		<module>apitester-webapp-example</module>
 		<module>apitester-spring-mvc</module>
 	</modules>

@@ -8,8 +8,6 @@
 
 	<display-name></display-name>
 
-	<!--
-	
 	<servlet>
 		<servlet-name>apitester</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
@@ -23,7 +21,20 @@
 		<servlet-name>apitester</servlet-name>
 		<url-pattern>/apitester/api/*</url-pattern>
 	</servlet-mapping>
-	-->
+
+	<servlet>
+		<servlet-name>application</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+	        <param-name>contextConfigLocation</param-name>
+	        <param-value>/WEB-INF/servlet-config.xml</param-value>
+    	</init-param>
+    	<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>application</servlet-name>
+		<url-pattern>/apitester/*</url-pattern>
+	</servlet-mapping>
 	
 	<servlet>
 		<servlet-name>jsp</servlet-name>
@@ -46,7 +57,7 @@
 
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>classpath*:**/config</param-value>
+		<param-value>/WEB-INF/application-config.xml</param-value>
 	</context-param>
 
 	<listener>
