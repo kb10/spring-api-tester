@@ -35,16 +35,8 @@ public class ApiTesterServiceTest {
 		calls.get(2).setMethod("POST");
 		calls.get(3).setMethod("OPTIONS");
 		
-		when(aCrawl.getApiCalls()).thenReturn(calls);
-
-		Map<String,ApiCrawler> crawlers = new HashMap<String,ApiCrawler>();
-		crawlers.put("a",aCrawl);
-		
-		ApplicationContext ac = mock(ApplicationContext.class);
-		when(ac.getBeansOfType(any(Class.class))).thenReturn(crawlers);
-		
 		ApitesterService as = new ApitesterService();
-		as.setApplicationContext(ac);
+		as.registerCalls(calls);
 		List<ApiCall> callsOut;
 		callsOut = as.getCalls(null,null,true, null,null);
 		assertEquals(4, callsOut.size());
@@ -67,7 +59,6 @@ public class ApiTesterServiceTest {
 	
 	@Test
 	public void testCollectApiCallsExpectBasePaths() {
-		ApiCrawler aCrawl = mock(ApiCrawler.class);
 		List<ApiCall> calls = new ArrayList<ApiCall>();
 		for(String[] s : new String[][] {
 				{"/a","/a/{id}"},
@@ -79,16 +70,9 @@ public class ApiTesterServiceTest {
 			ac.setFullPath(s[1]);
 			calls.add(ac);
 		}
-		when(aCrawl.getApiCalls()).thenReturn(calls);
 
-		Map<String,ApiCrawler> crawlers = new HashMap<String,ApiCrawler>();
-		crawlers.put("a",aCrawl);
-		
-		ApplicationContext ac = mock(ApplicationContext.class);
-		when(ac.getBeansOfType(any(Class.class))).thenReturn(crawlers);
-		
 		ApitesterService as = new ApitesterService();
-		as.setApplicationContext(ac);
+		as.registerCalls(calls);
 		calls.get(0).setDeprecated(true);
 		calls.get(1).setDeprecated(true);
 		calls.get(2).setDeprecated(true);
@@ -121,7 +105,6 @@ public class ApiTesterServiceTest {
 	
 	@Test
 	public void testCollectApiCallsExpectCorrectNameSpaces() {
-		ApiCrawler aCrawl = mock(ApiCrawler.class);
 		List<ApiCall> calls = new ArrayList<ApiCall>();
 		for(String[] s : new String[][] {
 				{"/a","/a/{id}","blah:foo"},
@@ -135,16 +118,9 @@ public class ApiTesterServiceTest {
 			ac.setNameSpace(s[2]);
 			calls.add(ac);
 		}
-		when(aCrawl.getApiCalls()).thenReturn(calls);
-
-		Map<String,ApiCrawler> crawlers = new HashMap<String,ApiCrawler>();
-		crawlers.put("a",aCrawl);
-		
-		ApplicationContext ac = mock(ApplicationContext.class);
-		when(ac.getBeansOfType(any(Class.class))).thenReturn(crawlers);
 		
 		ApitesterService as = new ApitesterService();
-		as.setApplicationContext(ac);
+		as.registerCalls(calls);
 		{
 			List<String> basePaths = as.getBasePaths("blah:foo",false);
 			assertEquals(1, basePaths.size());

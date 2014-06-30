@@ -3,7 +3,10 @@ package com.cinefms.apitester.springmvc.crawlers;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,11 +17,9 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ValueConstants;
 import org.springframework.web.context.support.GenericWebApplicationContext;
 
 import com.cinefms.apitester.model.info.ApiCall;
-import com.cinefms.apitester.springmvc.crawlers.SpringAnnotationCrawler;
 
 public class SpringAnnotationCrawlerTest {
 
@@ -179,35 +180,6 @@ public class SpringAnnotationCrawlerTest {
 	}
 	
 	
-	@Test
-	public void testParentContextExpectNamespaces() {
-		ApplicationContext acp = mock(ApplicationContext.class);
-		when(acp.getApplicationName()).thenReturn(null);
-		ApplicationContext acc = mock(ApplicationContext.class);
-		when(acc.getId()).thenReturn("child");
-		when(acc.getParent()).thenReturn(acp);
-		
-		Object a = new TestController2();
-		Map<String,Object> aMap = new HashMap<String, Object>();
-		aMap.put("a",a);
-		when(acc.getBeansWithAnnotation(Controller.class)).thenReturn(aMap);
-
-		Object b = new TestController2();
-		Map<String,Object> bMap = new HashMap<String, Object>();
-		bMap.put("b",b);
-		when(acp.getBeansWithAnnotation(Controller.class)).thenReturn(bMap);
-		
-		SpringAnnotationCrawler sac = new SpringAnnotationCrawler();
-		sac.setApplicationContext(acc);
-
-		List<ApiCall> calls = sac.getApiCalls();
-
-		assertEquals(2, calls.size());
-		//
-		assertEquals("child", calls.get(0).getNameSpace());
-		assertEquals("[default]", calls.get(1).getNameSpace());
-
-	}
 
 	@Test
 	public void testReturnTypeExpectSimpleString() {
