@@ -56,11 +56,8 @@ apitester.controller('rootController', [ '$scope' , 'Restangular', function($sco
 				$scope.buttonClasses.deprecatedBtn[method] = true;
 				$scope.buttonPopOver[method] = 'deprecated since ' + call.deprecatedSince;
 			}
-			else {
-				$scope.buttonClasses.availableBtn[method] = true;		
-			}
-		}
-		else {
+			$scope.buttonClasses.availableBtn[method] = true;		
+		} else {
 			$scope.buttonClasses.disabledBtn[method] = true;	
 		}
 		return call;
