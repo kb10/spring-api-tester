@@ -32,7 +32,7 @@
     <context:component-scan base-package="com.cinefms.apitester.springmvc.crawlers" />
 
 	<bean class="com.cinefms.apitester.springmvc.crawlers.SpringAnnotationCrawler">
-		<property name="prefix" value="/apitester/api"></property>
+		<property name="prefix" value="/"></property>
 	</bean>
 
 </beans>

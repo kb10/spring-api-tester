@@ -19,6 +19,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.context.support.GenericWebApplicationContext;
 
+import com.cinefms.apitester.core.ApitesterService;
 import com.cinefms.apitester.model.info.ApiCall;
 
 public class SpringAnnotationCrawlerTest {
@@ -62,8 +63,11 @@ public class SpringAnnotationCrawlerTest {
 		Map<String,Object> a = new HashMap<String, Object>();
 		a.put("aaa", new TestController2());
 		Mockito.when(ac.getBeansWithAnnotation(Controller.class)).thenReturn(a);
+		
 		SpringAnnotationCrawler sac = new SpringAnnotationCrawler();
 		sac.setApplicationContext(ac);
+		sac.setService(new ApitesterService());
+
 		List<ApiCall> calls = sac.getApiCalls();
 		verify(ac, times(1)).getBeansWithAnnotation(Controller.class);
 		assertEquals(1, calls.size());
@@ -192,6 +196,7 @@ public class SpringAnnotationCrawlerTest {
 		when(acc.getBeansWithAnnotation(Controller.class)).thenReturn(aMap);
 		
 		SpringAnnotationCrawler sac = new SpringAnnotationCrawler();
+		sac.setService(new ApitesterService());
 		sac.setApplicationContext(acc);
 
 		List<ApiCall> calls = sac.getApiCalls();
@@ -215,6 +220,7 @@ public class SpringAnnotationCrawlerTest {
 		
 		SpringAnnotationCrawler sac = new SpringAnnotationCrawler();
 		sac.setApplicationContext(acc);
+		sac.setService(new ApitesterService());
 		
 		List<ApiCall> calls = sac.getApiCalls();
 		
@@ -236,6 +242,7 @@ public class SpringAnnotationCrawlerTest {
 		when(acc.getBeansWithAnnotation(Controller.class)).thenReturn(aMap);
 		
 		SpringAnnotationCrawler sac = new SpringAnnotationCrawler();
+		sac.setService(new ApitesterService());
 		sac.setApplicationContext(acc);
 		
 		List<ApiCall> calls = sac.getApiCalls();
@@ -260,6 +267,7 @@ public class SpringAnnotationCrawlerTest {
 		
 		SpringAnnotationCrawler sac = new SpringAnnotationCrawler();
 		sac.setApplicationContext(acc);
+		sac.setService(new ApitesterService());
 		
 		List<ApiCall> calls = sac.getApiCalls();
 		
@@ -283,7 +291,8 @@ public class SpringAnnotationCrawlerTest {
 		
 		SpringAnnotationCrawler sac = new SpringAnnotationCrawler();
 		sac.setApplicationContext(acc);
-		
+		sac.setService(new ApitesterService());
+
 		List<ApiCall> calls = sac.getApiCalls();
 		
 		assertEquals(1, calls.size());
@@ -305,6 +314,7 @@ public class SpringAnnotationCrawlerTest {
 		
 		SpringAnnotationCrawler sac = new SpringAnnotationCrawler();
 		sac.setApplicationContext(acc);
+		sac.setService(new ApitesterService());
 		
 		List<ApiCall> calls = sac.getApiCalls();
 		

@@ -65,9 +65,14 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 			log.info(" ##  ");
 			log.info(" ##  FOUND "+apiCalls.size()+" API CALLS");
 			log.info(" ##  ");
+			for(ApiCall ac : apiCalls) {
+				System.err.println(" ##  "+ac.getBasePath()+" --- "+ac.getFullPath());
+				log.info(" ##  "+ac.getBasePath()+" --- "+ac.getFullPath());
+			}
+			log.info(" ##  ");
 			log.info(" ############################################################### ");
 		}
-		service.registerCalls(apiCalls);
+		getService().registerCalls(apiCalls);
 		return apiCalls;
 	}
 
@@ -367,6 +372,14 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 
 	public void setPrefix(String prefix) {
 		this.prefix = prefix;
+	}
+
+	public ApitesterService getService() {
+		return service;
+	}
+
+	public void setService(ApitesterService service) {
+		this.service = service;
 	}
 	
 	
