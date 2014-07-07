@@ -10,11 +10,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+import javax.servlet.ServletContext;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.javaruntype.type.TypeParameter;
 import org.javaruntype.type.Types;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
@@ -26,8 +30,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ValueConstants;
+import org.springframework.web.context.ServletContextAware;
 
 import com.cinefms.apitester.annotations.ApiDescription;
+import com.cinefms.apitester.core.ApitesterService;
 import com.cinefms.apitester.model.ApiCrawler;
 import com.cinefms.apitester.model.info.ApiCall;
 import com.cinefms.apitester.model.info.ApiCallParameter;
@@ -35,28 +41,38 @@ import com.cinefms.apitester.model.info.ApiObject;
 import com.cinefms.apitester.model.info.ApiResult;
 
 @Component
-public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAware {
+public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAware, ServletContextAware {
 
 	private static Log log = LogFactory.getLog(SpringAnnotationCrawler.class);
 	
 	private ApplicationContext applicationContext;
+	private ServletContext servletContext;
+	
+	@Autowired
+	private ApitesterService service;
+	
+	private String prefix = "";
 	
 	private List<ApiCall> apiCalls = null;
 	
+	
+	@PostConstruct
 	public List<ApiCall> getApiCalls() {
 		if(apiCalls==null) {
 			apiCalls = new ArrayList<ApiCall>();
-			ApplicationContext ctx = applicationContext;
-			do {
-				apiCalls.addAll(scanControllers(ctx));
-				ctx = ctx.getParent();
-			} while(ctx!=null);
+			apiCalls.addAll(scanControllers(applicationContext));
 			log.info(" ############################################################### ");
 			log.info(" ##  ");
 			log.info(" ##  FOUND "+apiCalls.size()+" API CALLS");
 			log.info(" ##  ");
+			for(ApiCall ac : apiCalls) {
+				System.err.println(" ##  "+ac.getBasePath()+" --- "+ac.getFullPath());
+				log.info(" ##  "+ac.getBasePath()+" --- "+ac.getFullPath());
+			}
+			log.info(" ##  ");
 			log.info(" ############################################################### ");
 		}
+		getService().registerCalls(apiCalls);
 		return apiCalls;
 	}
 
@@ -64,8 +80,14 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 		return applicationContext;
 	}
 
+	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
+	}
+
+	@Override
+	public void setServletContext(ServletContext servletContext) {
+		this.servletContext = servletContext;
 	}
 
 	public List<ApiCall> scanControllers(ApplicationContext ctx) {
@@ -146,17 +168,31 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 						}
 						
 						for(String path : allPaths) {
+							System.err.println(" ### METHODS ------------------------------------------");
+							String p = "";
+							System.err.println(" ### METHODS FOR "+path);
+							if(servletContext!=null) {
+								System.err.println(" ### METHODS FOR SC "+servletContext.getContextPath());
+								p = servletContext.getContextPath()+"/";
+							}
+							if(getPrefix()!=null) {
+								System.err.println(" ### METHODS FOR PF "+prefix);
+								p = p + "/"+getPrefix();
+							}
+							p = p+"/"+path;
+							String fullPath = p.replaceAll("/+", "/");
+							String basePath = getBasePath(fullPath);
+							System.err.println(" ### METHODS FOR FP "+fullPath);
+							System.err.println(" ### METHODS FOR BP "+basePath);
 							for(RequestMethod method : requestMethods) {
 								ApiCall a = new ApiCall();
 								a.setNameSpace(namespace);
-								String fullPath = path;
 								a.setFullPath(fullPath);
-								String basePath = getBasePath(path);
 								a.setDescription(description);
+								a.setBasePath(basePath);
 								a.setDeprecated(deprecated);
 								a.setDeprecatedSince(deprecatedSince);
 								a.setSince(since);
-								a.setBasePath(basePath);
 								a.setHandlerClass(handlerClass);
 								a.setHandlerMethod(handlerMethod);
 								a.setMethod(method.toString());
@@ -334,6 +370,22 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 			}
 		}
 		return ar;
+	}
+
+	public String getPrefix() {
+		return prefix;
+	}
+
+	public void setPrefix(String prefix) {
+		this.prefix = prefix;
+	}
+
+	public ApitesterService getService() {
+		return service;
+	}
+
+	public void setService(ApitesterService service) {
+		this.service = service;
 	}
 	
 	

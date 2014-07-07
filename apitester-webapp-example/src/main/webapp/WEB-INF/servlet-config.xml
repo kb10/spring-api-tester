@@ -28,6 +28,10 @@
        http://www.springframework.org/schema/mvc
        http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
 	">
+	
+	<!--  regular spring servlet config -->
+    <context:component-scan base-package="com.cinefms.apitester.mytests.service" />
+    <context:component-scan base-package="com.cinefms.apitester.mytests.controllers" />
 
 	<!-- setup message converters and request maping for api tester servlet -->
 	<bean id="jsonConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
