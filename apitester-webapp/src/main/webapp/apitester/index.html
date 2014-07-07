@@ -8,13 +8,19 @@
 		<script type="text/javascript" src="bower_components/lodash/dist/lodash.js"></script>
 		<script type="text/javascript" src="bower_components/angular/angular.js"></script>
 		<script type="text/javascript" src="bower_components/restangular/dist/restangular.js"></script>
+		<script type="text/javascript" src="bower_components/bootstrap/js/tooltip.js"></script>
+		<script type="text/javascript" src="bower_components/bootstrap/js/popover.js"></script>
+		<script type="text/javascript" src="bower_components/angularUI/ui-bootstrap-tpls.js"></script>
 		<script type="text/javascript" src="app/src/js/app.js"></script>
 		<script type="text/javascript" src="app/src/js/controllers.js"></script>
 	</head>
+	<style>
+		.deprecated {text-decoration:line-through}
+	</style>
 	<body ng-app="fgApitester" class="container">
 		<div class="row">
 			<div class="col-md-12 page-header">
-				<h1>Api Tester FireFox</h1>
+				<h1>Api Tester FireFox 30</h1>
 			</div>
 		</div>
 		<div class="row" ng-controller="rootController">
@@ -32,13 +38,30 @@
 					</option>
 				</select>
 			</div>
-			<div class="col-md-12 form-group" ng-show="showRequestButton.flag">
+			<div class="col-md-12 btn-group" ng-show="showRequestButton.flag">
 				<span ng-repeat="method in methods">
-					<button type="button" ng-click="selectRequest(method, selectedCallPath)" ng-disabled="!getCall(method, selectedCallPath)" ng-class="buttonClasses[method]">{{method}}</button>
+					<button 
+						type="button" 
+						ng-click="selectRequest(method, selectedCallPath)" 
+						ng-disabled="!getCall(method, selectedCallPath)" 
+						ng-class="
+							{
+								'btn btn-default':isDisabled(method), 
+								'btn btn-primary':isAvailable(method), 
+								'btn btn-success':isActive(method)
+							}
+						" 
+						popover-trigger="mouseenter" 
+						popover-placement="bottom" 
+						popover-popup-delay="200" 
+						popover-title="{{method}}" 
+						popover="{{buttonPopOver[method]}}">
+							<i ng-if="isDeprecated(method)" class="glyphicon glyphicon-thumbs-down"> </i> {{method}} 
+						</button>
 				</span>
 			</div>
 			<div class="col-md-12 form-group" ng-show="selectedCallInfo.pathParameters.length">
-				<h4>Path Variables: <font color="red">*</font></h4>
+				<h4>Path Variables<font color="red">*</font></h4>
 				<div ng-repeat="pathparam in selectedCallInfo.pathParameters" class="row">
 					<div class="col-md-2"> 
 						<label>

@@ -25,7 +25,6 @@ import org.springframework.stereotype.Component;
 import com.cinefms.apitester.model.ApiCrawler;
 import com.cinefms.apitester.model.info.ApiCall;
 import com.cinefms.apitester.model.info.ApiObject;
-import com.cinefms.apitester.model.myinfo.TestUser;
 
 @Component
 public class ApitesterService implements ApplicationContextAware {
@@ -241,22 +240,6 @@ public class ApitesterService implements ApplicationContextAware {
 		return out;
 	}
 
-	public List<String> listUsersOptions() {
-		return new ArrayList<String>();
-	}
-	
-	public TestUser createUser(TestUser user) {
-		return user;
-	}
-	
-	public TestUser updateUser(int id, TestUser user) {
-		return user;
-	}
-	
-	public List<TestUser> listUsers() {
-		return new ArrayList<TestUser>();
-	}
-	
 	private class ApiObjectFieldInfo {
 
 		private String name;
@@ -302,5 +285,5 @@ public class ApitesterService implements ApplicationContextAware {
 
 
 	}
-	
+
 }

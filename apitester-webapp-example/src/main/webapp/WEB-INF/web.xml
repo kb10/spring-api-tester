@@ -8,8 +8,25 @@
 
 	<display-name></display-name>
 
-	<!--
-	
+	<servlet-mapping>
+		<servlet-name>default</servlet-name>
+		<url-pattern>*.js</url-pattern>
+		<url-pattern>*.jstmpl</url-pattern>
+		<url-pattern>*.css</url-pattern>
+		<url-pattern>*.png</url-pattern>
+		<url-pattern>*.jpg</url-pattern>
+		<url-pattern>*.gif</url-pattern>
+		<url-pattern>*.ico</url-pattern>
+		<url-pattern>*.html</url-pattern>
+		<url-pattern>*.htm</url-pattern>
+		<url-pattern>*.svg</url-pattern>
+		<url-pattern>*.eot</url-pattern>
+		<url-pattern>*.woff</url-pattern>
+		<url-pattern>*.ttf</url-pattern>
+		<url-pattern>*.txt</url-pattern>
+	</servlet-mapping>
+
+
 	<servlet>
 		<servlet-name>apitester</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
@@ -23,7 +40,25 @@
 		<servlet-name>apitester</servlet-name>
 		<url-pattern>/apitester/api/*</url-pattern>
 	</servlet-mapping>
-	-->
+
+	<servlet-mapping>
+		<servlet-name>default</servlet-name>
+		<url-pattern>/apitester/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>application</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+	        <param-name>contextConfigLocation</param-name>
+	        <param-value>/WEB-INF/servlet-config.xml</param-value>
+    	</init-param>
+    	<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>application</servlet-name>
+		<url-pattern>/*</url-pattern>
+	</servlet-mapping>
 	
 	<servlet>
 		<servlet-name>jsp</servlet-name>
@@ -46,7 +81,7 @@
 
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>classpath*:**/config</param-value>
+		<param-value>/WEB-INF/application-config.xml</param-value>
 	</context-param>
 
 	<listener>

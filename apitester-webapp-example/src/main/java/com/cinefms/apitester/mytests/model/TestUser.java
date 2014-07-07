@@ -1,4 +1,4 @@
-package com.cinefms.apitester.model.myinfo;
+package com.cinefms.apitester.mytests.model;
 
 public class TestUser {
 	private String name;
