@@ -8,6 +8,8 @@ import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -72,7 +74,19 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 			log.info(" ##  ");
 			log.info(" ############################################################### ");
 		}
+		Collections.sort(apiCalls,new Comparator<ApiCall>() {
+
+			@Override
+			public int compare(ApiCall o1, ApiCall o2) {
+				return o1.getFullPath().compareTo(o2.getFullPath());
+			}
+			
+		});
 		getService().registerCalls(apiCalls);
+		log.info(" ##  ");
+		log.info(" ##  GOT: "+getService().getCalls(null, null, true, null, null));
+		log.info(" ##  ");
+		log.info(" ############################################################### ");
 		return apiCalls;
 	}
 
@@ -227,7 +241,6 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 			return new String(baos.toByteArray(),"utf-8");
 		} catch (Exception e) {
 			log.error("error loading resource",e);
-			e.printStackTrace();
 			return "error loading resource: "+file;
 		}
 	}

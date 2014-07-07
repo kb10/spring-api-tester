@@ -75,6 +75,7 @@
 		<module>apitester-model</module>
 		<module>apitester-webapp-example</module>
 		<module>apitester-spring-mvc</module>
+		<module>apitester-example-controllers</module>
 	</modules>
 	<scm>
 		<connection>scm:git:https://stash.mcon-group.com/scm/uvfg/uv-fg-be-apitester.git</connection>

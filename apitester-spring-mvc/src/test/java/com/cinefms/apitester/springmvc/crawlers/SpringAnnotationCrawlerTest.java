@@ -350,6 +350,12 @@ public class SpringAnnotationCrawlerTest {
 		
 		assertEquals(5, calls.size());
 		//
+		System.err.println("-------------------------------");
+		for(ApiCall ac : calls) {
+			System.err.println(ac.getDescription());
+		}
+		System.err.println("-------------------------------");
+		
 		assertEquals("DESCRIPTION_A", calls.get(0).getDescription());
 		assertEquals("DESCRIPTION_B", calls.get(1).getDescription());
 		assertEquals("returns the A", calls.get(2).getDescription());

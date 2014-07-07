@@ -3,6 +3,7 @@ package com.cinefms.apitester.mytests.controllers;
 
 import java.util.List;
 
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -10,7 +11,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cinefms.apitester.annotations.ApiDescription;
 
-@RequestMapping(value={"/aaa/{aaaId}"})
+@Controller
+@RequestMapping(value={"/with_descriptions/{aaaId}"})
 public class TestController7 {
 
 	@RequestMapping(value={"/x/{id}"},method=RequestMethod.GET)

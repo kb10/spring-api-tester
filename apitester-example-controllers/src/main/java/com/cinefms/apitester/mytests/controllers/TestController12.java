@@ -3,13 +3,15 @@ package com.cinefms.apitester.mytests.controllers;
 
 import java.util.Map;
 
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cinefms.apitester.annotations.ApiDescription;
 
-@RequestMapping(value={"/aaa/{aaaId}"})
+@Controller
+@RequestMapping(value={"/controller12/aaa/{aaaId}"})
 public class TestController12 {
 
 	@RequestMapping(value={"/a/{id}"},method=RequestMethod.GET)
@@ -33,14 +35,14 @@ public class TestController12 {
 		return null;
 	}
 
-	@RequestMapping(value={"/d/{id}"},method=RequestMethod.GET)
+	@RequestMapping(value={"/d1/{id}"},method=RequestMethod.GET)
 	@ResponseBody
 	@ApiDescription(deprecatedSince="1.22",since="0.9")
 	public Map<String,Object> getBasic4() {
 		return null;
 	}
 	
-	@RequestMapping(value={"/d/{id}"},method=RequestMethod.GET)
+	@RequestMapping(value={"/d2/{id}"},method=RequestMethod.GET)
 	@ResponseBody
 	@Deprecated
 	public Map<String,Object> getBasic5() {

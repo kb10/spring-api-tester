@@ -27,7 +27,7 @@
 	<context:component-scan base-package="com.cinefms.apitester.core" />
 
 	<!-- component scan for controllers & scanner -->
-	<context:component-scan base-package="com.cinefms.apitester.springmvc" />
+	<context:component-scan base-package="com.cinefms.apitester.springmvc.controllers" />
 
 	<!-- setup message converters and request maping for api tester servlet -->
 	<bean id="jsonConverter"

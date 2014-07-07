@@ -41,11 +41,6 @@
 		<url-pattern>/apitester/api/*</url-pattern>
 	</servlet-mapping>
 
-	<servlet-mapping>
-		<servlet-name>default</servlet-name>
-		<url-pattern>/apitester/*</url-pattern>
-	</servlet-mapping>
-
 	<servlet>
 		<servlet-name>application-html</servlet-name>
 		<servlet-class>org.apache.catalina.servlets.DefaultServlet</servlet-class>
