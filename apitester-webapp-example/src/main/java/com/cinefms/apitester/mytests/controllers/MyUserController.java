@@ -55,5 +55,12 @@ public class MyUserController {
 		return myUserService.updateUser(id, newUser);
 	}
 	
+	@RequestMapping(value="/users/{id}/details",method=RequestMethod.GET,produces={"application/json"})
+	@Deprecated
+	@ResponseBody
+	public TestUser getUserDetails(@PathVariable int id) {
+		return new TestUser();
+	}
+	
 	
 }

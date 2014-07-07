@@ -53,7 +53,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>application-html</servlet-name>
-		<url-pattern>/apitester*</url-pattern>
+		<url-pattern>/apitester/*</url-pattern>
 	</servlet-mapping>
 	
 	<servlet>
