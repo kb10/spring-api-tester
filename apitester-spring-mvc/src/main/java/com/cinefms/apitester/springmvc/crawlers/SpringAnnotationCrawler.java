@@ -68,7 +68,6 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 			log.info(" ##  FOUND "+apiCalls.size()+" API CALLS");
 			log.info(" ##  ");
 			for(ApiCall ac : apiCalls) {
-				System.err.println(" ##  "+ac.getBasePath()+" --- "+ac.getFullPath());
 				log.info(" ##  "+ac.getBasePath()+" --- "+ac.getFullPath());
 			}
 			log.info(" ##  ");
@@ -113,7 +112,6 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 	}
 	
 	public List<ApiCall> scanControllers(String namespace, List<Object> controllers) {
-		System.err.println("application: ----  "+namespace+" / "+controllers.size()+" controllers ");
 
 		List<ApiCall> out = new ArrayList<ApiCall>();
 		
@@ -182,22 +180,16 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 						}
 						
 						for(String path : allPaths) {
-							System.err.println(" ### METHODS ------------------------------------------");
 							String p = "";
-							System.err.println(" ### METHODS FOR "+path);
 							if(servletContext!=null) {
-								System.err.println(" ### METHODS FOR SC "+servletContext.getContextPath());
 								p = servletContext.getContextPath()+"/";
 							}
 							if(getPrefix()!=null) {
-								System.err.println(" ### METHODS FOR PF "+prefix);
 								p = p + "/"+getPrefix();
 							}
 							p = p+"/"+path;
 							String fullPath = p.replaceAll("/+", "/");
 							String basePath = getBasePath(fullPath);
-							System.err.println(" ### METHODS FOR FP "+fullPath);
-							System.err.println(" ### METHODS FOR BP "+basePath);
 							for(RequestMethod method : requestMethods) {
 								ApiCall a = new ApiCall();
 								a.setNameSpace(namespace);
@@ -230,8 +222,11 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 	
 	private String loadResource(Class<?> thatClass, String file) {
 		try {
-			URL url = thatClass.getResource(file);
-			InputStream is = url.openStream(); //thatClass.getResourceAsStream(file);
+			URL u = thatClass.getResource(file);
+			
+			System.err.println("url: "+u);
+			
+			InputStream is = thatClass.getResourceAsStream(file);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			byte[] buff = new byte[1024];
 			int a = 0;
@@ -240,8 +235,8 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 			}
 			return new String(baos.toByteArray(),"utf-8");
 		} catch (Exception e) {
-			log.error("error loading resource",e);
-			return "error loading resource: "+file;
+			log.error("error loading resource: "+thatClass+" / "+file,e);
+			return "error loading resource: "+thatClass+" / "+file;
 		}
 	}
 
@@ -295,12 +290,6 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 				if (a.annotationType() == ApiDescription.class) {
 					ad = (ApiDescription)a;
 				}
-			}
-			if(p!=null) {
-				System.err.println(paramNames[i]+" / path variable");
-			}
-			if(r!=null) {
-				System.err.println(paramNames[i]+" / request param");
 			}
 			
 			if((p!=null && path) || (r!=null && request) || (rb!=null && body)) {
