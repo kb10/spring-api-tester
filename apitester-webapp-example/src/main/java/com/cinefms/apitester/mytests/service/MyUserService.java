@@ -1,5 +1,6 @@
 package com.cinefms.apitester.mytests.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
@@ -11,7 +12,7 @@ public class MyUserService implements IMyUserService {
 
 	@Override
 	public TestUser createUser(TestUser user) {
-		return new TestUser();
+		return new TestUser("NewUser", "newuser@111.com");
 	}
 
 	@Override
@@ -21,8 +22,12 @@ public class MyUserService implements IMyUserService {
 
 	@Override
 	public List<TestUser> listUsers() {
-		// TODO Auto-generated method stub
-		return null;
+		TestUser userA = new TestUser("Tom", "tom@crm-factory.com.cn");
+		TestUser userB = new TestUser("Big", "big@mcon.net");
+		List<TestUser> list = new ArrayList<TestUser>();
+		list.add(userA);
+		list.add(userB);
+		return list;
 	}
 
 	@Override

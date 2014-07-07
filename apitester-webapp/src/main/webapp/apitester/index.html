@@ -20,12 +20,12 @@
 	<body ng-app="fgApitester" class="container">
 		<div class="row">
 			<div class="col-md-12 page-header">
-				<h1>Api Tester FireFox 30</h1>
+				<h1>Api Tester FireFox 0707</h1>
 			</div>
 		</div>
 		<div class="row" ng-controller="rootController">
 			<div class="col-md-12 form-group">
-				<select ng-model="requestconfig.basepath" class="form-control" ng-change="updateFullpathOptions()">
+				<select ng-model="requestConfig.basepath" class="form-control" ng-change="updateFullpathOptions()">
 					<option ng-repeat="basepath in basepaths" value="{{basepath}}">
 						{{basepath}}
 					</option>
@@ -62,18 +62,18 @@
 			</div>
 			<div class="col-md-12 form-group" ng-show="selectedCallInfo.pathParameters.length">
 				<h4>Path Variables<font color="red">*</font></h4>
-				<div ng-repeat="pathparam in selectedCallInfo.pathParameters" class="row">
+				<div ng-repeat="pathParam in selectedCallInfo.pathParameters" class="row">
 					<div class="col-md-2"> 
 						<label>
-							{{pathparam.parameterName}}
-							<font  ng-show="{{pathparam.mandatory}}" color="red">*</font>
+							{{pathParam.parameterName}}
+							<font ng-show="{{pathParam.mandatory}}" color="red">*</font>
 						</label>
 					</div>
 					<div class="col-md-2"> 
-						({{pathparam.parameterType.className}})
+						({{pathParam.parameterType.className}})
 					</div>
 					<div class="col-md-8">
-						<input type="text" class="form-control">
+						<input type="text" class="form-control" ng-model="requestConfig.pathParam.value">
 					</div>
 				</div>
 			</div>
@@ -91,7 +91,28 @@
 			</div>
 			<div class="col-md-12 form-group" ng-show="selectedCallInfo.requestBodyParameters.length">
 				<h4>Request Body: </h4>
-				<textarea ng-model="requestconfig.requestbody" class="col-md-12" placeholder="Request Body" ></textarea>
+				<textarea ng-model="requestConfig.requestBody" class="col-md-12" placeholder="Request Body" ></textarea>
+			</div>
+			<div class="col-md-4 form-group" ng-show="showRequestButton.go">
+				<button class="btn btn-primary btn-block" ng-hide="true"></button>
+				<button class="btn btn-primary btn-block" ng-click="submit()">...and GO!!!</button>
+			</div>
+			<div class="col-md-12 form-group" ng-show="responseObject.data">
+				<h4>RESULT: </h4>
+				<pre class="col-md-12">
+<span>------------- STATUS: </span>
+<span>{{responseObject.status}}</span>
+<span>{{responseObject.statusText}}</span>
+
+<span>------------- HEADER: </span>
+<span>{{responseObject.headers}}</span>
+
+<span>------------- CONFIG: </span>
+<span>{{responseObject.config}}</span>
+
+<span>------------- DATA: </span>
+<span>{{responseObject.data}}</span>
+				</pre>
 			</div>
 		</div>
 	</body>
