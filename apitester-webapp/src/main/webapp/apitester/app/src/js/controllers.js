@@ -118,16 +118,20 @@ apitester.controller('rootController', [ '$scope' , '$http', 'Restangular', func
 			}
 		}
 		$scope.requestObject.url = requestUrl;
-		console.log($scope.requestObject.url);
 
-		$scope.requestObject.params = "";
-		// $scope.requestObject.requestBody = 
+		var requestParams = {};
+		if($scope.selectedCallInfo.requestParameters.length > 0) {
+			for(i = 0; i < $scope.selectedCallInfo.requestParameters.length; i++) {
+				requestParams[$scope.selectedCallInfo.requestParameters[i].parameterName] = 
+					$scope.selectedCallInfo.requestParameters[i].value;
+			}
+		}
+		$scope.requestObject.params = requestParams;
 	}
 
-	$scope.scream = function(){
-		//console.log($scope.calls[i].fullPath)
-	};
+	$scope.hideConfigOfResponse = true;
 
-
-
+	$scope.toggleHideConfigOfResponse = function() {
+		$scope.hideConfigOfResponse = !$scope.hideConfigOfResponse;
+	}
 }]);

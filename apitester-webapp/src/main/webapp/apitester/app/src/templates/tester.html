@@ -81,10 +81,12 @@
 
 <span>------------- HEADER: </span>
 <span>{{responseObject.headers}}</span>
+<div></div>
 
-<span>------------- CONFIG: </span>
+<span>------------- CONFIG: <input type="checkbox" ng-click="toggleHideConfigOfResponse()"></span>
+<div ng-hide="hideConfigOfResponse">
 <span>{{responseObject.config}}</span>
-
+</div>
 <span>------------- DATA: </span>
 <span>{{responseObject.data}}</span>
 				</pre>
