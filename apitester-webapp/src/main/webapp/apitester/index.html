@@ -7,6 +7,7 @@
 		<script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
 		<script type="text/javascript" src="bower_components/lodash/dist/lodash.js"></script>
 		<script type="text/javascript" src="bower_components/angular/angular.js"></script>
+		<script type="text/javascript" src="bower_components/angular-route/angular-route.js"></script>
 		<script type="text/javascript" src="bower_components/restangular/dist/restangular.js"></script>
 		<script type="text/javascript" src="bower_components/bootstrap/js/tooltip.js"></script>
 		<script type="text/javascript" src="bower_components/bootstrap/js/popover.js"></script>
@@ -20,100 +21,16 @@
 	<body ng-app="fgApitester" class="container">
 		<div class="row">
 			<div class="col-md-12 page-header">
-				<h1>Api Tester FireFox 0707</h1>
+				<h1>
+					Api Tester FireFox 0708 
+					<small>
+						| <a href="#/api/browse">API docs</a>
+						| <a href="#/">API tester</a>
+					</small>
+				</h1>
 			</div>
 		</div>
-		<div class="row" ng-controller="rootController">
-			<div class="col-md-12 form-group">
-				<select ng-model="requestConfig.basepath" class="form-control" ng-change="updateFullpathOptions()">
-					<option ng-repeat="basepath in basepaths" value="{{basepath}}">
-						{{basepath}}
-					</option>
-				</select>
-			</div>
-			<div class="col-md-12 form-group"  ng-show="calls">
-				<select ng-model="selectedCallPath" class="form-control" ng-change="selectFullPath()">
-					<option ng-repeat="path in fullPaths" value="{{path}}">
-						{{path}}
-					</option>
-				</select>
-			</div>
-			<div class="col-md-12 btn-group" ng-show="showRequestButton.flag">
-				<span ng-repeat="method in methods">
-					<button 
-						type="button" 
-						ng-click="selectRequest(method, selectedCallPath)" 
-						ng-disabled="!getCall(method, selectedCallPath)" 
-						ng-class="
-							{
-								'btn btn-default':isDisabled(method), 
-								'btn btn-primary':isAvailable(method), 
-								'btn btn-success':isActive(method)
-							}
-						" 
-						popover-trigger="mouseenter" 
-						popover-placement="bottom" 
-						popover-popup-delay="200" 
-						popover-title="{{method}}" 
-						popover="{{buttonPopOver[method]}}">
-							<i ng-if="isDeprecated(method)" class="glyphicon glyphicon-thumbs-down"> </i> {{method}} 
-						</button>
-				</span>
-			</div>
-			<div class="col-md-12 form-group" ng-show="selectedCallInfo.pathParameters.length">
-				<h4>Path Variables<font color="red">*</font></h4>
-				<div ng-repeat="pathParam in selectedCallInfo.pathParameters" class="row">
-					<div class="col-md-2"> 
-						<label>
-							{{pathParam.parameterName}}
-							<font ng-show="{{pathParam.mandatory}}" color="red">*</font>
-						</label>
-					</div>
-					<div class="col-md-2"> 
-						({{pathParam.parameterType.className}})
-					</div>
-					<div class="col-md-8">
-						<input type="text" class="form-control" ng-model="requestConfig.pathParam.value">
-					</div>
-				</div>
-			</div>
-			<div class="col-md-12 form-group" ng-show="selectedCallInfo.requestParameters.length">
-				<h4>Request Parameters: </h4>
-				<div ng-repeat="reqparam in selectedCallInfo.requestParameters" class="form-control">
-					<div> 
-						<label class="col-md-3">{{reqparam.parameterName}} ({{reqparam.parameterType.className}}):</label>
-					</div>
-					<div>
-						<input type="text" class="col-md-5" placeholder="{{reqparam.defaultValue}}">
-						<font class="col-md-1" ng-show="{{reqparam.mandatory}}" color="red">*</font>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-12 form-group" ng-show="selectedCallInfo.requestBodyParameters.length">
-				<h4>Request Body: </h4>
-				<textarea ng-model="requestConfig.requestBody" class="col-md-12" placeholder="Request Body" ></textarea>
-			</div>
-			<div class="col-md-4 form-group" ng-show="showRequestButton.go">
-				<button class="btn btn-primary btn-block" ng-hide="true"></button>
-				<button class="btn btn-primary btn-block" ng-click="submit()">...and GO!!!</button>
-			</div>
-			<div class="col-md-12 form-group" ng-show="responseObject.data">
-				<h4>RESULT: </h4>
-				<pre class="col-md-12">
-<span>------------- STATUS: </span>
-<span>{{responseObject.status}}</span>
-<span>{{responseObject.statusText}}</span>
-
-<span>------------- HEADER: </span>
-<span>{{responseObject.headers}}</span>
-
-<span>------------- CONFIG: </span>
-<span>{{responseObject.config}}</span>
-
-<span>------------- DATA: </span>
-<span>{{responseObject.data}}</span>
-				</pre>
-			</div>
-		</div>
+		<div ng-view></div>
+		
 	</body>
 </html>

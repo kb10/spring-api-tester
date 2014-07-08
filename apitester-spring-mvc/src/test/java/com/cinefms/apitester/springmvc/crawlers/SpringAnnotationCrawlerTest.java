@@ -3,22 +3,26 @@ package com.cinefms.apitester.springmvc.crawlers;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletContext;
+
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ValueConstants;
 import org.springframework.web.context.support.GenericWebApplicationContext;
 
+import com.cinefms.apitester.core.ApitesterService;
 import com.cinefms.apitester.model.info.ApiCall;
-import com.cinefms.apitester.springmvc.crawlers.SpringAnnotationCrawler;
 
 public class SpringAnnotationCrawlerTest {
 
@@ -61,8 +65,11 @@ public class SpringAnnotationCrawlerTest {
 		Map<String,Object> a = new HashMap<String, Object>();
 		a.put("aaa", new TestController2());
 		Mockito.when(ac.getBeansWithAnnotation(Controller.class)).thenReturn(a);
+		
 		SpringAnnotationCrawler sac = new SpringAnnotationCrawler();
 		sac.setApplicationContext(ac);
+		sac.setService(new ApitesterService());
+
 		List<ApiCall> calls = sac.getApiCalls();
 		verify(ac, times(1)).getBeansWithAnnotation(Controller.class);
 		assertEquals(1, calls.size());
@@ -150,6 +157,34 @@ public class SpringAnnotationCrawlerTest {
 		assertEquals("/aaa", calls.get(1).getBasePath());
 	}
 	
+	@Test
+	public void testBasepath() {
+		SpringAnnotationCrawler sac = new SpringAnnotationCrawler();
+		String x = sac.getBasePath("/asdasd/asdasd/das/{adsasd}/asdasd");
+		assertEquals("/asdasd/asdasd/das", x);
+	}
+	
+	@Test
+	public void testPrefixConfigAnnotationExpectTwoSuccess() {
+		SpringAnnotationCrawler sac = new SpringAnnotationCrawler();
+
+		// servlet context
+		ServletContext sc = mock(ServletContext.class);
+		when(sc.getContextPath()).thenReturn("/scpath");
+		sac.setServletContext(sc);
+
+		List<Object> controllers = new ArrayList<Object>();
+		controllers.add(new TestController5());
+		controllers.add(new TestController6());
+		List<ApiCall> calls = sac.scanControllers("A",controllers);
+		assertNotNull(calls);
+		assertEquals(2, calls.size());
+		assertEquals("/scpath/aaa/x/{id}", calls.get(0).getFullPath());
+		assertEquals("/scpath/aaa/x", calls.get(0).getBasePath());
+		assertEquals("/scpath/aaa/{aaaId}/x/{id}", calls.get(1).getFullPath());
+		assertEquals("/scpath/aaa", calls.get(1).getBasePath());
+	}
+	
 	
 	@Test
 	public void testRequestParameters() {
@@ -179,35 +214,6 @@ public class SpringAnnotationCrawlerTest {
 	}
 	
 	
-	@Test
-	public void testParentContextExpectNamespaces() {
-		ApplicationContext acp = mock(ApplicationContext.class);
-		when(acp.getApplicationName()).thenReturn(null);
-		ApplicationContext acc = mock(ApplicationContext.class);
-		when(acc.getId()).thenReturn("child");
-		when(acc.getParent()).thenReturn(acp);
-		
-		Object a = new TestController2();
-		Map<String,Object> aMap = new HashMap<String, Object>();
-		aMap.put("a",a);
-		when(acc.getBeansWithAnnotation(Controller.class)).thenReturn(aMap);
-
-		Object b = new TestController2();
-		Map<String,Object> bMap = new HashMap<String, Object>();
-		bMap.put("b",b);
-		when(acp.getBeansWithAnnotation(Controller.class)).thenReturn(bMap);
-		
-		SpringAnnotationCrawler sac = new SpringAnnotationCrawler();
-		sac.setApplicationContext(acc);
-
-		List<ApiCall> calls = sac.getApiCalls();
-
-		assertEquals(2, calls.size());
-		//
-		assertEquals("child", calls.get(0).getNameSpace());
-		assertEquals("[default]", calls.get(1).getNameSpace());
-
-	}
 
 	@Test
 	public void testReturnTypeExpectSimpleString() {
@@ -220,6 +226,7 @@ public class SpringAnnotationCrawlerTest {
 		when(acc.getBeansWithAnnotation(Controller.class)).thenReturn(aMap);
 		
 		SpringAnnotationCrawler sac = new SpringAnnotationCrawler();
+		sac.setService(new ApitesterService());
 		sac.setApplicationContext(acc);
 
 		List<ApiCall> calls = sac.getApiCalls();
@@ -243,6 +250,7 @@ public class SpringAnnotationCrawlerTest {
 		
 		SpringAnnotationCrawler sac = new SpringAnnotationCrawler();
 		sac.setApplicationContext(acc);
+		sac.setService(new ApitesterService());
 		
 		List<ApiCall> calls = sac.getApiCalls();
 		
@@ -264,6 +272,7 @@ public class SpringAnnotationCrawlerTest {
 		when(acc.getBeansWithAnnotation(Controller.class)).thenReturn(aMap);
 		
 		SpringAnnotationCrawler sac = new SpringAnnotationCrawler();
+		sac.setService(new ApitesterService());
 		sac.setApplicationContext(acc);
 		
 		List<ApiCall> calls = sac.getApiCalls();
@@ -288,6 +297,7 @@ public class SpringAnnotationCrawlerTest {
 		
 		SpringAnnotationCrawler sac = new SpringAnnotationCrawler();
 		sac.setApplicationContext(acc);
+		sac.setService(new ApitesterService());
 		
 		List<ApiCall> calls = sac.getApiCalls();
 		
@@ -311,7 +321,8 @@ public class SpringAnnotationCrawlerTest {
 		
 		SpringAnnotationCrawler sac = new SpringAnnotationCrawler();
 		sac.setApplicationContext(acc);
-		
+		sac.setService(new ApitesterService());
+
 		List<ApiCall> calls = sac.getApiCalls();
 		
 		assertEquals(1, calls.size());
@@ -333,11 +344,18 @@ public class SpringAnnotationCrawlerTest {
 		
 		SpringAnnotationCrawler sac = new SpringAnnotationCrawler();
 		sac.setApplicationContext(acc);
+		sac.setService(new ApitesterService());
 		
 		List<ApiCall> calls = sac.getApiCalls();
 		
 		assertEquals(5, calls.size());
 		//
+		System.err.println("-------------------------------");
+		for(ApiCall ac : calls) {
+			System.err.println(ac.getDescription());
+		}
+		System.err.println("-------------------------------");
+		
 		assertEquals("DESCRIPTION_A", calls.get(0).getDescription());
 		assertEquals("DESCRIPTION_B", calls.get(1).getDescription());
 		assertEquals("returns the A", calls.get(2).getDescription());

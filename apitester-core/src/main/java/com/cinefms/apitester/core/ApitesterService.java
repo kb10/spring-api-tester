@@ -31,40 +31,26 @@ public class ApitesterService implements ApplicationContextAware {
 	
 	private static Log log = LogFactory.getLog(ApitesterService.class);
 	
-	private List<ApiCall> calls;
+	private List<ApiCall> calls = new ArrayList<ApiCall>();
 	private ApplicationContext applicationContext;
 
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
 	}
 	
-	private List<ApiCall> getCallsInternal() {
-		if(calls==null) {
-			log.info(" ############################################################### ");
-			log.info(" ##  ");
-			log.info(" ##  SCANNING FOR API CALLS .... ");
-			log.info(" ##  ");
-			calls = new ArrayList<ApiCall>();
-			for(ApiCrawler ac : applicationContext.getBeansOfType(ApiCrawler.class).values()) {
-				log.info(" ##  CRAWLER: "+ac.getClass().getCanonicalName());
-				calls.addAll(ac.getApiCalls());
+	public synchronized void registerCalls(List<ApiCall> apiCalls) {
+		calls.addAll(apiCalls);
+		Collections.sort(calls,new Comparator<ApiCall>() {
+
+			@Override
+			public int compare(ApiCall o1, ApiCall o2) {
+				return o1.getFullPath().compareTo(o2.getFullPath());
 			}
 			
-			Collections.sort(calls,new Comparator<ApiCall>() {
+		});
+	}
 
-				@Override
-				public int compare(ApiCall o1, ApiCall o2) {
-					return o1.getFullPath().compareTo(o2.getFullPath());
-				}
-				
-			});
-			log.info(" ##  ");
-			for(ApiCall ac : calls) {
-				log.info(" ##  CALL: "+ac.getFullPath());
-			}
-			log.info(" ##  ");
-			log.info(" ############################################################### ");
-		}
+	private List<ApiCall> getCallsInternal() {
 		return calls;
 	}
 	
@@ -285,5 +271,6 @@ public class ApitesterService implements ApplicationContextAware {
 
 
 	}
+
 
 }

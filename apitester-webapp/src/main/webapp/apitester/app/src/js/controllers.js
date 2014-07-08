@@ -7,7 +7,7 @@ apitester.controller('rootController', [ '$scope' , '$http', 'Restangular', func
 
 	RA.all('basepaths').getList().then(
 		function(basepaths) {
-			$scope.basepaths = basepaths;
+			$scope.basePaths = basepaths;
 		}
 	);
 
@@ -15,11 +15,12 @@ apitester.controller('rootController', [ '$scope' , '$http', 'Restangular', func
 		$scope.selectedCallInfo = {};
 		$scope.buttonClasses = {disabledBtn:{}, availableBtn:{}, deprecatedBtn:{}, activeBtn:{}};
 		$scope.buttonPopOver = {};
+		$scope.requestObject = {};
 		$scope.responseObject = {};
 	};
 
 	$scope.updateFullpathOptions = function() {
-		RA.all('calls').getList({basePath:$scope.requestConfig.basepath}).then(
+		RA.all('calls').getList({basePath:$scope.requestConfig.basePath}).then(
 			function(calls) {
 				$scope.calls = calls;
 				$scope.fullPaths = _(calls).pluck('fullPath').uniq().value();
@@ -76,17 +77,19 @@ apitester.controller('rootController', [ '$scope' , '$http', 'Restangular', func
 		$scope.buttonClasses.activeBtn = {};
 		$scope.buttonClasses.activeBtn[method] = true;
 		$scope.showRequestButton.go = true;
+		$scope.requestObject = {};
 		$scope.responseObject = {};
 	};
 
+	$scope.requestObject = {};
 	$scope.responseObject = {};
 
 	$scope.submit = function() {
 		$scope.prepareRequest();
 		$http({	method : $scope.selectedCallInfo.method,
-				url : $scope.requestConfig.url,
-				params : $scope.requestConfig.params,
-				data : $scope.requestConfig.requestBody}).
+				url : $scope.requestObject.url,
+				params : $scope.requestObject.params,
+				data : $scope.requestObject.requestBody}).
 			success(function(data, status, headers, config, statusText) {
 				$scope.responseObject.isSuccessful = true;
 				$scope.responseObject.data = angular.toJson(data, true);
@@ -106,9 +109,19 @@ apitester.controller('rootController', [ '$scope' , '$http', 'Restangular', func
 	};
 
 	$scope.prepareRequest = function() {
-		var serverBaseUrl = 'http://127.0.0.1:8080/apitester/smp';
+		var serverBaseUrl = 'http://127.0.0.1:8080';
 		var requestUrl = serverBaseUrl + $scope.selectedCallInfo.fullPath;
-		return $scope.requestConfig.url;
+		if($scope.selectedCallInfo.pathParameters.length > 0) {
+			for(i = 0; i < $scope.selectedCallInfo.pathParameters.length; i++) {
+				requestUrl = requestUrl.replace("{" + $scope.selectedCallInfo.pathParameters[i].parameterName + "}", 
+					$scope.selectedCallInfo.pathParameters[i].value);
+			}
+		}
+		$scope.requestObject.url = requestUrl;
+		console.log($scope.requestObject.url);
+
+		$scope.requestObject.params = "";
+		// $scope.requestObject.requestBody = 
 	}
 
 	$scope.scream = function(){
