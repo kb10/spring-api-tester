@@ -50,7 +50,7 @@
 		<servlet-name>application-html</servlet-name>
 		<url-pattern>/apitester/*</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<servlet-name>application</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>

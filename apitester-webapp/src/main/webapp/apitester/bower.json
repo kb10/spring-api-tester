@@ -16,6 +16,7 @@
     "tests"
   ],
   "dependencies": {
-    "jshint": "~2.5.1"
+    "jshint": "~2.5.1",
+    "angular-route": "~1.2.19"
   }
 }

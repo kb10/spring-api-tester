@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cinefms.apitester.annotations.ApiDescription;
@@ -26,8 +27,12 @@ public class MyUserController {
 	
 	@RequestMapping(value="/users",method=RequestMethod.POST,produces={"application/json"})
 	@ResponseBody
-	public TestUser createUser(@RequestBody TestUser newUser) {
-		return myUserService.createUser(newUser);
+	public TestUser createUser(@RequestBody TestUser newUser, @RequestParam(required = true) String adminKey) {
+		if(adminKey != null && adminKey.length() > 4) {
+			return myUserService.createUser(newUser);
+		}
+		
+		return null;
 	}
 
 	@RequestMapping(value="/users/{id}",method=RequestMethod.DELETE,produces={"application/json"})
