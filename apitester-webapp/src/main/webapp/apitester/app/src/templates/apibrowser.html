@@ -1,30 +1,38 @@
-<h2>this is a place to browse the API</h2>
-<!--
-<my-json-editor id="jsoneditor" ng-model="requestObject.requestBody" class="col-md-12" />
--->
-<h4>Request Body: </h4>
-<div id="jsoneditor" style="width: 400px; height: 400px;"></div>
-<script type="text/javascript" >
-    // create the editor
-    var container = document.getElementById("jsoneditor");
-    var editor = new JSONEditor(container);
-
-    // set json
-    function setJSON () {
-        var json = {
-            "Array": [1, 2, 3],
-            "Boolean": true,
-            "Null": null,
-            "Number": 123,
-            "Object": {"a": "b", "c": "d"},
-            "String": "Hello World"
-        };
-        editor.set(json);
-    }
-
-    // get json
-    function getJSON() {
-        var json = editor.get();
-        alert(JSON.stringify(json, null, 2));
-    }
-</script>
+<div class="row" ng-controller="docsRootController">
+	<div class="well well-sm col-md-12 form-group">
+		<div class="col-md-12 form-group">
+			<div class="col-md-2">
+				basepaths
+			</div>
+			<div class="col-md-4">
+				<select class="form-control" ng-model="config.basePath" ng-change="update()">
+					<option ng-repeat="bp in basePaths">{{bp}}</option>
+				</select>	
+			</div>
+		</div>
+		<div class="col-md-12 form-group">
+			<div class="col-md-2">
+				search term
+			</div>
+			<div class="col-md-4">
+				<input class="form-control" ng-model="config.searchTerm" ng-change="update()">
+			</div>
+		</div>
+	</div>
+	<div class="col-md-12" ng-repeat="apicall in apicalls">
+		<h4><span class="label" ng-class="
+			{
+				'label-primary':apicall.method=='POST',
+				'label-success':apicall.method=='GET',
+				'label-info':apicall.method=='PUT',
+				'label-danger':apicall.method=='DELETE',
+				'label-default':apicall.method=='OPTIONS',
+			}
+			">{{apicall.method}}</span> {{apicall.fullPath}}
+		</h4>
+		<table class="table table-compact">
+				<tr ng-repeat="requestParamater in "
+		</table>
+		<div ng-bind-html="apicall.description | markdown">{{apicall.description | markdown}}</div>
+	</div>
+</div>

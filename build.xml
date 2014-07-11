@@ -13,5 +13,15 @@
 			<fileset dir="apitester-webapp-example/target/apitester-webapp-example"/>
 		</sync>	
 	</target>
+	<target name="sync">
+		<sync todir="${webapps}/apitester/apitester">
+			<fileset dir="apitester-webapp/src/main/webapp/apitester"/>
+		</sync>
+		<sleep seconds="1"/>
+		<antcall target="other"></antcall>
+	</target>
+	<target name="other">
+		<antcall target="sync"></antcall>
+	</target>
 
 </project>
