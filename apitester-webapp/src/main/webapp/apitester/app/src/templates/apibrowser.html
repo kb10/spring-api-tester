@@ -1,25 +1,26 @@
 <div class="row" ng-controller="docsRootController">
-
-	<div class="col-md-12 form-group">
-		<div class="col-md-2">
-			basepaths
+	<div class="well well-sm col-md-12 form-group">
+		<div class="col-md-12 form-group">
+			<div class="col-md-2">
+				basepaths
+			</div>
+			<div class="col-md-4">
+				<select class="form-control" ng-model="config.basePath" ng-change="update()">
+					<option ng-repeat="bp in basePaths">{{bp}}</option>
+				</select>	
+			</div>
 		</div>
-		<div class="col-md-2">
-			<select class="form-control" ng-model="config.basePath" ng-change="update()">
-				<option ng-repeat="bp in basePaths">{{bp}}</option>
-			</select>	
-		</div>
-	</div>
-	<div class="col-md-12 form-group">
-		<div class="col-md-2">
-			search term
-		</div>
-		<div class="col-md-2">
-			<input class="form-control" ng-model="config.searchTerm" ng-change="update()">
+		<div class="col-md-12 form-group">
+			<div class="col-md-2">
+				search term
+			</div>
+			<div class="col-md-4">
+				<input class="form-control" ng-model="config.searchTerm" ng-change="update()">
+			</div>
 		</div>
 	</div>
 	<div class="col-md-12" ng-repeat="apicall in apicalls">
-		<h2><span class="label" ng-class="
+		<h4><span class="label" ng-class="
 			{
 				'label-primary':apicall.method=='POST',
 				'label-success':apicall.method=='GET',
@@ -27,6 +28,11 @@
 				'label-danger':apicall.method=='DELETE',
 				'label-default':apicall.method=='OPTIONS',
 			}
-			">{{apicall.method}}</span> {{apicall.fullPath}}</h2>
+			">{{apicall.method}}</span> {{apicall.fullPath}}
+		</h4>
+		<table class="table table-compact">
+				<tr ng-repeat="requestParamater in "
+		</table>
+		<div ng-bind-html="apicall.description | markdown">{{apicall.description | markdown}}</div>
 	</div>
 </div>
