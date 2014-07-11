@@ -10,7 +10,7 @@ apitester.directive('myJsonEditor', function($parse) {
 						  };
 			var editor = new JSONEditor(element[0], options);
 
-			return function(scope, element, attrs) {
+			return function(scope, element, attrs, controller) {
 				var processChange = function () {
 	               	var json = editor.get();
 	               	scope.$apply(function (scope) {

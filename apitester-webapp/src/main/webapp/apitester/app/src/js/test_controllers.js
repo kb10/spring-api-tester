@@ -1,5 +1,4 @@
-
-apitester.controller('rootController', [ '$scope' , '$http', 'Restangular', function($scope, $http, RA) {
+apitester.controller('testRootController', [ '$scope' , '$http', 'Restangular', function($scope, $http, RA) {
 
 	$scope.requestConfig = {};
 	$scope.selectedCallInfo = {};
@@ -92,7 +91,7 @@ apitester.controller('rootController', [ '$scope' , '$http', 'Restangular', func
 				data : $scope.requestObject.requestBody}).
 			success(function(data, status, headers, config, statusText) {
 				$scope.responseObject.isSuccessful = true;
-				$scope.responseObject.data = angular.toJson(data, true);
+				$scope.responseObject.data = data;
 				$scope.responseObject.status = status;
 				$scope.responseObject.headers = angular.toJson(headers(), true);
 				$scope.responseObject.config = angular.toJson(config, true);
@@ -100,7 +99,7 @@ apitester.controller('rootController', [ '$scope' , '$http', 'Restangular', func
 			}).
 			error(function(data, status, headers, config, statusText) {
 				$scope.responseObject.isSuccessful = false;
-				$scope.responseObject.data = data || 'Requset Failed';
+				$scope.responseObject.data = data;
 				$scope.responseObject.status = status;
 				$scope.responseObject.headers = angular.toJson(headers(), true);
 				$scope.responseObject.config = angular.toJson(config, true);
@@ -133,5 +132,13 @@ apitester.controller('rootController', [ '$scope' , '$http', 'Restangular', func
 
 	$scope.toggleHideConfigOfResponse = function() {
 		$scope.hideConfigOfResponse = !$scope.hideConfigOfResponse;
+	}
+
+	$scope.isResponseSuccessful = function() {
+		return responseObject.status>199 && responseObject.status<300;
+	}
+
+	$scope.isResponseFailed = function() {
+		return responseObject.status>499 && responseObject.status<600;
 	}
 }]);

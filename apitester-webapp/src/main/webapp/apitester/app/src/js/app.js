@@ -16,6 +16,3 @@ var apitester = angular.module('fgApitester', ['restangular', 'ui.bootstrap', 'n
 		RestangularProvider.setBaseUrl('api');
 	}
 );
-
-
-
