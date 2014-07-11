@@ -1,5 +1,5 @@
 
-apitester.controller('rootController', [ '$scope' , '$http', 'Restangular', function($scope, $http, RA) {
+apitester.controller('testRootController', [ '$scope' , '$http', 'Restangular', function($scope, $http, RA) {
 
 	$scope.requestConfig = {};
 	$scope.selectedCallInfo = {};
