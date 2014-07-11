@@ -66,29 +66,47 @@
 			</div>
 			<div class="col-md-12 form-group" ng-show="selectedCallInfo.requestBodyParameters.length">
 				<h4>Request Body: </h4>
-				<textarea ng-model="requestObject.requestBody" class="col-md-12" placeholder="Request Body" ></textarea>
+				<my-json-editor id="requestbody_jsoneditor" ng-model="requestObject.requestBody" defaultmode="code"/>
 			</div>
 			<div class="col-md-4 form-group" ng-show="showRequestButton.go">
 				<button class="btn btn-primary btn-block" ng-hide="true"></button>
 				<button class="btn btn-primary btn-block" ng-click="submit()">...and GO!!!</button>
 			</div>
 			<div class="col-md-12 form-group" ng-show="responseObject.data">
-				<h4>RESULT: </h4>
-				<pre class="col-md-12">
-<span>------------- STATUS: </span>
-<span>{{responseObject.status}}</span>
-<span>{{responseObject.statusText}}</span>
+				<h1>
+					<span class="label label-default">
+						{{timer}} s
+					</span>
+					<span ng-class="{
+						'label label-success' : responseObject.status>199 && responseObject.status<300,
+						'label label-danger' : responseObject.status>499 && responseObject.status<600
 
-<span>------------- HEADER: </span>
-<span>{{responseObject.headers}}</span>
-<div></div>
+					}">
+						{{responseObject.status}}
+						{{responseObject.statusText}}
+					</span>
+				</h1>
+				<br/>
+				<div class="col-md-12">
+					{{responseObject.headers}}
+				</div>
+				<span>------------- HEADER: </span>
+				<span>{{responseObject.headers}}</span>
+				<div></div>
 
-<span>------------- CONFIG: <input type="checkbox" ng-click="toggleHideConfigOfResponse()"></span>
-<div ng-hide="hideConfigOfResponse">
-<span>{{responseObject.config}}</span>
-</div>
-<span>------------- DATA: </span>
-<span>{{responseObject.data}}</span>
-				</pre>
+				<span>------------- CONFIG: <input type="checkbox" ng-click="toggleHideConfigOfResponse()"></span>
+				<div ng-hide="hideConfigOfResponse">
+				<span>{{responseObject.config}}</span>
+				</div>
+								
+				<span>------------- DATA: </span>
+				<!--
+				<div>
+				<span>{{responseObject.data}}</span>
+				</div>
+				-->
+				<div>
+				<my-json-editor id="responsedata_jsoneditor" ng-model="responseObject.data" defaultmode="text"/>
+				</div>
 			</div>
 		</div>
