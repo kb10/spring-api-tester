@@ -27,6 +27,12 @@ public class MyUserService implements IMyUserService {
 		List<TestUser> list = new ArrayList<TestUser>();
 		list.add(userA);
 		list.add(userB);
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return list;
 	}
 

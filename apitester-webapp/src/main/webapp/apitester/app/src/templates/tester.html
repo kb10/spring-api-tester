@@ -72,15 +72,15 @@
 		<button class="btn btn-primary btn-block" ng-hide="true"></button>
 		<button class="btn btn-primary btn-block" ng-click="submit()">...and GO!!!</button>
 	</div>
-	<div class="col-md-12 form-group" ng-show="responseObject.data">
+	<div class="col-md-12 form-group" ng-show="responseObject.status">
 		<div>
 			<h1>
-				<span class="label label-default">
-					{{timer}} s
+				<span class="label label-default" ng-show="responseObject">
+					{{current}} ms
 				</span>
 				<span ng-class="{
-					'label label-success' : responseObject.isSuccessful,
-					'label label-danger' : !responseObject.isSuccessful
+					'label label-success' : isResponseSuccessful(),
+					'label label-danger' : isResponseFailed()
 				}">
 					{{responseObject.status}}
 					{{responseObject.statusText}}
@@ -89,11 +89,15 @@
 			<br/>
 		</div>
 		<div>
-			<h4>HEADER: </h4>
-			<pre>{{responseObject.headers}}</pre>
-			<br/>
+			<h4>HEADERS: </h4>
+			<table class="table table-condensed table-striped table-bordered">
+				<tr ng-repeat="header in responseObject.headers">
+					<td>{{header.key}}</td>
+					<td>{{header.value}}</td>
+				</tr>
+			</table>
 		</div>
-		<div>
+		<div ng-hide="true">
 			<h4>
 				<span>CONFIG: </span>
 				<span 
@@ -116,5 +120,8 @@
 				<my-json-editor id="responsedata_jsoneditor" ng-model="responseObject.data" defaultmode="text"/>
 			</div>
 		</div>
+	</div>
+	<div class="col-md-12 form-group">
+		<img src="app/src/img/ajax-loader.gif" ng-hide="responseObject.status"/>
 	</div>
 </div>
