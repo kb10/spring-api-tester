@@ -1,1 +1,32 @@
-<h2>this is a place to browse the API</h2>
+<div class="row" ng-controller="docsRootController">
+
+	<div class="col-md-12 form-group">
+		<div class="col-md-2">
+			basepaths
+		</div>
+		<div class="col-md-2">
+			<select class="form-control" ng-model="config.basePath" ng-change="update()">
+				<option ng-repeat="bp in basePaths">{{bp}}</option>
+			</select>	
+		</div>
+	</div>
+	<div class="col-md-12 form-group">
+		<div class="col-md-2">
+			search term
+		</div>
+		<div class="col-md-2">
+			<input class="form-control" ng-model="config.searchTerm" ng-change="update()">
+		</div>
+	</div>
+	<div class="col-md-12" ng-repeat="apicall in apicalls">
+		<h2><span class="label" ng-class="
+			{
+				'label-primary':apicall.method=='POST',
+				'label-success':apicall.method=='GET',
+				'label-info':apicall.method=='PUT',
+				'label-danger':apicall.method=='DELETE',
+				'label-default':apicall.method=='OPTIONS',
+			}
+			">{{apicall.method}}</span> {{apicall.fullPath}}</h2>
+	</div>
+</div>
