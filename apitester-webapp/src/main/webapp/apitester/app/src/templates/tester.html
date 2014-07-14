@@ -16,7 +16,6 @@
 	<div class="col-md-12 btn-group" ng-show="showRequestButton.flag">
 		<span ng-repeat="method in methods">
 			<button 
-				type="button" 
 				ng-click="selectRequest(method, selectedCallPath)" 
 				ng-disabled="!getCall(method, selectedCallPath)" 
 				ng-class="
@@ -54,13 +53,18 @@
 	</div>
 	<div class="col-md-12 form-group" ng-show="selectedCallInfo.requestParameters.length">
 		<h4>Request Parameters: </h4>
-		<div ng-repeat="reqParam in selectedCallInfo.requestParameters" class="form-control">
-			<div> 
-				<label class="col-md-3">{{reqParam.parameterName}} ({{reqParam.parameterType.className}}):</label>
+		<div ng-repeat="reqParam in selectedCallInfo.requestParameters" class="row">
+			<div class="col-md-2"> 
+				<label>
+					{{reqParam.parameterName}}
+					<font  ng-show="{{reqParam.mandatory}}" color="red">*</font>
+				</label>
 			</div>
-			<div>
-				<input type="text" class="col-md-5" placeholder="{{reqParam.defaultValue}}" ng-model="reqParam.value">
-				<font class="col-md-1" ng-show="{{reqParam.mandatory}}" color="red">*</font>
+			<div class="col-md-2">
+				({{reqParam.parameterType.className}})
+			</div>
+			<div class="col-md-8">
+				<input type="text" class="form-control" placeholder="{{reqParam.defaultValue}}" ng-model="reqParam.value">
 			</div>
 		</div>
 	</div>
@@ -70,13 +74,13 @@
 	</div>
 	<div class="col-md-4 form-group" ng-show="showRequestButton.go">
 		<button class="btn btn-primary btn-block" ng-hide="true"></button>
-		<button class="btn btn-primary btn-block" ng-click="submit()">...and GO!!!</button>
+		<button class="btn btn-primary btn-block" ng-disabled="communicatingToServer" ng-click="submit()">...and GO!!!</button>
 	</div>
-	<div class="col-md-12 form-group" ng-show="responseObject.status">
+	<div class="col-md-12 form-group" ng-show="!communicatingToServer && responseObject.status">
 		<div>
 			<h1>
 				<span class="label label-default" ng-show="responseObject">
-					{{current}} ms
+					{{timer}} ms
 				</span>
 				<span ng-class="{
 					'label label-success' : isResponseSuccessful(),
@@ -116,12 +120,16 @@
 		</div>
 		<div>
 			<h4>DATA: </h4>
-			<div>
+			<div ng-show="responseObject.isjson">
 				<my-json-editor id="responsedata_jsoneditor" ng-model="responseObject.data" defaultmode="text"/>
+			</div>
+			<div ng-hide="responseObject.isjson">
+				{{responseObject.data}}
 			</div>
 		</div>
 	</div>
-	<div class="col-md-12 form-group">
-		<img src="app/src/img/ajax-loader.gif" ng-hide="responseObject.status"/>
+	<div class="col-md-12 form-group" ng-show="communicatingToServer">
+		<span><img src="app/src/img/ajax-loader-2.gif" /></span>
+		<span class="label label-default">{{timer}} ms</span>
 	</div>
 </div>
