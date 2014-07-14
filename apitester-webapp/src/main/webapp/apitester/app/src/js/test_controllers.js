@@ -1,5 +1,4 @@
-
-apitester.controller('rootController', [ '$scope' , '$http', 'Restangular', function($scope, $http, RA) {
+apitester.controller('testRootController', [ '$scope' , '$http', 'Restangular', function($scope, $http, RA) {
 
 	$scope.requestConfig = {};
 	$scope.selectedCallInfo = {};
@@ -83,30 +82,51 @@ apitester.controller('rootController', [ '$scope' , '$http', 'Restangular', func
 
 	$scope.requestObject = {};
 	$scope.responseObject = {};
+	$scope.timer = 0;
+	$scope.start = new Date().getTime();
+
+	$scope.count = function() {
+		$scope.$apply(function () {
+			$scope.current = new Date().getTime() - $scope.start;
+        });
+		$scope.timer = setTimeout($scope.count,5);
+	}
+
+	$scope.ajaxFinished = function(data, status, headers, config, statusText) {
+				$scope.responseObject.isSuccessful = true;
+				$scope.responseObject.data = data;
+				$scope.responseObject.status = status;
+				$scope.responseObject.headers = $scope.getHeaders(headers);
+				$scope.responseObject.config = angular.toJson(config, true);
+				$scope.responseObject.statusText = statusText;
+				$scope.current = new Date().getTime() - $scope.start;
+				clearTimeout($scope.timer);
+			}
 
 	$scope.submit = function() {
 		$scope.prepareRequest();
+		$scope.start = new Date().getTime();
+		$scope.count();
 		$http({	method : $scope.selectedCallInfo.method,
 				url : $scope.requestObject.url,
 				params : $scope.requestObject.params,
 				data : $scope.requestObject.requestBody}).
-			success(function(data, status, headers, config, statusText) {
-				$scope.responseObject.isSuccessful = true;
-				$scope.responseObject.data = angular.toJson(data, true);
-				$scope.responseObject.status = status;
-				$scope.responseObject.headers = angular.toJson(headers(), true);
-				$scope.responseObject.config = angular.toJson(config, true);
-				$scope.responseObject.statusText = statusText;
-			}).
-			error(function(data, status, headers, config, statusText) {
-				$scope.responseObject.isSuccessful = false;
-				$scope.responseObject.data = data || 'Requset Failed';
-				$scope.responseObject.status = status;
-				$scope.responseObject.headers = angular.toJson(headers(), true);
-				$scope.responseObject.config = angular.toJson(config, true);
-				$scope.responseObject.statusText = statusText;
-			});
+			success($scope.ajaxFinished).
+			error($scope.ajaxFinished);
 	};
+
+	$scope.getHeaders = function(headers) {
+		var result = [];
+		var keys = _.keys(headers());
+		for(i = 0; i < keys.length; i++) {
+			a = {};
+			key = keys[i];
+			a.key = key;
+			a.value = headers(key);
+			result.push(a);
+		}
+		return result;
+	}
 
 	$scope.prepareRequest = function() {
 		var serverBaseUrl = 'http://127.0.0.1:8080';
@@ -133,5 +153,13 @@ apitester.controller('rootController', [ '$scope' , '$http', 'Restangular', func
 
 	$scope.toggleHideConfigOfResponse = function() {
 		$scope.hideConfigOfResponse = !$scope.hideConfigOfResponse;
+	}
+
+	$scope.isResponseSuccessful = function() {
+		return $scope.responseObject.status>199 && $scope.responseObject.status<300;
+	}
+
+	$scope.isResponseFailed = function() {
+		return $scope.responseObject.status>499 && $scope.responseObject.status<600;
 	}
 }]);
