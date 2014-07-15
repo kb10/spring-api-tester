@@ -8,7 +8,7 @@
 	<properties>
 		<dev.nexus.host>http://fg-nexus-dev.etower.pek.mcon.net</dev.nexus.host>
 
-		<org.springframework.version>3.2.0.RELEASE</org.springframework.version>
+		<org.springframework.version>3.2.5.RELEASE</org.springframework.version>
 		<cobertura.plugin.version>2.6</cobertura.plugin.version>
 		<cobertura.version>2.0.3</cobertura.version>
 		<sonar.plugin.version>3.7</sonar.plugin.version>
@@ -61,11 +61,13 @@
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
 			<version>2.4.0</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 			<version>2.4.0</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 	<modules>
