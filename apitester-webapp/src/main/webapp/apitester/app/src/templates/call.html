@@ -1,0 +1,23 @@
+<div class="row">
+	<hr>
+	<div class="col-md-12">
+		<h4>
+			{{apicall.fullPath}}
+			<span class="label pull-right" ng-class="
+				{
+					'label-primary':apicall.method=='POST',
+					'label-success':apicall.method=='GET',
+					'label-info':apicall.method=='PUT',
+					'label-danger':apicall.method=='DELETE',
+					'label-default':apicall.method=='OPTIONS',
+				}
+				">{{apicall.method}}
+			</span>
+		</h4>
+	</div>
+	<div class="col-md-12">
+		<table class="table table-compact">
+		</table>
+		<div ng-bind-html="apicall.description | markdown">{{apicall.description | markdown}}</div>
+	</div>
+</div>
