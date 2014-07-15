@@ -196,3 +196,12 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 		return $scope.responseObject.status>499 && $scope.responseObject.status<600;
 	}
 }]);
+
+apitester.controller('ListDocsCtrl', [ '$scope', function($scope) {
+	$scope.selectCall = function(i) {
+		var apicall = $scope.calls[i];
+		$scope.selectedCallPath = apicall.fullPath;
+		console.log($scope.selectedCallPath);
+		$scope.selectRequest(apicall.method, apicall.fullPath);
+	}
+}]);

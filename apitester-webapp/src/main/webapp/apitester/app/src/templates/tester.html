@@ -1,5 +1,5 @@
 <div class="row" ng-controller="testRootController">
-<div class="col-md-8">
+	<div class="col-md-8">
 		<div class="col-md-12 form-group">
 			<select ng-model="requestConfig.basePath" class="form-control" ng-change="updateFullpathOptions()">
 				<option ng-repeat="basePath in basePaths" value="{{basePath}}">
@@ -8,32 +8,37 @@
 			</select>
 		</div>
 		<div class="col-md-12 form-group"  ng-show="calls">
+		<select ng-model="selectedCallPath" class="form-control" ng-change="selectFullPath()" ng-options="path for path in fullPaths"></select>
+		<!--
 			<select ng-model="selectedCallPath" class="form-control" ng-change="selectFullPath()">
 				<option ng-repeat="path in fullPaths" value="{{path}}">
 					{{path}}
 				</option>
 			</select>
+		-->
 		</div>
-		<div class="col-md-12 btn-group" ng-show="showRequestButton.flag">
-			<span ng-repeat="method in methods">
-				<button 
-					ng-click="selectRequest(method, selectedCallPath)" 
-					ng-disabled="!getCall(method, selectedCallPath)" 
-					ng-class="
-						{
-							'btn btn-default':isDisabled(method), 
-							'btn btn-primary':isAvailable(method), 
-							'btn btn-success':isActive(method)
-						}
-					" 
-					popover-trigger="mouseenter" 
-					popover-placement="bottom" 
-					popover-popup-delay="200" 
-					popover-title="{{method}}" 
-					popover="{{buttonPopOver[method]}}">
-						<i ng-if="isDeprecated(method)" class="glyphicon glyphicon-thumbs-down"> </i> {{method}} 
-				</button>
-			</span>
+		<div class="col-md-12" ng-show="showRequestButton.flag">
+			<div class="form-group btn-group">
+				<span ng-repeat="method in methods">
+					<button 
+						ng-click="selectRequest(method, selectedCallPath)" 
+						ng-disabled="!getCall(method, selectedCallPath)" 
+						ng-class="
+							{
+								'btn btn-default':isDisabled(method), 
+								'btn btn-primary':isAvailable(method), 
+								'btn btn-success':isActive(method)
+							}
+						" 
+						popover-trigger="mouseenter" 
+						popover-placement="bottom" 
+						popover-popup-delay="200" 
+						popover-title="{{method}}" 
+						popover="{{buttonPopOver[method]}}">
+							<i ng-if="isDeprecated(method)" class="glyphicon glyphicon-thumbs-down"> </i> {{method}} 
+					</button>
+				</span>
+			</div>
 		</div>
 		<div class="col-md-12 form-group" ng-show="selectedCallInfo.pathParameters.length">
 			<h4>Path Variables<font color="red">*</font></h4>
@@ -73,16 +78,16 @@
 			<h4>Request Body: </h4>
 			<my-json-editor id="requestbody_jsoneditor" ng-model="requestObject.requestBody" defaultmode="code"/>
 		</div>
-		<div class="col-md-4 form-group" ng-show="showRequestButton.go">
-			<button class="btn btn-primary btn-block" ng-hide="true"></button>
-			<button class="btn btn-primary btn-block" ng-disabled="communicatingToServer" ng-click="submit()">...and GO!!!</button>
+		<div class="col-md-12" ng-show="showRequestButton.go">
+			<button class="btn btn-primary col-md-6" ng-disabled="communicatingToServer" ng-click="submit()">
+				<span ng-if="communicatingToServer || responseObject.status">{{timer}} ms</span>
+				<span ng-if="!communicatingToServer && !responseObject.status">GO!</span>
+				<span ng-if="!communicatingToServer && responseObject.status">(try again!)</span>
+			</button>
 		</div>
 		<div class="col-md-12 form-group" ng-show="!communicatingToServer && responseObject.status">
 			<div>
 				<h1>
-					<span class="label label-default" ng-show="responseObject">
-						{{timer}} ms
-					</span>
 					<span ng-class="{
 						'label label-success' : isResponseSuccessful(),
 						'label label-danger' : isResponseFailed()
@@ -129,12 +134,16 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-md-12 form-group" ng-show="communicatingToServer">
-			<span><img src="app/src/img/ajax-loader-2.gif" /></span>
-			<span class="label label-default">{{timer}} ms</span>
-		</div>
 	</div>
-	<div class="col-md-4">
-		api doc
+	<div class="col-md-4" ng-show="calls" ng-controller="ListDocsCtrl">
+		<h4>
+			API Documentation
+		</h4>
+		<div class="col-md-12" ng-repeat="apicall in calls" >
+			<div ng-click="selectCall($index)">
+				<ng-include src="'app/src/templates/call.html'">
+				</ng-include>
+			</div>
+		</div>
 	</div>	
 </div>
