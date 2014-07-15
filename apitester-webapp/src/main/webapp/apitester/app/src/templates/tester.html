@@ -1,23 +1,15 @@
 <div class="row" ng-controller="testRootController">
 	<div class="col-md-8">
 		<div class="col-md-12 form-group">
-			<select ng-model="requestConfig.basePath" class="form-control" ng-change="updateFullpathOptions()">
-				<option ng-repeat="basePath in basePaths" value="{{basePath}}">
-					{{basePath}}
-				</option>
+			<select ng-model="requestConfig.basePath" class="form-control" ng-change="updateFullpathOptions()"
+				ng-options="basePath as basePath for basePath in basePaths">
 			</select>
 		</div>
 		<div class="col-md-12 form-group"  ng-show="calls">
-		<select ng-model="selectedCallPath" class="form-control" ng-change="selectFullPath()" ng-options="path for path in fullPaths"></select>
-		<!--
-			<select ng-model="selectedCallPath" class="form-control" ng-change="selectFullPath()">
-				<option ng-repeat="path in fullPaths" value="{{path}}">
-					{{path}}
-				</option>
-			</select>
-		-->
+			<select ng-model="selectedCallPath" class="form-control"  ng-change="resetAll()"
+				ng-options="path as path for path in fullPaths"></select>
 		</div>
-		<div class="col-md-12" ng-show="showRequestButton.flag">
+		<div class="col-md-12" ng-show="selectedCallPath">
 			<div class="form-group btn-group">
 				<span ng-repeat="method in methods">
 					<button 
@@ -135,7 +127,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="col-md-4" ng-show="calls" ng-controller="ListDocsCtrl">
+	<div class="col-md-4" ng-show="calls">
 		<h4>
 			API Documentation
 		</h4>

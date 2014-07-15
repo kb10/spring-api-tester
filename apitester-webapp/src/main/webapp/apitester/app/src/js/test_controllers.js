@@ -25,7 +25,7 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 				$scope.calls = calls;
 				$scope.fullPaths = _(calls).pluck('fullPath').uniq().value();
 				$scope.showRequestButton.flag = false;
-				$scope.selectedCallIndex = -1;
+				$scope.selectedCallPath = $scope.fullPaths[0];
 				$scope.resetAll();
 			}
 		);
@@ -195,13 +195,12 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 	$scope.isResponseFailed = function() {
 		return $scope.responseObject.status>499 && $scope.responseObject.status<600;
 	}
-}]);
 
-apitester.controller('ListDocsCtrl', [ '$scope', function($scope) {
 	$scope.selectCall = function(i) {
 		var apicall = $scope.calls[i];
-		$scope.selectedCallPath = apicall.fullPath;
-		console.log($scope.selectedCallPath);
+		$scope.selectedCallPath = $scope.fullPaths[_.indexOf($scope.fullPaths, apicall.fullPath)];
+		$scope.resetAll();
 		$scope.selectRequest(apicall.method, apicall.fullPath);
 	}
+
 }]);
