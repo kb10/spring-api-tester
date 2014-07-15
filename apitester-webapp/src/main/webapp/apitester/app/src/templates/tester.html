@@ -1,127 +1,140 @@
 <div class="row" ng-controller="testRootController">
-	<div class="col-md-12 form-group">
-		<select ng-model="requestConfig.basePath" class="form-control" ng-change="updateFullpathOptions()">
-			<option ng-repeat="basePath in basePaths" value="{{basePath}}">
-				{{basePath}}
-			</option>
-		</select>
-	</div>
-	<div class="col-md-12 form-group"  ng-show="calls">
-		<select ng-model="selectedCallPath" class="form-control" ng-change="selectFullPath()">
-			<option ng-repeat="path in fullPaths" value="{{path}}">
-				{{path}}
-			</option>
-		</select>
-	</div>
-	<div class="col-md-12 btn-group" ng-show="showRequestButton.flag">
-		<span ng-repeat="method in methods">
-			<button 
-				type="button" 
-				ng-click="selectRequest(method, selectedCallPath)" 
-				ng-disabled="!getCall(method, selectedCallPath)" 
-				ng-class="
-					{
-						'btn btn-default':isDisabled(method), 
-						'btn btn-primary':isAvailable(method), 
-						'btn btn-success':isActive(method)
-					}
-				" 
-				popover-trigger="mouseenter" 
-				popover-placement="bottom" 
-				popover-popup-delay="200" 
-				popover-title="{{method}}" 
-				popover="{{buttonPopOver[method]}}">
-					<i ng-if="isDeprecated(method)" class="glyphicon glyphicon-thumbs-down"> </i> {{method}} 
-			</button>
-		</span>
-	</div>
-	<div class="col-md-12 form-group" ng-show="selectedCallInfo.pathParameters.length">
-		<h4>Path Variables<font color="red">*</font></h4>
-		<div ng-repeat="pathParam in selectedCallInfo.pathParameters" class="row">
-			<div class="col-md-2"> 
-				<label>
-					{{pathParam.parameterName}}
-					<font ng-show="{{pathParam.mandatory}}" color="red">*</font>
-				</label>
-			</div>
-			<div class="col-md-2"> 
-				({{pathParam.parameterType.className}})
-			</div>
-			<div class="col-md-8">
-				<input type="text" class="form-control" ng-model="pathParam.value">
+<div class="col-md-8">
+		<div class="col-md-12 form-group">
+			<select ng-model="requestConfig.basePath" class="form-control" ng-change="updateFullpathOptions()">
+				<option ng-repeat="basePath in basePaths" value="{{basePath}}">
+					{{basePath}}
+				</option>
+			</select>
+		</div>
+		<div class="col-md-12 form-group"  ng-show="calls">
+			<select ng-model="selectedCallPath" class="form-control" ng-change="selectFullPath()">
+				<option ng-repeat="path in fullPaths" value="{{path}}">
+					{{path}}
+				</option>
+			</select>
+		</div>
+		<div class="col-md-12 btn-group" ng-show="showRequestButton.flag">
+			<span ng-repeat="method in methods">
+				<button 
+					ng-click="selectRequest(method, selectedCallPath)" 
+					ng-disabled="!getCall(method, selectedCallPath)" 
+					ng-class="
+						{
+							'btn btn-default':isDisabled(method), 
+							'btn btn-primary':isAvailable(method), 
+							'btn btn-success':isActive(method)
+						}
+					" 
+					popover-trigger="mouseenter" 
+					popover-placement="bottom" 
+					popover-popup-delay="200" 
+					popover-title="{{method}}" 
+					popover="{{buttonPopOver[method]}}">
+						<i ng-if="isDeprecated(method)" class="glyphicon glyphicon-thumbs-down"> </i> {{method}} 
+				</button>
+			</span>
+		</div>
+		<div class="col-md-12 form-group" ng-show="selectedCallInfo.pathParameters.length">
+			<h4>Path Variables<font color="red">*</font></h4>
+			<div ng-repeat="pathParam in selectedCallInfo.pathParameters" class="row">
+				<div class="col-md-2"> 
+					<label>
+						{{pathParam.parameterName}}
+						<font ng-show="{{pathParam.mandatory}}" color="red">*</font>
+					</label>
+				</div>
+				<div class="col-md-2"> 
+					({{pathParam.parameterType.className}})
+				</div>
+				<div class="col-md-8">
+					<input type="text" class="form-control" ng-model="pathParam.value">
+				</div>
 			</div>
 		</div>
-	</div>
-	<div class="col-md-12 form-group" ng-show="selectedCallInfo.requestParameters.length">
-		<h4>Request Parameters: </h4>
-		<div ng-repeat="reqParam in selectedCallInfo.requestParameters" class="form-control">
-			<div> 
-				<label class="col-md-3">{{reqParam.parameterName}} ({{reqParam.parameterType.className}}):</label>
+		<div class="col-md-12 form-group" ng-show="selectedCallInfo.requestParameters.length">
+			<h4>Request Parameters: </h4>
+			<div ng-repeat="reqParam in selectedCallInfo.requestParameters" class="row">
+				<div class="col-md-2"> 
+					<label>
+						{{reqParam.parameterName}}
+						<font  ng-show="{{reqParam.mandatory}}" color="red">*</font>
+					</label>
+				</div>
+				<div class="col-md-2">
+					({{reqParam.parameterType.className}})
+				</div>
+				<div class="col-md-8">
+					<input type="text" class="form-control" placeholder="{{reqParam.defaultValue}}" ng-model="reqParam.value">
+				</div>
+			</div>
+		</div>
+		<div class="col-md-12 form-group" ng-show="selectedCallInfo.requestBodyParameters.length">
+			<h4>Request Body: </h4>
+			<my-json-editor id="requestbody_jsoneditor" ng-model="requestObject.requestBody" defaultmode="code"/>
+		</div>
+		<div class="col-md-4 form-group" ng-show="showRequestButton.go">
+			<button class="btn btn-primary btn-block" ng-hide="true"></button>
+			<button class="btn btn-primary btn-block" ng-disabled="communicatingToServer" ng-click="submit()">...and GO!!!</button>
+		</div>
+		<div class="col-md-12 form-group" ng-show="!communicatingToServer && responseObject.status">
+			<div>
+				<h1>
+					<span class="label label-default" ng-show="responseObject">
+						{{timer}} ms
+					</span>
+					<span ng-class="{
+						'label label-success' : isResponseSuccessful(),
+						'label label-danger' : isResponseFailed()
+					}">
+						{{responseObject.status}}
+						{{responseObject.statusText}}
+					</span>
+				</h1>
+				<br/>
 			</div>
 			<div>
-				<input type="text" class="col-md-5" placeholder="{{reqParam.defaultValue}}" ng-model="reqParam.value">
-				<font class="col-md-1" ng-show="{{reqParam.mandatory}}" color="red">*</font>
+				<h4>HEADERS: </h4>
+				<table class="table table-condensed table-striped table-bordered">
+					<tr ng-repeat="header in responseObject.headers">
+						<td>{{header.key}}</td>
+						<td>{{header.value}}</td>
+					</tr>
+				</table>
 			</div>
-		</div>
-	</div>
-	<div class="col-md-12 form-group" ng-show="selectedCallInfo.requestBodyParameters.length">
-		<h4>Request Body: </h4>
-		<my-json-editor id="requestbody_jsoneditor" ng-model="requestObject.requestBody" defaultmode="code"/>
-	</div>
-	<div class="col-md-4 form-group" ng-show="showRequestButton.go">
-		<button class="btn btn-primary btn-block" ng-hide="true"></button>
-		<button class="btn btn-primary btn-block" ng-click="submit()">...and GO!!!</button>
-	</div>
-	<div class="col-md-12 form-group" ng-show="responseObject.status">
-		<div>
-			<h1>
-				<span class="label label-default" ng-show="responseObject">
-					{{current}} ms
-				</span>
-				<span ng-class="{
-					'label label-success' : isResponseSuccessful(),
-					'label label-danger' : isResponseFailed()
-				}">
-					{{responseObject.status}}
-					{{responseObject.statusText}}
-				</span>
-			</h1>
-			<br/>
-		</div>
-		<div>
-			<h4>HEADERS: </h4>
-			<table class="table table-condensed table-striped table-bordered">
-				<tr ng-repeat="header in responseObject.headers">
-					<td>{{header.key}}</td>
-					<td>{{header.value}}</td>
-				</tr>
-			</table>
-		</div>
-		<div ng-hide="true">
-			<h4>
-				<span>CONFIG: </span>
-				<span 
-					ng-class="{
-						'glyphicon glyphicon-expand' : hideConfigOfResponse,
-						'glyphicon glyphicon-collapse-down' : !hideConfigOfResponse,
-					}"
-					ng-click="toggleHideConfigOfResponse()"
-					style="cursor:pointer"
-				></span>
-			</h4>
-			<div ng-hide="hideConfigOfResponse">
-				<pre>{{responseObject.config}}</pre>
+			<div ng-hide="true">
+				<h4>
+					<span>CONFIG: </span>
+					<span 
+						ng-class="{
+							'glyphicon glyphicon-expand' : hideConfigOfResponse,
+							'glyphicon glyphicon-collapse-down' : !hideConfigOfResponse,
+						}"
+						ng-click="toggleHideConfigOfResponse()"
+						style="cursor:pointer"
+					></span>
+				</h4>
+				<div ng-hide="hideConfigOfResponse">
+					<pre>{{responseObject.config}}</pre>
+				</div>
+				<br/>
 			</div>
-			<br/>
-		</div>
-		<div>
-			<h4>DATA: </h4>
 			<div>
-				<my-json-editor id="responsedata_jsoneditor" ng-model="responseObject.data" defaultmode="text"/>
+				<h4>DATA: </h4>
+				<div ng-show="responseObject.isjson">
+					<my-json-editor id="responsedata_jsoneditor" ng-model="responseObject.data" defaultmode="text"/>
+				</div>
+				<div ng-hide="responseObject.isjson">
+					<pre class="col-md-12">{{responseObject.data}}</pre>
+				</div>
 			</div>
 		</div>
+		<div class="col-md-12 form-group" ng-show="communicatingToServer">
+			<span><img src="app/src/img/ajax-loader-2.gif" /></span>
+			<span class="label label-default">{{timer}} ms</span>
+		</div>
 	</div>
-	<div class="col-md-12 form-group">
-		<img src="app/src/img/ajax-loader.gif" ng-hide="responseObject.status"/>
-	</div>
+	<div class="col-md-4">
+		api doc
+	</div>	
 </div>

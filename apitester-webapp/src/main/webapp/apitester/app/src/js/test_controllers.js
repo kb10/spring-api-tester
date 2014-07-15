@@ -1,4 +1,5 @@
-apitester.controller('testRootController', [ '$scope' , '$http', 'Restangular', function($scope, $http, RA) {
+apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Restangular',
+ function($scope, $http, $interval, RA) {
 
 	$scope.requestConfig = {};
 	$scope.selectedCallInfo = {};
@@ -82,31 +83,42 @@ apitester.controller('testRootController', [ '$scope' , '$http', 'Restangular', 
 
 	$scope.requestObject = {};
 	$scope.responseObject = {};
-	$scope.timer = 0;
-	$scope.start = new Date().getTime();
+	$scope.communicatingToServer = false;
 
-	$scope.count = function() {
-		$scope.$apply(function () {
-			$scope.current = new Date().getTime() - $scope.start;
-        });
-		$scope.timer = setTimeout($scope.count,5);
+	$scope.timer;
+	$scope.counter = undefined;
+	$scope.startTime = undefined;
+
+	$scope.startCount = function() {
+		if(!angular.isDefined($scope.startTime)) {
+			$scope.startTime = new Date().getTime();
+			$scope.timer = 0;
+		}
+
+		$scope.counter = $interval(function() {
+			$scope.timer = new Date().getTime() - $scope.startTime;
+		}, 5);
+	};
+
+	$scope.stopCount = function() {
+		if(angular.isDefined($scope.counter)) {
+			$interval.cancel($scope.counter);
+			$scope.counter = undefined;
+		}
+
+		if(angular.isDefined($scope.startTime)) {
+			$scope.startTime = undefined;
+		}
 	}
 
-	$scope.ajaxFinished = function(data, status, headers, config, statusText) {
-				$scope.responseObject.isSuccessful = true;
-				$scope.responseObject.data = data;
-				$scope.responseObject.status = status;
-				$scope.responseObject.headers = $scope.getHeaders(headers);
-				$scope.responseObject.config = angular.toJson(config, true);
-				$scope.responseObject.statusText = statusText;
-				$scope.current = new Date().getTime() - $scope.start;
-				clearTimeout($scope.timer);
-			}
+	$scope.$on('$destroy', function() {
+		$scope.stopCount();
+	});
 
 	$scope.submit = function() {
+		$scope.communicatingToServer = true;
 		$scope.prepareRequest();
-		$scope.start = new Date().getTime();
-		$scope.count();
+		$scope.startCount();
 		$http({	method : $scope.selectedCallInfo.method,
 				url : $scope.requestObject.url,
 				params : $scope.requestObject.params,
@@ -114,6 +126,27 @@ apitester.controller('testRootController', [ '$scope' , '$http', 'Restangular', 
 			success($scope.ajaxFinished).
 			error($scope.ajaxFinished);
 	};
+
+	$scope.ajaxFinished = function(data, status, headers, config, statusText) {
+		$scope.stopCount();
+		$scope.communicatingToServer = false;
+		$scope.responseObject.data = data;
+		$scope.responseObject.isjson = $scope.isJsonData(data);
+		$scope.responseObject.status = status;
+		$scope.responseObject.headers = $scope.getHeaders(headers);
+		$scope.responseObject.config = angular.toJson(config, true);
+		$scope.responseObject.statusText = statusText;
+	}
+
+	$scope.isJsonData = function(data) {
+		try {
+			angular.fromJson(data);
+			return true;
+		}
+		catch(e) {
+			return false;
+		}
+	}
 
 	$scope.getHeaders = function(headers) {
 		var result = [];

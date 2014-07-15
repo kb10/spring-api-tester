@@ -7,6 +7,7 @@ apitester.directive('myJsonEditor', function($parse) {
 			var modelAccessor = $parse(attrs.ngModel);
 			var options = { mode : attrs.defaultmode,
 							modes: ['code', 'form', 'text', 'tree', 'view'],
+							"search": true
 						  };
 			var editor = new JSONEditor(element[0], options);
 
