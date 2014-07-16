@@ -15,13 +15,11 @@
 					<button 
 						ng-click="selectRequest(method, selectedCallPath)" 
 						ng-disabled="!getCall(method, selectedCallPath)" 
-						ng-class="
-							{
-								'btn btn-default':isDisabled(method), 
-								'btn btn-primary':isAvailable(method), 
-								'btn btn-success':isActive(method)
-							}
-						" 
+						ng-class="{
+							'btn btn-default':isDisabled(method), 
+							'btn btn-primary':isAvailable(method), 
+							'btn btn-success':isActive(method)
+						}"
 						popover-trigger="mouseenter" 
 						popover-placement="bottom" 
 						popover-popup-delay="200" 
@@ -132,7 +130,12 @@
 			API Documentation
 		</h4>
 		<div class="col-md-12" ng-repeat="apicall in calls" >
-			<div ng-click="selectCall($index)">
+			<div ng-click="selectCall($index)" 
+				ng-class="{
+					'alert alert-info' : !isDocSelected($index),
+					'alert alert-success' : isDocSelected($index)
+					}"
+			>
 				<ng-include src="'app/src/templates/call.html'">
 				</ng-include>
 			</div>
