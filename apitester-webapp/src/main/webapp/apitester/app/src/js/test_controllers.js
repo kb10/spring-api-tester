@@ -13,6 +13,7 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 
 	$scope.resetAll = function() {
 		$scope.selectedCallInfo = {};
+		$scope.selectedDocIndex = {};
 		$scope.buttonClasses = {disabledBtn:{}, availableBtn:{}, deprecatedBtn:{}, activeBtn:{}};
 		$scope.buttonPopOver = {};
 		$scope.requestObject = {};
@@ -25,7 +26,7 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 				$scope.calls = calls;
 				$scope.fullPaths = _(calls).pluck('fullPath').uniq().value();
 				$scope.showRequestButton.flag = false;
-				$scope.selectedCallIndex = -1;
+				$scope.selectedCallPath = $scope.fullPaths[0];
 				$scope.resetAll();
 			}
 		);
@@ -36,6 +37,7 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 		$scope.resetAll();
 	};
 
+	$scope.selectedDocIndex;
 	$scope.methods = ['OPTIONS', 'GET', 'POST', 'PUT', 'DELETE'];
 	$scope.buttonClasses = { disabledBtn:{}, availableBtn:{}, deprecatedBtn:{}, activeBtn:{}};
 	$scope.buttonPopOver = {};
@@ -71,7 +73,8 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 	};
 
 	$scope.selectRequest = function(method, fullPath) {
-		$scope.selectedCallInfo = _.find($scope.calls, {fullPath:fullPath, method:method});
+		$scope.selectedDocIndex = _.findIndex($scope.calls, {fullPath:fullPath, method:method});
+		$scope.selectedCallInfo = $scope.calls[$scope.selectedDocIndex];
 		$scope.buttonClasses.availableBtn[method] = false;
 		$scope.buttonClasses.deprecatedBtn[method] = false;
 		$scope.buttonClasses.activeBtn = {};
@@ -130,13 +133,21 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 	$scope.ajaxFinished = function(data, status, headers, config, statusText) {
 		$scope.stopCount();
 		$scope.communicatingToServer = false;
-		$scope.responseObject.data = data;
-		$scope.responseObject.isjson = $scope.isJsonData(data);
-		$scope.responseObject.status = status;
-		$scope.responseObject.headers = $scope.getHeaders(headers);
-		$scope.responseObject.config = angular.toJson(config, true);
-		$scope.responseObject.statusText = statusText;
-	}
+		$scope.responseObject = {
+			data : data,
+			isjson : $scope.isJsonData(data),
+			status : status,
+			headers : $scope.getHeaders(headers),
+			config : angular.toJson(config, true),
+			statusText : statusText
+		};
+		// $scope.responseObject.data = data;
+		// $scope.responseObject.isjson = $scope.isJsonData(data);
+		// $scope.responseObject.status = status;
+		// $scope.responseObject.headers = $scope.getHeaders(headers);
+		// $scope.responseObject.config = angular.toJson(config, true);
+		// $scope.responseObject.statusText = statusText;
+	};
 
 	$scope.isJsonData = function(data) {
 		try {
@@ -146,7 +157,7 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 		catch(e) {
 			return false;
 		}
-	}
+	};
 
 	$scope.getHeaders = function(headers) {
 		var result = [];
@@ -159,7 +170,7 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 			result.push(a);
 		}
 		return result;
-	}
+	};
 
 	$scope.prepareRequest = function() {
 		var serverBaseUrl = 'http://127.0.0.1:8080';
@@ -180,19 +191,34 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 			}
 		}
 		$scope.requestObject.params = requestParams;
-	}
+	};
 
 	$scope.hideConfigOfResponse = true;
 
 	$scope.toggleHideConfigOfResponse = function() {
 		$scope.hideConfigOfResponse = !$scope.hideConfigOfResponse;
-	}
+	};
 
 	$scope.isResponseSuccessful = function() {
 		return $scope.responseObject.status>199 && $scope.responseObject.status<300;
-	}
+	};
 
 	$scope.isResponseFailed = function() {
 		return $scope.responseObject.status>499 && $scope.responseObject.status<600;
-	}
+	};
+
+	$scope.selectCall = function(i) {
+		var apicall = $scope.calls[i];
+		$scope.selectedCallPath = $scope.fullPaths[_.indexOf($scope.fullPaths, apicall.fullPath)];
+		$scope.resetAll();
+		$scope.selectRequest(apicall.method, apicall.fullPath);
+	};
+
+	$scope.isDocSelected = function(i) {
+		if(i == $scope.selectedDocIndex) {
+			return true;
+		}
+		return false;
+	};
+
 }]);

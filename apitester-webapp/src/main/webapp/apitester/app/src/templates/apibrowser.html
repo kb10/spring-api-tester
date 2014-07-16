@@ -5,8 +5,7 @@
 				basepaths
 			</div>
 			<div class="col-md-4">
-				<select class="form-control" ng-model="config.basePath" ng-change="update()">
-					<option ng-repeat="bp in basePaths">{{bp}}</option>
+				<select class="form-control" ng-model="config.basePath" ng-change="update()" ng-options="basePath as 	basePath for basePath in basePaths">
 				</select>	
 			</div>
 		</div>
@@ -20,19 +19,7 @@
 		</div>
 	</div>
 	<div class="col-md-12" ng-repeat="apicall in apicalls">
-		<h4><span class="label" ng-class="
-			{
-				'label-primary':apicall.method=='POST',
-				'label-success':apicall.method=='GET',
-				'label-info':apicall.method=='PUT',
-				'label-danger':apicall.method=='DELETE',
-				'label-default':apicall.method=='OPTIONS',
-			}
-			">{{apicall.method}}</span> {{apicall.fullPath}}
-		</h4>
-		<table class="table table-compact">
-				<tr ng-repeat="requestParamater in "
-		</table>
-		<div ng-bind-html="apicall.description | markdown">{{apicall.description | markdown}}</div>
+		<ng-include src="'app/src/templates/call.html'">
+		</ng-include>
 	</div>
 </div>
