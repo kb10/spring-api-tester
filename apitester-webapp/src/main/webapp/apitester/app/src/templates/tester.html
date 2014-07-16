@@ -1,5 +1,5 @@
 <div class="row" ng-controller="testRootController">
-	<div class="col-md-8">
+	<div class="col-md-7">
 		<div class="col-md-12 form-group">
 			<select ng-model="requestConfig.basePath" class="form-control" ng-change="updateFullpathOptions()"
 				ng-options="basePath as basePath for basePath in basePaths">
@@ -9,8 +9,8 @@
 			<select ng-model="selectedCallPath" class="form-control"  ng-change="resetAll()"
 				ng-options="path as path for path in fullPaths"></select>
 		</div>
-		<div class="col-md-12" ng-show="selectedCallPath">
-			<div class="form-group btn-group">
+		<div class="col-md-12 form-group" ng-show="selectedCallPath">
+			<div class="btn-group">
 				<span ng-repeat="method in methods">
 					<button 
 						ng-click="selectRequest(method, selectedCallPath)" 
@@ -66,9 +66,11 @@
 		</div>
 		<div class="col-md-12 form-group" ng-show="selectedCallInfo.requestBodyParameters.length">
 			<h4>Request Body: </h4>
-			<my-json-editor id="requestbody_jsoneditor" ng-model="requestObject.requestBody" defaultmode="code"/>
+			<div style="width:100%; height:400px">
+				<my-json-editor id="requestbody_jsoneditor" ng-model="requestObject.requestBody" defaultmode="code"/>
+			</div>
 		</div>
-		<div class="col-md-12" ng-show="showRequestButton.go">
+		<div class="col-md-12 form-group" ng-show="showRequestButton.go">
 			<button class="btn btn-primary col-md-6" ng-disabled="communicatingToServer" ng-click="submit()">
 				<span ng-if="communicatingToServer || responseObject.status">{{timer}} ms</span>
 				<span ng-if="!communicatingToServer && !responseObject.status">GO!</span>
@@ -116,7 +118,7 @@
 			</div>
 			<div>
 				<h4>DATA: </h4>
-				<div ng-show="responseObject.isjson">
+				<div ng-show="responseObject.isjson" style="width:100%; height:400px">
 					<my-json-editor id="responsedata_jsoneditor" ng-model="responseObject.data" defaultmode="text"/>
 				</div>
 				<div ng-hide="responseObject.isjson">
@@ -125,7 +127,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="col-md-4" ng-show="calls">
+	<div class="col-md-5" ng-show="calls">
 		<h4>
 			API Documentation
 		</h4>
