@@ -133,12 +133,20 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 	$scope.ajaxFinished = function(data, status, headers, config, statusText) {
 		$scope.stopCount();
 		$scope.communicatingToServer = false;
-		$scope.responseObject.data = data;
-		$scope.responseObject.isjson = $scope.isJsonData(data);
-		$scope.responseObject.status = status;
-		$scope.responseObject.headers = $scope.getHeaders(headers);
-		$scope.responseObject.config = angular.toJson(config, true);
-		$scope.responseObject.statusText = statusText;
+		$scope.responseObject = {
+			data : data,
+			isjson : $scope.isJsonData(data),
+			status : status,
+			headers : $scope.getHeaders(headers),
+			config : angular.toJson(config, true),
+			statusText : statusText
+		};
+		// $scope.responseObject.data = data;
+		// $scope.responseObject.isjson = $scope.isJsonData(data);
+		// $scope.responseObject.status = status;
+		// $scope.responseObject.headers = $scope.getHeaders(headers);
+		// $scope.responseObject.config = angular.toJson(config, true);
+		// $scope.responseObject.statusText = statusText;
 	};
 
 	$scope.isJsonData = function(data) {

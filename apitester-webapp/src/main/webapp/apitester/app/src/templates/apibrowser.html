@@ -5,8 +5,7 @@
 				basepaths
 			</div>
 			<div class="col-md-4">
-				<select class="form-control" ng-model="config.basePath" ng-change="update()">
-					<option ng-repeat="bp in basePaths">{{bp}}</option>
+				<select class="form-control" ng-model="config.basePath" ng-change="update()" ng-options="basePath as 	basePath for basePath in basePaths">
 				</select>	
 			</div>
 		</div>

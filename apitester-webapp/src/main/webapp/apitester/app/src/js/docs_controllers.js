@@ -1,9 +1,6 @@
 apitester.controller('docsRootController', [ '$scope' , '$http', 'Restangular', function($scope, $http, RA) {
 
 	$scope.config = {};
-	$scope.config.basePath = "";
-	$scope.config.methods = [];
-	$scope.config.searchTerm = "";
 
 	RA.all('basepaths').getList().then(
 		function(basepaths) {
