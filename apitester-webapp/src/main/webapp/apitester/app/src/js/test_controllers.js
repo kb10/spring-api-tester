@@ -1,5 +1,5 @@
 apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Restangular',
- function($scope, $http, $interval, RA) {
+ function($scope, $http, $interval, RA, $indexedDB) {
 
 	$scope.requestConfig = {};
 	$scope.selectedCallInfo = {};
@@ -173,8 +173,7 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 	};
 
 	$scope.prepareRequest = function() {
-		var serverBaseUrl = 'http://127.0.0.1:8080';
-		var requestUrl = serverBaseUrl + $scope.selectedCallInfo.fullPath;
+		var requestUrl = $scope.selectedCallInfo.fullPath;
 		if($scope.selectedCallInfo.pathParameters.length > 0) {
 			for(i = 0; i < $scope.selectedCallInfo.pathParameters.length; i++) {
 				requestUrl = requestUrl.replace("{" + $scope.selectedCallInfo.pathParameters[i].parameterName + "}", 
