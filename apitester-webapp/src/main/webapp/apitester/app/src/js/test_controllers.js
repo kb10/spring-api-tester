@@ -1,10 +1,5 @@
-apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Restangular', '$indexedDB',
+apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Restangular',
  function($scope, $http, $interval, RA, $indexedDB) {
-
- 	// var historyStore = $indexedDB.objectStore('history');
- 	// historyStore.insert({"id": "1","name": "test"}).then(function(e){
- 	// 	console.log(e.message);
- 	// });
 
 	$scope.requestConfig = {};
 	$scope.selectedCallInfo = {};
@@ -178,9 +173,6 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 	};
 
 	$scope.prepareRequest = function() {
-		// var serverBaseUrl = 'http://127.0.0.1:8080';
-		// var serverBaseUrl = 'http://de-dev.fairgarage.de';
-		// var requestUrl = serverBaseUrl + $scope.selectedCallInfo.fullPath;
 		var requestUrl = $scope.selectedCallInfo.fullPath;
 		if($scope.selectedCallInfo.pathParameters.length > 0) {
 			for(i = 0; i < $scope.selectedCallInfo.pathParameters.length; i++) {
