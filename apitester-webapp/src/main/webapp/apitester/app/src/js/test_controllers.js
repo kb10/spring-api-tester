@@ -12,12 +12,12 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 	);
 
 	$scope.resetAll = function() {
-		$scope.selectedCallInfo = {};
 		$scope.selectedDocIndex = {};
 		$scope.buttonClasses = {disabledBtn:{}, availableBtn:{}, deprecatedBtn:{}, activeBtn:{}};
 		$scope.buttonPopOver = {};
-		$scope.requestObject = {};
+		$scope.requestObject = {url : "", requestBody : {}, params : {}};
 		$scope.responseObject = {};
+		$scope.selectedCallInfo = {};
 	};
 
 	$scope.updateFullpathOptions = function() {
@@ -30,11 +30,6 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 				$scope.resetAll();
 			}
 		);
-	};
-
-	$scope.selectFullPath = function() {
-		$scope.showRequestButton.flag = true;
-		$scope.resetAll();
 	};
 
 	$scope.selectedDocIndex;
@@ -73,15 +68,15 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 	};
 
 	$scope.selectRequest = function(method, fullPath) {
+		$scope.requestObject = {url : "", requestBody : {}, params : {}};
+		$scope.responseObject = {};
 		$scope.selectedDocIndex = _.findIndex($scope.calls, {fullPath:fullPath, method:method});
-		$scope.selectedCallInfo = $scope.calls[$scope.selectedDocIndex];
+		$scope.selectedCallInfo = angular.copy($scope.calls[$scope.selectedDocIndex]);
 		$scope.buttonClasses.availableBtn[method] = false;
 		$scope.buttonClasses.deprecatedBtn[method] = false;
 		$scope.buttonClasses.activeBtn = {};
 		$scope.buttonClasses.activeBtn[method] = true;
 		$scope.showRequestButton.go = true;
-		$scope.requestObject = {};
-		$scope.responseObject = {};
 	};
 
 	$scope.requestObject = {};
@@ -141,12 +136,6 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 			config : angular.toJson(config, true),
 			statusText : statusText
 		};
-		// $scope.responseObject.data = data;
-		// $scope.responseObject.isjson = $scope.isJsonData(data);
-		// $scope.responseObject.status = status;
-		// $scope.responseObject.headers = $scope.getHeaders(headers);
-		// $scope.responseObject.config = angular.toJson(config, true);
-		// $scope.responseObject.statusText = statusText;
 	};
 
 	$scope.isJsonData = function(data) {
@@ -173,8 +162,7 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 	};
 
 	$scope.prepareRequest = function() {
-		var serverBaseUrl = 'http://127.0.0.1:8080';
-		var requestUrl = serverBaseUrl + $scope.selectedCallInfo.fullPath;
+		var requestUrl = $scope.selectedCallInfo.fullPath;
 		if($scope.selectedCallInfo.pathParameters.length > 0) {
 			for(i = 0; i < $scope.selectedCallInfo.pathParameters.length; i++) {
 				requestUrl = requestUrl.replace("{" + $scope.selectedCallInfo.pathParameters[i].parameterName + "}", 
