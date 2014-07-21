@@ -1,5 +1,5 @@
 apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Restangular',
- function($scope, $http, $interval, RA, $indexedDB) {
+ function($scope, $http, $interval, RA) {
 
 	$scope.requestConfig = {};
 	$scope.selectedCallInfo = {};
@@ -12,14 +12,36 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 	);
 
 	$scope.resetAll = function() {
-		$scope.selectedCallInfo = {};
 		$scope.selectedDocIndex = {};
 		$scope.buttonClasses = {disabledBtn:{}, availableBtn:{}, deprecatedBtn:{}, activeBtn:{}};
 		$scope.buttonPopOver = {};
-		$scope.requestObject = {};
+		$scope.resetRequestObject();
 		$scope.responseObject = {};
+		$scope.selectedCallInfo = {};
 	};
 
+	$scope.resetRequestObject = function() {
+		$scope.requestObject.url = "";
+		
+		if($scope.requestObject.requestBody) {
+			$scope.requestObject.requestBody = {};
+		}
+
+		$scope.requestObject.params = {};
+
+		if($scope.selectedCallInfo.pathParameters && $scope.selectedCallInfo.pathParameters.length > 0) {
+			for(i = 0; i < $scope.selectedCallInfo.pathParameters.length; i++) {
+				$scope.selectedCallInfo.pathParameters[i].value = "";
+			}
+		}
+
+		if($scope.selectedCallInfo.requestParameters && $scope.selectedCallInfo.requestParameters.length > 0) {
+			for(i = 0; i < $scope.selectedCallInfo.requestParameters.length; i++) {
+				$scope.selectedCallInfo.requestParameters[i].value = "";
+			}
+		}
+	}
+ 
 	$scope.updateFullpathOptions = function() {
 		RA.all('calls').getList({basePath:$scope.requestConfig.basePath}).then(
 			function(calls) {
@@ -30,11 +52,6 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 				$scope.resetAll();
 			}
 		);
-	};
-
-	$scope.selectFullPath = function() {
-		$scope.showRequestButton.flag = true;
-		$scope.resetAll();
 	};
 
 	$scope.selectedDocIndex;
@@ -73,6 +90,8 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 	};
 
 	$scope.selectRequest = function(method, fullPath) {
+		$scope.resetRequestObject();
+		$scope.responseObject = {};
 		$scope.selectedDocIndex = _.findIndex($scope.calls, {fullPath:fullPath, method:method});
 		$scope.selectedCallInfo = $scope.calls[$scope.selectedDocIndex];
 		$scope.buttonClasses.availableBtn[method] = false;
@@ -80,8 +99,6 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 		$scope.buttonClasses.activeBtn = {};
 		$scope.buttonClasses.activeBtn[method] = true;
 		$scope.showRequestButton.go = true;
-		$scope.requestObject = {};
-		$scope.responseObject = {};
 	};
 
 	$scope.requestObject = {};
@@ -141,12 +158,6 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 			config : angular.toJson(config, true),
 			statusText : statusText
 		};
-		// $scope.responseObject.data = data;
-		// $scope.responseObject.isjson = $scope.isJsonData(data);
-		// $scope.responseObject.status = status;
-		// $scope.responseObject.headers = $scope.getHeaders(headers);
-		// $scope.responseObject.config = angular.toJson(config, true);
-		// $scope.responseObject.statusText = statusText;
 	};
 
 	$scope.isJsonData = function(data) {

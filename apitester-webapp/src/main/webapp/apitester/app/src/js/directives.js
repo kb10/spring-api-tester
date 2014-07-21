@@ -9,7 +9,7 @@ apitester.directive('myJsonEditor', function($parse) {
 							modes: ['code', 'form', 'text', 'tree', 'view'],
 							"search": true
 						  };
-			var editor = new JSONEditor(element[0], options);
+			var editor = new JSONEditor(element[0], options, {});
 
 			return function(scope, element, attrs, controller) {
 				var processChange = function () {
@@ -24,6 +24,9 @@ apitester.directive('myJsonEditor', function($parse) {
 	            scope.$watch(modelAccessor, function (val) {
 	            	if(val != undefined) {
 	            		editor.set(val);
+	            	}
+	            	else {
+	            		editor.set({});
 	            	}
 	            });
 			};

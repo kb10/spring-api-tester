@@ -1,5 +1,5 @@
 <div class="row" ng-controller="testRootController">
-	<div class="col-md-7">
+	<div class="col-md-8">
 		<div class="col-md-12 form-group">
 			<select ng-model="requestConfig.basePath" class="form-control" ng-change="updateFullpathOptions()"
 				ng-options="basePath as basePath for basePath in basePaths">
@@ -127,7 +127,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="col-md-5" ng-show="calls">
+	<div class="col-md-4" ng-show="calls">
 		<h4>
 			API Documentation
 		</h4>
