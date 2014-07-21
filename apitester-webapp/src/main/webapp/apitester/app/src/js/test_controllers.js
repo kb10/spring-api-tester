@@ -15,33 +15,11 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 		$scope.selectedDocIndex = {};
 		$scope.buttonClasses = {disabledBtn:{}, availableBtn:{}, deprecatedBtn:{}, activeBtn:{}};
 		$scope.buttonPopOver = {};
-		$scope.resetRequestObject();
+		$scope.requestObject = {url : "", requestBody : {}, params : {}};
 		$scope.responseObject = {};
 		$scope.selectedCallInfo = {};
 	};
 
-	$scope.resetRequestObject = function() {
-		$scope.requestObject.url = "";
-		
-		if($scope.requestObject.requestBody) {
-			$scope.requestObject.requestBody = {};
-		}
-
-		$scope.requestObject.params = {};
-
-		if($scope.selectedCallInfo.pathParameters && $scope.selectedCallInfo.pathParameters.length > 0) {
-			for(i = 0; i < $scope.selectedCallInfo.pathParameters.length; i++) {
-				$scope.selectedCallInfo.pathParameters[i].value = "";
-			}
-		}
-
-		if($scope.selectedCallInfo.requestParameters && $scope.selectedCallInfo.requestParameters.length > 0) {
-			for(i = 0; i < $scope.selectedCallInfo.requestParameters.length; i++) {
-				$scope.selectedCallInfo.requestParameters[i].value = "";
-			}
-		}
-	}
- 
 	$scope.updateFullpathOptions = function() {
 		RA.all('calls').getList({basePath:$scope.requestConfig.basePath}).then(
 			function(calls) {
@@ -90,10 +68,10 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 	};
 
 	$scope.selectRequest = function(method, fullPath) {
-		$scope.resetRequestObject();
+		$scope.requestObject = {url : "", requestBody : {}, params : {}};
 		$scope.responseObject = {};
 		$scope.selectedDocIndex = _.findIndex($scope.calls, {fullPath:fullPath, method:method});
-		$scope.selectedCallInfo = $scope.calls[$scope.selectedDocIndex];
+		$scope.selectedCallInfo = angular.copy($scope.calls[$scope.selectedDocIndex]);
 		$scope.buttonClasses.availableBtn[method] = false;
 		$scope.buttonClasses.deprecatedBtn[method] = false;
 		$scope.buttonClasses.activeBtn = {};
