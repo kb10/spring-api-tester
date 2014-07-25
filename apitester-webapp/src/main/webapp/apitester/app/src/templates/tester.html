@@ -1,5 +1,7 @@
-<div class="row" ng-controller="testRootController">
-	<div class="col-md-8">
+<div class="row" ng-controller="testRootController">	
+	<ng-include src="'app/src/templates/savedata.html'">
+	</ng-include>
+	<div class="col-md-6" style="height: 100%; overflow-y: auto;">
 		<div class="col-md-12 form-group">
 			<select ng-model="requestConfig.basePath" class="form-control" ng-change="updateFullpathOptions()"
 				ng-options="basePath as basePath for basePath in basePaths">
@@ -124,14 +126,18 @@
 				<div ng-hide="responseObject.isjson">
 					<pre class="col-md-12">{{responseObject.data}}</pre>
 				</div>
+				<br/>
+			</div>
+			<div>
+			    <button class="btn btn-primary col-md-6" ng-click="openDlg()">Save</button>
 			</div>
 		</div>
 	</div>
-	<div class="col-md-4" ng-show="calls">
+	<div class="col-md-4" ng-show="calls" style="height: 100%; overflow-y: auto;">
 		<h4>
 			API Documentation
 		</h4>
-		<div class="col-md-12" ng-repeat="apicall in calls" >
+		<div class="col-md-12" ng-repeat="apicall in calls">
 			<div ng-click="selectCall($index)" 
 				ng-class="{
 					'alert alert-info' : !isDocSelected($index),

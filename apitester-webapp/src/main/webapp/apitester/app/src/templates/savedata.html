@@ -1,0 +1,28 @@
+<div class="col-md-2" style="height: 100%; overflow-y: auto;">
+	<h4>
+		Request Storage
+	</h4>
+	<div ng-repeat="item in db.savedObjArr">
+		<div style="cursor:pointer">
+			<strong>{{item.group}}</strong>
+			<ul>
+				<li ng-repeat="obj in item.dataArr">
+					<div class="form-group" id="{{obj.id}}">
+						<span class="label" ng-class="
+							{
+								'label-primary':obj.method=='POST',
+								'label-success':obj.method=='GET',
+								'label-info':obj.method=='PUT',
+								'label-danger':obj.method=='DELETE',
+								'label-default':obj.method=='OPTIONS',
+							}">
+							{{obj.method}}
+						</span>
+						<span class="text-center">{{obj.name}}</span>
+						<span class="pull-right glyphicon glyphicon-remove-sign" ng-click="deleteData(obj.id)"></span>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
