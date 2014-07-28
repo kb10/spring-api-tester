@@ -1,10 +1,12 @@
-apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Restangular',
- function($scope, $http, $interval, RA) {
+apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Restangular', 'apitesterDBConf','$indexedDB', '$modal',
+ function($scope, $http, $interval, RA, apitesterDBConf, $indexedDB, $modal) {
 
 	$scope.requestConfig = {};
 	$scope.selectedCallInfo = {};
 	$scope.showRequestButton = {};
-
+	$scope.historyObjectStore = $indexedDB.objectStore(apitesterDBConf.historyStore);
+	$scope.db = {savedObjArr:[], dbgroups:[], groupName:null, reqName:null};
+	
 	RA.all('basepaths').getList().then(
 		function(basepaths) {
 			$scope.basePaths = basepaths;
@@ -209,4 +211,63 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 		return false;
 	};
 
+	$scope.getSavedData = function() {
+		$scope.historyObjectStore.getAll().then(function(result) {
+			$scope.db = {savedObjArr:[], dbgroups:[], groupName:null, reqName:null};
+			if(result.length) {
+				$scope.db.dbgroups = _(result).pluck('group').uniq().value();
+			}
+			for(i=0; i<$scope.db.dbgroups.length; i++) {
+				var item = {group:"", dataArr:[]};
+				item.group = $scope.db.dbgroups[i];
+				item.dataArr = _.filter(result, {'group' : $scope.db.dbgroups[i]});
+				$scope.db.savedObjArr.push(item);
+			}
+		});
+	};
+
+	$scope.getSavedData();
+
+	$scope.saveData = function() {
+ 		$scope.historyObjectStore.insert(
+ 			{
+ 				'id': "savedata-" + new Date().getTime(),
+ 				'name': $scope.db.reqName, 
+ 				'group': $scope.db.groupName,
+ 				'method': $scope.selectedCallInfo.method,
+ 				'req': angular.toJson($scope.selectedCallInfo),
+ 				'res': angular.toJson($scope.responseObject)
+ 			}
+ 		, true).then(function() {
+ 			$scope.getSavedData();	
+ 		});
+	};
+
+	$scope.deleteData = function(id) {
+		$scope.historyObjectStore.delete(id, true).then(function() {
+			$scope.getSavedData();
+		});
+		
+	};
+
+	$scope.openDlg = function (size) {
+		var modalInstance = $modal.open({
+		  templateUrl: 'app/src/templates/savedlg.html',
+		  controller: saveModalController,
+		  size: size,
+		  resolve: {
+		    groups: function () {
+		      return $scope.db.dbgroups;
+		    }
+		  }
+		});
+
+		modalInstance.result.then(function (names) {
+		  $scope.db.groupName = names.selectgroup ? names.selectgroup : (names.creategroup ? names.creategroup : 'defaultGroup');
+		  $scope.db.reqName = names.requsestname ? names.requsestname : 'defaultName';
+		  $scope.saveData();
+		}, function () {
+		  console.log('save dialog dismissed at: ' + new Date());
+		});
+	};
 }]);

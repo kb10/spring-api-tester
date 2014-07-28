@@ -193,7 +193,7 @@ angular.module('xc.indexedDB', []).provider('$indexedDB', function() {
              * @params {object or array} data the data to insert
              * @returns {object} $q.promise a promise on successfull execution
              */
-            "insert": function(data){
+            "insert": function(data, oncomplete){
                 var d = $q.defer();
                 return this.internalObjectStore(this.storeName, READWRITE).then(function(store){
                     var req;
@@ -221,9 +221,23 @@ angular.module('xc.indexedDB', []).provider('$indexedDB', function() {
                     } else {
                         req = store.add(data);
                         req.onsuccess = req.onerror = function(e) {
-                            $rootScope.$apply(function(){
-                                d.resolve(e.target.result);
-                            });
+                            if(oncomplete === true){
+                                this.transaction.oncomplete = function(){
+                                    console.log('Insert transaction completed.');
+
+                                    $rootScope.$apply(function(){
+                                        d.resolve(e.target.result);
+                                    });
+                                };
+                            }
+                            else{
+                                $rootScope.$apply(function(){
+                                    d.resolve(e.target.result);
+                                });
+                            }
+                            // $rootScope.$apply(function(){
+                            //     d.resolve(e.target.result);
+                            // });
                         };
                     }
                     return d.promise;
@@ -289,14 +303,28 @@ angular.module('xc.indexedDB', []).provider('$indexedDB', function() {
              * @params {any value} key primary key to indetify a value
              * @returns {object} $q.promise a promise on successfull execution
              */
-            "delete": function(key) {
+            "delete": function(key, oncomplete) {
                 var d = $q.defer();
                 return this.internalObjectStore(this.storeName, READWRITE).then(function(store){
                     var req = store.delete(key);
                     req.onsuccess = req.onerror = function(e) {
-                        $rootScope.$apply(function(){
-                            d.resolve(e.target.result);
-                        });
+                        if(oncomplete === true){
+                            this.transaction.oncomplete = function(){
+                                console.log('Delete transaction completed.');
+
+                                $rootScope.$apply(function(){
+                                    d.resolve(e.target.result);
+                                });
+                            };
+                        }
+                        else{
+                            $rootScope.$apply(function(){
+                                d.resolve(e.target.result);
+                            });
+                        }                        
+                        // $rootScope.$apply(function(){
+                        //     d.resolve(e.target.result);
+                        // });
                     };
                     return d.promise;
                 });
