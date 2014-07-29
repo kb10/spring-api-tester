@@ -1,3 +1,25 @@
+<style>
+	tr.tr-header{
+		background-color:#BBB;
+		border-bottom:3px solid blue;
+	}
+	tr.tr-pathparam{
+		background-color:#CCC;
+		border-bottom:3px solid blue;
+	}
+	tr.tr-requestparam{
+		background-color:#DDD;
+		border-bottom:3px solid blue;
+	}
+	tr.tr-requestbody{
+		background-color:#EEE;
+		border-bottom:3px solid blue;
+	}
+	tr.tr-returntype{
+		background-color:#FFF;
+		border-bottom:3px solid blue;
+	}
+</style>
 <div ng-click="docDetails = !docDetails" ng-init="docDetails = false">
 	<h4>
 		{{apicall.fullPath}}
@@ -15,43 +37,28 @@
 	<hr/>
 </div>
 <div ng-show="docDetails">
-	<table class="table table-bordered" style="word-wrap: break-word; word-break: break-all" ng-show="apicall.pathParameters.length">
-		<tr>
-			<td colspan="5"><strong>Path Parameters:</strong></td>
-		</tr>
-		<tr>
+	<table class="table table-bordered" style="word-wrap: break-word; word-break: break-all" ng-show="apicall.pathParameters.length || apicall.requestParameters.length || apicall.requestBodyParameters.length">
+		<tr class="tr-header">
 			<th style="width: 5%">*</th>
 			<th style="width: 20%">Name</th>
 			<th style="width: 45%">Type</th>
 			<th style="width: 15%">Default</th>
 			<th style="width: 15%">Format</th>
 		</tr>
-		<tr ng-repeat="param in apicall.pathParameters">
+		<tr class="tr-pathparam" ng-repeat="param in apicall.pathParameters">
 			<td>*</td>
 			<td>
 				{{param.parameterName}}
 			</td>
 			<td>
-				<a>{{param.parameterType.className}}</a>
+				<a>{{param.parameterType.className | shorttype}}</a>
 			</td>
 			<td>--</td>
 			<td>
 				<span ng-show="param.format">{{param.format}}</span><span ng-show="!param.format">--</span>
 			</td>
 		</tr>
-	</table>
-	<table class="table table-bordered" style="word-wrap: break-word; word-break: break-all" ng-show="apicall.requestParameters.length">
-		<tr>
-			<td colspan="5"><strong>Request Parameters:</strong></td>
-		</tr>
-		<tr>
-			<th style="width: 5%">*</th>
-			<th style="width: 20%">Name</th>
-			<th style="width: 45%">Type</th>
-			<th style="width: 15%">Default</th>
-			<th style="width: 15%">Format</th>
-		</tr>
-		<tr ng-repeat="param in apicall.requestParameters">
+		<tr class="tr-requestparam" ng-repeat="param in apicall.requestParameters">
 			<td>
 				<span ng-show="param.mandatory">*</span>
 			</td>
@@ -59,7 +66,7 @@
 				{{param.parameterName}}
 			</td>
 			<td>
-				<a>{{param.parameterType.className}}</a><span ng-show="param.collection"> [ ]</span>
+				<a>{{param.parameterType.className | shorttype}}</a><span ng-show="param.collection"> [ ]</span>
 			</td>
 			<td>
 				{{param.defaultValue}}
@@ -68,19 +75,7 @@
 				<span ng-show="param.format">{{param.format}}</span><span ng-show="!param.format">--</span>
 			</td>
 		</tr>
-	</table>
-	<table class="table table-bordered" style="word-wrap: break-word; word-break: break-all" ng-show="apicall.requestBodyParameters.length">
-		<tr>
-			<td colspan="5"><strong>Request Body:</strong></td>
-		</tr>
-		<tr>
-			<th style="width: 5%">*</th>
-			<th style="width: 20%">Name</th>
-			<th style="width: 45%">Type</th>
-			<th style="width: 15%">Default</th>
-			<th style="width: 15%">Format</th>
-		</tr>
-		<tr ng-repeat="param in apicall.requestBodyParameters">
+		<tr class="tr-requestbody" ng-repeat="param in apicall.requestBodyParameters">
 			<td>
 				<span ng-show="param.mandatory">*</span><span ng-show="!param.mandatory">--</span>
 			</td>
@@ -88,30 +83,18 @@
 				{{param.parameterName}}
 			</td>
 			<td>
-				<a>{{param.parameterType.className}}</a><span ng-show="param.collection"> [ ]</span>
+				<a>{{param.parameterType.className | shorttype}}</a><span ng-show="param.collection"> [ ]</span>
 			</td>
 			<td>--</td>
 			<td>
 				<span ng-show="param.format">{{param.format}}</span><span ng-show="!param.format">--</span>
 			</td>
 		</tr>
-	</table>
-	<table class="table table-bordered" style="word-wrap: break-word; word-break: break-all">
-		<tr>
-			<td colspan="5"><strong>Return Object:</strong></td>
-		</tr>
-		<tr>
-			<th style="width: 5%">*</th>
-			<th style="width: 20%">Name</th>
-			<th style="width: 45%">Type</th>
-			<th style="width: 15%">Default</th>
-			<th style="width: 15%">Format</th>
-		</tr>
-		<tr>
+		<tr class="tr-returntype" ng-show="apicall.returnType.returnClass.className != 'void'">
 			<td>--</td>
 			<td>--</td>
 			<td>
-				<a>{{apicall.returnType.returnClass.className}}</a><span ng-show="apicall.returnType.collection"> [ ]</span>
+				<a>{{apicall.returnType.returnClass.className | shorttype}}</a><span ng-show="apicall.returnType.collection"> [ ]</span>
 			</td>
 			<td>--</td>
 			<td>--</td>
