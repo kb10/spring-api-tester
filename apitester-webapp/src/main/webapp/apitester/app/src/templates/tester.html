@@ -1,4 +1,4 @@
-<div class="row" ng-controller="testRootController">	
+<div class="row" ng-controller="testRootController as testCtrl">	
 	<ng-include src="'app/src/templates/savedata.html'">
 	</ng-include>
 	<div class="col-md-6" style="height: 100%; overflow-y: auto;">
@@ -138,15 +138,7 @@
 			API Documentation
 		</h4>
 		<div class="col-md-12" ng-repeat="apicall in calls">
-			<div ng-click="selectCall($index)" 
-				ng-class="{
-					'alert alert-info' : !isDocSelected($index),
-					'alert alert-success' : isDocSelected($index)
-					}"
-			>
-				<ng-include src="'app/src/templates/call.html'">
-				</ng-include>
-			</div>
+			<ng-include src="'app/src/templates/call.html'"></ng-include>
 		</div>
 	</div>	
 </div>
