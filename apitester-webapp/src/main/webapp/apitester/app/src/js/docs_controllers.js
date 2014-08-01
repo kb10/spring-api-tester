@@ -9,6 +9,7 @@ apitester.controller('docsRootController', [ '$scope' , '$http', 'Restangular', 
 	);
 
 	$scope.update = _.debounce(function() {	
+		$scope.selectedDocIndex = {};
 		console.log("executing ... ");
 		if($scope.config.basePath == "") {
 			$scope.config.basePath = null;
@@ -23,5 +24,17 @@ apitester.controller('docsRootController', [ '$scope' , '$http', 'Restangular', 
 	},400);
 
 	$scope.update();
+
+	$scope.selectedDocIndex = {};
+	$scope.selectCall = function(i) {
+		$scope.selectedDocIndex = i;
+	}
+
+	$scope.isDocSelected = function(i) {
+		if(i == $scope.selectedDocIndex) {
+			return true;
+		}
+		return false;		
+	}
 
 }]);
