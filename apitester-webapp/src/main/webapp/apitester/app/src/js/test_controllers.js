@@ -1,6 +1,5 @@
 apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Restangular', 'apitesterDBConf','$indexedDB', '$modal',
  function($scope, $http, $interval, RA, apitesterDBConf, $indexedDB, $modal) {
-
 	$scope.requestConfig = {};
 	$scope.selectedCallInfo = {};
 	$scope.showRequestButton = {};
