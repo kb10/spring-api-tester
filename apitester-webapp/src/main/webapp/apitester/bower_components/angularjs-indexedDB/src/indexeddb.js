@@ -5,9 +5,6 @@
  */
 
 'use strict';
-/** unify browser specific implementations */
-var indexedDB = window.indexedDB||window.mozIndexedDB||window.webkitIndexedDB||window.msIndexedDB;
-var IDBKeyRange=window.IDBKeyRange||window.mozIDBKeyRange||window.webkitIDBKeyRange||window.msIDBKeyRange;
 
 angular.module('xc.indexedDB', []).provider('$indexedDB', function() {
     var module          = this,
@@ -26,24 +23,25 @@ angular.module('xc.indexedDB', []).provider('$indexedDB', function() {
     module.dbVersion = 1;
     module.db = null;
     module.dbPromise = null;
+    module.debugMode = false;
 
     /** predefined callback functions, can be customized in angular.config */
     module.onTransactionComplete = function(e) {
-        console.log('Transaction completed.');
+        if(module.debugMode) console.log('Transaction completed.');
     };
     module.onTransactionAbort = function(e) {
-        console.log('Transaction aborted: '+ (e.target.webkitErrorMessage || e.target.error.message || e.target.errorCode));
+        if(module.debugMode) console.log('Transaction aborted: '+ (e.target.webkitErrorMessage || e.target.error.message || e.target.errorCode));
     };
     module.onTransactionError = function(e) {
-        console.log('Transaction failed: ' + e.target.errorCode);
+        if(module.debugMode) console.log('Transaction failed: ' + e.target.errorCode);
     };
     module.onDatabaseError = function(e) {
-        alert("Database error: " + (e.target.webkitErrorMessage || e.target.errorCode));
+        if(module.debugMode) alert("Database error: " + (e.target.webkitErrorMessage || e.target.errorCode));
     };
     module.onDatabaseBlocked = function(e) {
         // If some other tab is loaded with the database, then it needs to be closed
         // before we can proceed.
-        alert("Database is blocked. Try close other tabs with this page open and reload this page!");
+        if(module.debugMode) alert("Database is blocked. Try close other tabs with this page open and reload this page!");
     };
 
     /**
@@ -80,7 +78,14 @@ angular.module('xc.indexedDB', []).provider('$indexedDB', function() {
         return this;
     };
 
-    module.$get = ['$q', '$rootScope', function($q, $rootScope) {
+    module.$get = ['$q', '$rootScope', '$window', function($q, $rootScope, $window) {
+
+        if(!('indexedDB' in $window)) {
+            $window.indexedDB = $window.mozIndexedDB || $window.webkitIndexedDB || $window.msIndexedDB;
+        }
+
+        var IDBKeyRange = $window.IDBKeyRange || $window.mozIDBKeyRange || $window.webkitIDBKeyRange || $window.msIDBKeyRange;
+
         /**
          * @ngdoc object
          * @name defaultQueryOptions
@@ -113,7 +118,7 @@ angular.module('xc.indexedDB', []).provider('$indexedDB', function() {
                 deferred = $q.defer();
                 module.dbPromise = deferred.promise;
 
-                dbReq = indexedDB.open(module.dbName, module.dbVersion || 1);
+                dbReq = $window.indexedDB.open(module.dbName, module.dbVersion || 1);
                 dbReq.onsuccess = function(e) {
                     module.db = dbReq.result;
                     $rootScope.$apply(function(){
@@ -124,7 +129,7 @@ angular.module('xc.indexedDB', []).provider('$indexedDB', function() {
                 dbReq.onerror = module.onDatabaseError;
                 dbReq.onupgradeneeded = function(e) {
                     var db = e.target.result, tx = e.target.transaction;
-                    console.log('upgrading database "' + db.name + '" from version ' + e.oldVersion+
+                    if(module.debugMode) console.log('upgrading database "' + db.name + '" from version ' + e.oldVersion+
                         ' to version ' + e.newVersion + '...');
                     module.upgradeCallback && module.upgradeCallback(e, db, tx);
                 };
@@ -193,7 +198,7 @@ angular.module('xc.indexedDB', []).provider('$indexedDB', function() {
              * @params {object or array} data the data to insert
              * @returns {object} $q.promise a promise on successfull execution
              */
-            "insert": function(data, oncomplete){
+            "insert": function(data){
                 var d = $q.defer();
                 return this.internalObjectStore(this.storeName, READWRITE).then(function(store){
                     var req;
@@ -221,23 +226,9 @@ angular.module('xc.indexedDB', []).provider('$indexedDB', function() {
                     } else {
                         req = store.add(data);
                         req.onsuccess = req.onerror = function(e) {
-                            if(oncomplete === true){
-                                this.transaction.oncomplete = function(){
-                                    console.log('Insert transaction completed.');
-
-                                    $rootScope.$apply(function(){
-                                        d.resolve(e.target.result);
-                                    });
-                                };
-                            }
-                            else{
-                                $rootScope.$apply(function(){
-                                    d.resolve(e.target.result);
-                                });
-                            }
-                            // $rootScope.$apply(function(){
-                            //     d.resolve(e.target.result);
-                            // });
+                            $rootScope.$apply(function(){
+                                d.resolve(e.target.result);
+                            });
                         };
                     }
                     return d.promise;
@@ -303,28 +294,14 @@ angular.module('xc.indexedDB', []).provider('$indexedDB', function() {
              * @params {any value} key primary key to indetify a value
              * @returns {object} $q.promise a promise on successfull execution
              */
-            "delete": function(key, oncomplete) {
+            "delete": function(key) {
                 var d = $q.defer();
                 return this.internalObjectStore(this.storeName, READWRITE).then(function(store){
                     var req = store.delete(key);
                     req.onsuccess = req.onerror = function(e) {
-                        if(oncomplete === true){
-                            this.transaction.oncomplete = function(){
-                                console.log('Delete transaction completed.');
-
-                                $rootScope.$apply(function(){
-                                    d.resolve(e.target.result);
-                                });
-                            };
-                        }
-                        else{
-                            $rootScope.$apply(function(){
-                                d.resolve(e.target.result);
-                            });
-                        }                        
-                        // $rootScope.$apply(function(){
-                        //     d.resolve(e.target.result);
-                        // });
+                        $rootScope.$apply(function(){
+                            d.resolve(e.target.result);
+                        });
                     };
                     return d.promise;
                 });
@@ -445,15 +422,16 @@ angular.module('xc.indexedDB', []).provider('$indexedDB', function() {
              * @function
              *
              * @description wrapper for IDBObjectStore.openCursor or IDBIndex.openCursor.
-             * returns an IDBCursor for further manipulation. See indexedDB documentation
-             * for details on this.
+             * returns a promise that is resolved when the cursor reaches an end.
+             * On every "onsuccess" event of the cursor, the callback function is called, passing the cursor itself
              * https://developer.mozilla.org/en-US/docs/IndexedDB/Using_IndexedDB#Using_a_cursor
              *
+             * @params {Function} onsuccessCallback the callback which runs when the onsuccess event is triggered
              * @params {object} options optional query parameters, see defaultQueryOptions
              * and QueryBuilder for details
              * @returns {object} IDBCursor ...wrapped in a promise
              */
-            "each": function(options){
+            "each": function(callback, options){
                 var d = $q.defer();
                 return this.internalObjectStore(this.storeName, READWRITE).then(function(store){
                    var req;
@@ -465,7 +443,10 @@ angular.module('xc.indexedDB', []).provider('$indexedDB', function() {
                     }
                     req.onsuccess = req.onerror = function(e) {
                         $rootScope.$apply(function(){
-                            d.resolve(e.target.result);
+                            if(!e.target.result){
+                                d.resolve(e.target.result);
+                            }
+                            callback(e.target.result);
                         });
                     };
                     return d.promise;
