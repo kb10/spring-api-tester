@@ -46,6 +46,13 @@ then add these dependencies to your WAR module:
 			<url-pattern>/apitester/api/*</url-pattern>
 		</servlet-mapping>
 
+and to support bootstrap glyphicon components add following in your web.xml as well:
+
+		<url-pattern>*.svg</url-pattern>
+		<url-pattern>*.eot</url-pattern>
+		<url-pattern>*.woff</url-pattern>
+		<url-pattern>*.ttf</url-pattern>
+
 assuming there's no conflict with the rest of your application, the
 apitester should now be available on:
 
