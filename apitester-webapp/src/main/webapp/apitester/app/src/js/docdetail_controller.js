@@ -1,4 +1,4 @@
-apitester.controller('docDetailController', ['$scope','$http',function($scope, $http) {
+apitester.controller('docDetailController', ['$scope','$http','$location', function($scope, $http, $location) {
 	$scope.docparam = {
 		detail:'"{none}"',
 		showDetail:false
@@ -17,9 +17,9 @@ apitester.controller('docDetailController', ['$scope','$http',function($scope, $
 			showDetail:false
 		};		
 		$http({	method : "GET",
-			url : "/apitester/apitester/api/objects/"+name+"/details",
+			url : "/smp/de/de/apitester/api/objects/"+name+"/details",
 			params : "",
-			data : ""}).
+			data : ""}). 
 		success(function(data, status, headers, config, statusText) {
 			$scope.docparam.detail = angular.toJson(data, true);
 			$scope.docparam.showDetail = true;

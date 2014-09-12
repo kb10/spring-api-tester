@@ -1,7 +1,7 @@
 var angular = angular;
 
 var apitester = angular.module('fgApitester', 
-		['restangular', 'ui.bootstrap', 'ngRoute', 'xc.indexedDB'])
+		['restangular', 'ui.bootstrap', 'ngRoute', 'xc.indexedDB', 'ui.select2'])
 	.constant('apitesterDBConf', {
 		dbname : 'apitester',
 		version : 2,
