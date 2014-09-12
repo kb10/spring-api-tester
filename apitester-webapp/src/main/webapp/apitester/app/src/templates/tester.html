@@ -3,13 +3,19 @@
 	</ng-include>
 	<div class="col-md-6" style="height: 100%; overflow-y: auto;">
 		<div class="col-md-12 form-group">
-			<select ng-model="requestConfig.basePath" class="form-control" ng-change="updateFullpathOptions()"
-				ng-options="basePath as basePath for basePath in basePaths">
+			<select ui-select2 ng-model="requestConfig.basePath" style="width: 100%" ng-change="updateFullpathOptions()">
+				<option value=""></option>
+				<option ng-repeat="basePath in basePaths" value="{{basePath}}">
+					{{basePath}}
+				</option>
 			</select>
 		</div>
 		<div class="col-md-12 form-group"  ng-show="calls">
-			<select ng-model="selectedCallPath" class="form-control"  ng-change="resetAll()"
-				ng-options="path as path for path in fullPaths"></select>
+			<select ui-select2 ng-model="selectedCallPath" style="width: 100%" ng-change="selectFullPath()">
+				<option ng-repeat="path in fullPaths" value="{{path}}">
+					{{path}}
+				</option>
+			</select>
 		</div>
 		<div class="col-md-12 form-group" ng-show="selectedCallPath">
 			<div class="btn-group">
