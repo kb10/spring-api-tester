@@ -12,9 +12,6 @@ apitester.controller('docDetailController', ['$scope','$http','$location', funct
 	}
 
 	$scope.showParamDetails = function(name){
-		console.log($location.url());
-		console.log($location.absUrl());
-		console.log($location.path());
 		$scope.docparam = {
 			detail:'"{none}"',
 			showDetail:false
