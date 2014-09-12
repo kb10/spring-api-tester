@@ -12,7 +12,7 @@ apitester.controller('docDetailController', ['$scope','$http','$location', funct
 	};
 
 	$scope.showParamDetails = function(name){
-		if(name.indexOf("java.") >= 0) {
+		if(name.indexOf('java.') >= 0) {
 			return;
 		}
 
@@ -21,28 +21,28 @@ apitester.controller('docDetailController', ['$scope','$http','$location', funct
 			detail:'"{none}"',
 			showDetail:false
 		};		
-		$http({	method : "GET",
-			url : baseUrl + "/api/objects/"+name+"/details",
-			params : "",
-			data : ""}). 
+		$http({	method : 'GET',
+			url : baseUrl + '/api/objects/'+name+'/details',
+			params : '',
+			data : ''}). 
 		success(function(data, status, headers, config, statusText) {
 			$scope.docparam.detail = angular.toJson(data, true);
 			$scope.docparam.showDetail = true;
 		}).error(function(data, status, headers, config, statusText) {
-			$scope.docparam.detail = "ERROR happened!";
+			$scope.docparam.detail = 'ERROR happened!';
 		});
 	};
 
 	$scope.isNoneParam = function() {
-		if($scope.docparam.detail.indexOf("{none}") >= 0) {
+		if($scope.docparam.detail.indexOf('{none}') >= 0) {
 			return true;
 		}
 		return false;
 	};
 
 	$scope.getBaseUrl = function() {
-		var absUrl = $location.absUrl();
-		var pos = absUrl.indexOf("apitester");
+		var absUrl = $location.absUrl(),
+		    pos = absUrl.indexOf('apitester');
 		return absUrl.substring(0, pos + 9);
 	};
  }]);
