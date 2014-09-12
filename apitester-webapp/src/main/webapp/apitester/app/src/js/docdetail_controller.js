@@ -9,15 +9,20 @@ apitester.controller('docDetailController', ['$scope','$http','$location', funct
 			detail:'"{none}"',
 			showDetail:false
 		};		
-	}
+	};
 
 	$scope.showParamDetails = function(name){
+		if(name.indexOf("java.") >= 0) {
+			return;
+		}
+
+		var baseUrl = $scope.getBaseUrl();
 		$scope.docparam = {
 			detail:'"{none}"',
 			showDetail:false
 		};		
 		$http({	method : "GET",
-			url : "/smp/de/de/apitester/api/objects/"+name+"/details",
+			url : baseUrl + "/api/objects/"+name+"/details",
 			params : "",
 			data : ""}). 
 		success(function(data, status, headers, config, statusText) {
@@ -29,6 +34,15 @@ apitester.controller('docDetailController', ['$scope','$http','$location', funct
 	};
 
 	$scope.isNoneParam = function() {
-		return $scope.docparam.detail == '"{none}"';
-	}
-}]);
+		if($scope.docparam.detail.indexOf("{none}") >= 0) {
+			return true;
+		}
+		return false;
+	};
+
+	$scope.getBaseUrl = function() {
+		var absUrl = $location.absUrl();
+		var pos = absUrl.indexOf("apitester");
+		return absUrl.substring(0, pos + 9);
+	};
+ }]);
