@@ -42,7 +42,6 @@ import com.cinefms.apitester.model.info.ApiCallParameter;
 import com.cinefms.apitester.model.info.ApiObject;
 import com.cinefms.apitester.model.info.ApiResult;
 
-@Component
 public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAware, ServletContextAware {
 
 	private static Log log = LogFactory.getLog(SpringAnnotationCrawler.class);
@@ -50,7 +49,6 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 	private ApplicationContext applicationContext;
 	private ServletContext servletContext;
 	
-	@Autowired
 	private ApitesterService service;
 	
 	private String prefix = "";
@@ -60,12 +58,18 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 	
 	@PostConstruct
 	public List<ApiCall> getApiCalls() {
+		log.info("################################################################ ");
+		log.info("##");
+		log.info("## SpringAnnotationCrawler initialized: "+applicationContext);
+		log.info("## ApitesterService is                : "+getService());
+		log.info("##");
+		log.info("################################################################ ");
 		if(apiCalls==null) {
 			apiCalls = new ArrayList<ApiCall>();
 			apiCalls.addAll(scanControllers(applicationContext));
 			log.info(" ############################################################### ");
 			log.info(" ##  ");
-			log.info(" ##  FOUND "+apiCalls.size()+" API CALLS");
+			log.info(" ##  FOUND "+apiCalls.size()+" API CALLS in context: "+applicationContext);
 			log.info(" ##  ");
 			for(ApiCall ac : apiCalls) {
 				log.info(" ##  "+ac.getBasePath()+" --- "+ac.getFullPath());
@@ -383,13 +387,24 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 	}
 
 	public ApitesterService getService() {
+		if(service==null) {
+			ApplicationContext ctx = applicationContext;
+			while(ctx!=null) {
+				List<ApitesterService> s = new ArrayList<ApitesterService>(ctx.getBeansOfType(ApitesterService.class).values());
+				if(s.size()>0) {
+					service = s.get(0);
+					log.info("## found apitester service in context: "+ctx);
+					break;
+				}
+				ctx = ctx.getParent();
+			}
+		}
 		return service;
 	}
 
 	public void setService(ApitesterService service) {
 		this.service = service;
 	}
-	
-	
+
 	
 }

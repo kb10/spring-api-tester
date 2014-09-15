@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.javaruntype.type.TypeParameter;
@@ -22,7 +24,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
-import com.cinefms.apitester.model.ApiCrawler;
 import com.cinefms.apitester.model.info.ApiCall;
 import com.cinefms.apitester.model.info.ApiObject;
 
@@ -34,11 +35,24 @@ public class ApitesterService implements ApplicationContextAware {
 	private List<ApiCall> calls = new ArrayList<ApiCall>();
 	private ApplicationContext applicationContext;
 
+	@PostConstruct
+	public void init() {
+		log.info("################################################################ ");
+		log.info("##");
+		log.info("## ApitesterService initialized: "+applicationContext);
+		log.info("##");
+		log.info("################################################################ ");
+	}
+	
+
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
 	}
 	
 	public synchronized void registerCalls(List<ApiCall> apiCalls) {
+		
+		log.info(" REGISTER CALLS: "+apiCalls.size()+" calls are being registered in context: "+applicationContext);
+		
 		calls.addAll(apiCalls);
 		Collections.sort(calls,new Comparator<ApiCall>() {
 
