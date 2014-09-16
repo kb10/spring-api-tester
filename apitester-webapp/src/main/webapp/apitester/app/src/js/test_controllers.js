@@ -1,5 +1,5 @@
-apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Restangular', 'apitesterDBConf','$indexedDB', '$modal',
- function($scope, $http, $interval, RA, apitesterDBConf, $indexedDB, $modal) {
+apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Restangular', 'apitesterDBConf','$indexedDB', '$modal', '$window',
+ function($scope, $http, $interval, RA, apitesterDBConf, $indexedDB, $modal, $window) {
 	$scope.requestConfig = {};
 	$scope.selectedCallInfo = {};
 	$scope.showRequestButton = {};
@@ -269,4 +269,15 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 		  console.log('save dialog dismissed at: ' + new Date());
 		});
 	};
+
+	$scope.exportData = function() {
+		var exportDataWin = $window.open("", "_blank", "scrollbars=yes, width=800, height=800");
+		exportDataWin.document.write("<pre>");
+		exportDataWin.document.write(angular.toJson($scope.selectedCallInfo, true));
+		exportDataWin.document.write("\n");
+		exportDataWin.document.write(angular.toJson($scope.responseObject, true));
+		exportDataWin.document.write("</pre>");
+
+	};
+
 }]);
