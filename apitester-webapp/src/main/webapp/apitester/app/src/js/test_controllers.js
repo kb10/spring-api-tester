@@ -210,6 +210,9 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 		return false;
 	};
 
+	/*
+	 *	Below are operations on indexedDB.
+	 */
 	$scope.getSavedData = function() {
 		$scope.historyObjectStore.getAll().then(function(result) {
 			$scope.db = {savedObjArr:[], dbgroups:[], groupName:null, reqName:null};
@@ -247,6 +250,31 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 			$scope.getSavedData();
 		});
 		
+	};
+
+	$scope.reloadData = function(id) {
+		$scope.historyObjectStore.find(id).then(function(data) {
+			var reqData = angular.fromJson(data.req);
+
+			$scope.requestConfig.basePath = reqData.basePath;
+			RA.all('calls').getList({basePath:$scope.requestConfig.basePath}).then(
+				function(calls) {
+					$scope.calls = calls;
+					$scope.fullPaths = _(calls).pluck('fullPath').uniq().value();
+					$scope.showRequestButton.flag = false;
+					$scope.selectedCallPath = reqData.fullPath;
+					$scope.resetAll();
+					
+					$scope.selectedDocIndex = _.findIndex($scope.calls, {fullPath:reqData.fullPath, method:reqData.method});
+					$scope.selectedCallInfo = angular.fromJson(reqData);
+					$scope.buttonClasses.availableBtn[reqData.method] = false;
+					$scope.buttonClasses.deprecatedBtn[reqData.method] = false;
+					$scope.buttonClasses.activeBtn = {};
+					$scope.buttonClasses.activeBtn[reqData.method] = true;
+					$scope.showRequestButton.go = true;
+				}
+			);			
+		});
 	};
 
 	$scope.openDlg = function (size) {
