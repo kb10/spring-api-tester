@@ -18,7 +18,7 @@
 							}">
 							{{obj.method}}
 						</span>
-						<span class="text-center">{{obj.name}}</span>
+						<span class="text-center" ng-click="reloadData(obj.id)">{{obj.name}}</span>
 						<span class="pull-right glyphicon glyphicon-remove-circle" ng-click="deleteData(obj.id)"></span>
 					</div>
 				</li>
