@@ -11,7 +11,7 @@
 			</select>
 		</div>
 		<div class="col-md-12 form-group"  ng-show="calls">
-			<select ui-select2 ng-model="selectedCallPath" class="form-control--fullpath" ng-change="selectFullPath()">
+			<select ui-select2 ng-model="selectedCallPath" class="form-control--fullpath" ng-change="resetAll()">
 				<option ng-repeat="path in fullPaths" value="{{path}}">
 					{{path}}
 				</option>
