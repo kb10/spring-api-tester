@@ -10,7 +10,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
@@ -20,11 +22,9 @@ import org.apache.commons.logging.LogFactory;
 import org.javaruntype.type.TypeParameter;
 import org.javaruntype.type.Types;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -53,6 +53,8 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 	
 	private String prefix = "";
 	
+	private Map<String, String> defaultReqParams = new HashMap<String, String>();
+
 	private List<ApiCall> apiCalls = null;
 	
 	
@@ -206,6 +208,7 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 								a.setHandlerClass(handlerClass);
 								a.setHandlerMethod(handlerMethod);
 								a.setMethod(method.toString());
+								a.setDefaultRequestParameters(getDefaultReqParams());
 								a.setRequestParameters(getRequestParameters(m));
 								a.setRequestBodyParameters(getRequestBodyParameters(m));
 								a.setPathParameters(getPathParameters(m));
@@ -404,6 +407,14 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 
 	public void setService(ApitesterService service) {
 		this.service = service;
+	}
+
+	public Map<String, String> getDefaultReqParams() {
+		return defaultReqParams;
+	}
+
+	public void setDefaultReqParams(Map<String, String> defaultReqParams) {
+		this.defaultReqParams = defaultReqParams;
 	}
 
 	
