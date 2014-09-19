@@ -1,7 +1,9 @@
 package com.cinefms.apitester.model.info;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -23,6 +25,8 @@ public class ApiCall {
 	private String deprecatedSince;
 
 	private boolean deprecated;
+	
+	private Map<String, String> defaultRequestParameters = new HashMap<String, String>();
 	
 	private List<ApiCallParameter> pathParameters = new ArrayList<ApiCallParameter>();
 	private List<ApiCallParameter> requestParameters = new ArrayList<ApiCallParameter>();
@@ -121,6 +125,15 @@ public class ApiCall {
 
 	public void setDeprecated(boolean deprecated) {
 		this.deprecated = deprecated;
+	}
+
+	public Map<String, String> getDefaultRequestParameters() {
+		return defaultRequestParameters;
+	}
+
+	public void setDefaultRequestParameters(
+			Map<String, String> defaultRequestParameters) {
+		this.defaultRequestParameters = defaultRequestParameters;
 	}
 
 	public List<ApiCallParameter> getPathParameters() {
