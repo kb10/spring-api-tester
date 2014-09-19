@@ -38,8 +38,21 @@
 				</span>
 			</div>
 		</div>
+		<div class="col-md-12 form-group" ng-show="selectedCallInfo.defaultRequestParameters">
+			<h4>Default Request Parameters: </h4>
+			<div ng-repeat="reqParam in defaultReqParams" class="row">
+				<div class="col-md-4">
+					<label>
+						{{reqParam.key}}
+					</label>
+				</div>
+				<div class="col-md-8">
+					<input type="text" class="form-control" ng-model="reqParam.value" ng-disabled="true">
+				</div>
+			</div>
+		</div>
 		<div class="col-md-12 form-group" ng-show="selectedCallInfo.pathParameters.length">
-			<h4>Path Variables<font color="red">*</font></h4>
+			<h4>Path Variables: <font color="red">*</font></h4>
 			<div ng-repeat="pathParam in selectedCallInfo.pathParameters" class="row">
 				<div class="col-md-2"> 
 					<label>

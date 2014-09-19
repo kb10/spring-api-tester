@@ -19,6 +19,7 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 		$scope.requestObject = {url : "", requestBody : {}, params : {}};
 		$scope.responseObject = {};
 		$scope.selectedCallInfo = {};
+		$scope.defaultReqParams = [];
 	};
 
 	$scope.updateFullpathOptions = function() {
@@ -68,6 +69,11 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 		return $scope.buttonClasses.activeBtn[method];
 	};
 
+	$scope.defaultReqParams = [];
+	$scope.requestObject = {};
+	$scope.responseObject = {};
+	$scope.communicatingToServer = false;
+
 	$scope.selectRequest = function(method, fullPath) {
 		$scope.requestObject = {url : "", requestBody : {}, params : {}};
 		$scope.responseObject = {};
@@ -78,11 +84,21 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 		$scope.buttonClasses.activeBtn = {};
 		$scope.buttonClasses.activeBtn[method] = true;
 		$scope.showRequestButton.go = true;
+		$scope.defaultReqParams = $scope.setDefaultReqParams($scope.selectedCallInfo.defaultRequestParameters);
 	};
 
-	$scope.requestObject = {};
-	$scope.responseObject = {};
-	$scope.communicatingToServer = false;
+	$scope.setDefaultReqParams = function(params) {
+		var result = [];
+		var keys = _.keys(params);
+		for(i = 0; i < keys.length; i++) {
+			a = {};
+			key = keys[i];
+			a.key = key;
+			a.value = params[key];
+			result.push(a);
+		}
+		return result;
+	};
 
 	$scope.timer;
 	$scope.counter = undefined;
@@ -173,6 +189,12 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 		$scope.requestObject.url = requestUrl;
 
 		var requestParams = {};
+		if($scope.defaultReqParams.length > 0) {
+			for(i = 0; i < $scope.defaultReqParams.length; i++) {
+				requestParams[$scope.defaultReqParams[i].key] = $scope.defaultReqParams[i].value;
+			}
+		}
+
 		if($scope.selectedCallInfo.requestParameters.length > 0) {
 			for(i = 0; i < $scope.selectedCallInfo.requestParameters.length; i++) {
 				requestParams[$scope.selectedCallInfo.requestParameters[i].parameterName] = 
@@ -272,6 +294,7 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 					$scope.buttonClasses.activeBtn = {};
 					$scope.buttonClasses.activeBtn[reqData.method] = true;
 					$scope.showRequestButton.go = true;
+					$scope.defaultReqParams = $scope.setDefaultReqParams($scope.selectedCallInfo.defaultRequestParameters);
 				}
 			);			
 		});
