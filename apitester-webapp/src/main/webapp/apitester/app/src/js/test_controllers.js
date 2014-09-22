@@ -25,13 +25,17 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 	$scope.updateFullpathOptions = function() {
 		RA.all('calls').getList({basePath:$scope.requestConfig.basePath}).then(
 			function(calls) {
-				$scope.calls = calls;
-				$scope.fullPaths = _(calls).pluck('fullPath').uniq().value();
-				$scope.showRequestButton.flag = false;
-				$scope.selectedCallPath = $scope.fullPaths[0];
-				$scope.resetAll();
+				$scope.setFullPath(calls);
 			}
 		);
+	};
+
+	$scope.setFullPath = function(calls, fullPath) {
+		$scope.calls = calls;
+		$scope.fullPaths = _(calls).pluck('fullPath').uniq().value();
+		$scope.showRequestButton.flag = false;
+		$scope.selectedCallPath = fullPath ? fullPath : $scope.fullPaths[0];
+		$scope.resetAll();
 	};
 
 	$scope.selectedDocIndex;
@@ -77,8 +81,12 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 	$scope.selectRequest = function(method, fullPath) {
 		$scope.requestObject = {url : "", requestBody : {}, params : {}};
 		$scope.responseObject = {};
+		$scope.setRequestInfo(method,fullPath);
+	};
+
+	$scope.setRequestInfo = function(method, fullPath, reqData) {
 		$scope.selectedDocIndex = _.findIndex($scope.calls, {fullPath:fullPath, method:method});
-		$scope.selectedCallInfo = angular.copy($scope.calls[$scope.selectedDocIndex]);
+		$scope.selectedCallInfo = reqData ? angular.fromJson(reqData) : angular.copy($scope.calls[$scope.selectedDocIndex]);
 		$scope.buttonClasses.availableBtn[method] = false;
 		$scope.buttonClasses.deprecatedBtn[method] = false;
 		$scope.buttonClasses.activeBtn = {};
@@ -281,20 +289,8 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 			$scope.requestConfig.basePath = reqData.basePath;
 			RA.all('calls').getList({basePath:$scope.requestConfig.basePath}).then(
 				function(calls) {
-					$scope.calls = calls;
-					$scope.fullPaths = _(calls).pluck('fullPath').uniq().value();
-					$scope.showRequestButton.flag = false;
-					$scope.selectedCallPath = reqData.fullPath;
-					$scope.resetAll();
-					
-					$scope.selectedDocIndex = _.findIndex($scope.calls, {fullPath:reqData.fullPath, method:reqData.method});
-					$scope.selectedCallInfo = angular.fromJson(reqData);
-					$scope.buttonClasses.availableBtn[reqData.method] = false;
-					$scope.buttonClasses.deprecatedBtn[reqData.method] = false;
-					$scope.buttonClasses.activeBtn = {};
-					$scope.buttonClasses.activeBtn[reqData.method] = true;
-					$scope.showRequestButton.go = true;
-					$scope.defaultReqParams = $scope.setDefaultReqParams($scope.selectedCallInfo.defaultRequestParameters);
+					$scope.setFullPath(calls, reqData.fullPath);
+					$scope.setRequestInfo(reqData.method, reqData.fullPath, reqData);
 				}
 			);			
 		});
