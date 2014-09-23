@@ -40,14 +40,14 @@
 		</div>
 		<div class="col-md-12 form-group" ng-show="selectedCallInfo.defaultRequestParameters">
 			<h4>Default Request Parameters: </h4>
-			<div ng-repeat="reqParam in defaultReqParams" class="row">
+			<div ng-repeat="(key, value) in selectedCallInfo.defaultRequestParameters" class="row">
 				<div class="col-md-4">
 					<label>
-						{{reqParam.key}}
+						{{key}}
 					</label>
 				</div>
 				<div class="col-md-8">
-					<input type="text" class="form-control" ng-model="reqParam.value">
+					<input type="text" class="form-control" ng-model="selectedCallInfo.defaultRequestParameters[key]">
 				</div>
 			</div>
 		</div>
