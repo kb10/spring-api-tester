@@ -38,7 +38,7 @@
 						{{param.parameterName}}
 					</td>
 					<td>
-						<a popover-trigger="mouseenter" popover-placement="right" popover-popup-delay="200" popover="{{param.parameterType.className}}"  ng-click="showParamDetails(param.parameterType.className)">
+						<a popover-trigger="mouseenter" popover-placement="right" popover-popup-delay="200" popover="{{param.parameterType.className}}"  ng-click="showParamDetails(param.parameterType.className, $event)">
 							{{param.parameterType.className | shorttype}}
 						</a>
 					</td>
@@ -58,7 +58,7 @@
 						{{param.parameterName}}
 					</td>
 					<td>
-						<a popover-trigger="mouseenter" popover-placement="right" popover-popup-delay="200" popover="{{param.parameterType.className}}" ng-click="showParamDetails(param.parameterType.className)">
+						<a popover-trigger="mouseenter" popover-placement="right" popover-popup-delay="200" popover="{{param.parameterType.className}}" ng-click="showParamDetails(param.parameterType.className, $event)">
 							{{param.parameterType.className | shorttype}}
 						</a>
 						<span ng-show="param.collection"> [ ]</span>
@@ -81,7 +81,7 @@
 						{{param.parameterName}}
 					</td>
 					<td>
-						<a popover-trigger="mouseenter" popover-placement="right" popover-popup-delay="200" popover="{{param.parameterType.className}}" ng-click="showParamDetails(param.parameterType.className)">
+						<a popover-trigger="mouseenter" popover-placement="right" popover-popup-delay="200" popover="{{param.parameterType.className}}" ng-click="showParamDetails(param.parameterType.className, $event)">
 							{{param.parameterType.className | shorttype}}
 						</a>
 						<span ng-show="param.collection"> [ ]</span>
@@ -97,7 +97,7 @@
 						<span class="badge pull-left" popover-trigger="mouseenter" popover-placement="right" popover-popup-delay="200" popover="Return Type">RETURN</span>
 					</td>
 					<td>
-						<a popover-trigger="mouseenter" popover-placement="right" popover-popup-delay="200" popover="{{apicall.returnType.returnClass.className}}" ng-click="showParamDetails(apicall.returnType.returnClass.className)">
+						<a popover-trigger="mouseenter" popover-placement="right" popover-popup-delay="200" popover="{{apicall.returnType.returnClass.className}}" ng-click="showParamDetails(apicall.returnType.returnClass.className, $event)">
 							{{apicall.returnType.returnClass.className | shorttype}}
 						</a>
 						<span ng-show="apicall.returnType.collection"> [ ]</span>

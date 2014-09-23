@@ -11,7 +11,12 @@ apitester.controller('docDetailController', ['$scope','$http','$location', funct
 		};		
 	};
 
-	$scope.showParamDetails = function(name){
+	$scope.showParamDetails = function(name, event){
+		if(event) {
+			event.stopPropagation();
+			event.preventDefault();
+		}
+		
 		if(name.indexOf('java.') >= 0) {
 			return;
 		}
