@@ -19,7 +19,6 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 		$scope.requestObject = {url : "", requestBody : {}, params : {}};
 		$scope.responseObject = {};
 		$scope.selectedCallInfo = {};
-		$scope.defaultReqParams = [];
 	};
 
 	$scope.updateFullpathOptions = function() {
@@ -73,7 +72,6 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 		return $scope.buttonClasses.activeBtn[method];
 	};
 
-	$scope.defaultReqParams = [];
 	$scope.requestObject = {};
 	$scope.responseObject = {};
 	$scope.communicatingToServer = false;
@@ -92,20 +90,6 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 		$scope.buttonClasses.activeBtn = {};
 		$scope.buttonClasses.activeBtn[method] = true;
 		$scope.showRequestButton.go = true;
-		$scope.defaultReqParams = $scope.setDefaultReqParams($scope.selectedCallInfo.defaultRequestParameters);
-	};
-
-	$scope.setDefaultReqParams = function(params) {
-		var result = [];
-		var keys = _.keys(params);
-		for(i = 0; i < keys.length; i++) {
-			a = {};
-			key = keys[i];
-			a.key = key;
-			a.value = params[key];
-			result.push(a);
-		}
-		return result;
 	};
 
 	$scope.timer;
@@ -197,11 +181,9 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 		$scope.requestObject.url = requestUrl;
 
 		var requestParams = {};
-		if($scope.defaultReqParams.length > 0) {
-			for(i = 0; i < $scope.defaultReqParams.length; i++) {
-				requestParams[$scope.defaultReqParams[i].key] = $scope.defaultReqParams[i].value;
-			}
-		}
+		angular.forEach($scope.selectedCallInfo.defaultRequestParameters, function(value, key){
+			requestParams[key] = value;
+		});
 
 		if($scope.selectedCallInfo.requestParameters.length > 0) {
 			for(i = 0; i < $scope.selectedCallInfo.requestParameters.length; i++) {
@@ -312,9 +294,7 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 		  $scope.db.groupName = names.selectgroup ? names.selectgroup : (names.creategroup ? names.creategroup : 'defaultGroup');
 		  $scope.db.reqName = names.requsestname ? names.requsestname : 'defaultName';
 		  $scope.saveData();
-		}, function () {
-		  console.log('save dialog dismissed at: ' + new Date());
-		});
+		}, function() {});
 	};
 
 	$scope.exportData = function() {
@@ -324,7 +304,6 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 		exportDataWin.document.write("\n");
 		exportDataWin.document.write(angular.toJson($scope.responseObject, true));
 		exportDataWin.document.write("</pre>");
-
 	};
 
 }]);
