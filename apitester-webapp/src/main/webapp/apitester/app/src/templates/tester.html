@@ -123,7 +123,7 @@
 			<div class="col-md-12 form-group" ng-show="selectedCallInfo.requestBodyParameters.length">
 				<h4>Request Body: </h4>
 				<div class="json-editor--requestbody">
-					<my-json-editor id="requestbody_jsoneditor" ng-model="requestObject.requestBody" defaultmode="code"/>
+					<my-json-editor id="requestbody_jsoneditor" ng-model="selectedCallInfo.requestBodyParameters[0].value" defaultmode="code"/>
 				</div>
 			</div>
 			<div class="col-md-12 form-group" ng-show="showRequestButton.go">
