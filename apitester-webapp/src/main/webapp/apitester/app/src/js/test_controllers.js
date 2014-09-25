@@ -12,6 +12,15 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 		}
 	);
 
+
+	$scope.saveExpanded = false;
+
+	$scope.toggleSave = function() {
+		$scope.saveExpanded = !$scope.saveExpanded;		
+		console.log("saveExpanded: "+$scope.saveExpanded);
+	}
+
+
 	$scope.resetAll = function() {
 		$scope.selectedDocIndex = {};
 		$scope.buttonClasses = {disabledBtn:{}, availableBtn:{}, deprecatedBtn:{}, activeBtn:{}};
