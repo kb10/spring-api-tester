@@ -4,11 +4,10 @@ apitester.controller('docDetailController', ['$scope','$http','$location', funct
 		showDetail:false
 	};
 
-	$scope.showDocDetails = function() {
-		$scope.docparam = {
-			detail:'"{none}"',
-			showDetail:false
-		};		
+	$scope.expanded = false;
+
+	$scope.toggle = function() {
+		$scope.expanded = !$scope.expanded;
 	};
 
 	$scope.showParamDetails = function(name, event){

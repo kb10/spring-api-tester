@@ -1,26 +1,25 @@
 <div ng-controller="docDetailController">
-	<div ng-click="selectCall($index)"
-					ng-class="{
-						'panel panel-default' : !isDocSelected($index),
-						'panel panel-success' : isDocSelected($index)
-					}">
-		<div class="panel-heading" ng-click="showDocDetails()">
-			<h4 class="panel-title" >
-				{{apicall.fullPath}}
-				<span class="label pull-right" ng-class="
-					{
-						'label-primary':apicall.method=='POST',
-						'label-success':apicall.method=='GET',
-						'label-info':apicall.method=='PUT',
-						'label-danger':apicall.method=='DELETE',
-						'label-default':apicall.method=='OPTIONS',
-					}
-					">{{apicall.method}}
-				</span>
-			</h4>
+	<div ng-click="toggle()" class="row">
+		<div class="col-md-12">
+			<div class="well well-sm">
+				<h4>{{apicall.fullPath}}
+					<span class="label pull-right" ng-class="
+						{
+							'label-primary':apicall.method=='POST',
+							'label-success':apicall.method=='GET',
+							'label-info':apicall.method=='PUT',
+							'label-danger':apicall.method=='DELETE',
+							'label-default':apicall.method=='OPTIONS',
+						}
+						">{{apicall.method}}
+					</span>
+				</h4>
+			</div>
 		</div>
-		<div ng-show="isDocSelected($index)">
-			<table class="table table-bordered" style="word-wrap: break-word; word-break: break-all" ng-show="apicall.pathParameters.length || apicall.requestParameters.length || apicall.requestBodyParameters.length">
+	</div>
+	<div class="row" ng-show="expanded">
+		<div class="col-md-12">
+			<table class="table table-striped" style="word-wrap: break-word; word-break: break-all" ng-show="apicall.pathParameters.length || apicall.requestParameters.length || apicall.requestBodyParameters.length">
 				<tr>
 					<th style="width: 5%">*</th>
 					<th style="width: 5%"></th>
@@ -91,7 +90,7 @@
 						<span ng-show="param.format">{{param.format}}</span><span ng-show="!param.format">--</span>
 					</td>
 				</tr>
-				<tr ng-show="apicall.returnType.returnClass.className != 'void'">
+				<tr>
 					<td>--</td>
 					<td colspan="2">
 						<span class="badge pull-left" popover-trigger="mouseenter" popover-placement="right" popover-popup-delay="200" popover="Return Type">RETURN</span>
@@ -106,10 +105,15 @@
 					<td>--</td>
 				</tr>
 			</table>
-			<div ng-show="!isNoneParam() && docparam.showDetail">
-				<pre>{{docparam.detail}}</pre>
-			</div>
+		</div>
+		<div ng-show="!isNoneParam() && docparam.showDetail" class="col-md-12">
+			<pre>{{docparam.detail}}</pre>
+		</div>
+ 		<div class="col-md-12">
 			<div ng-bind-html="apicall.description | markdown">{{apicall.description | markdown}}</div>
+		</div>
+		<div>
+			&nbsp;
 		</div>
 	</div>
 </div>
