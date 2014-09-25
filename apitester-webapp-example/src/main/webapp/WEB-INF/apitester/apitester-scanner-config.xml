@@ -30,7 +30,7 @@
 	">
 
 	<bean class="com.cinefms.apitester.springmvc.crawlers.SpringAnnotationCrawler">
-		<property name="prefix" value="/"></property>
+		<property name="prefix" value="/api"></property>
 	</bean>
 
 </beans>
