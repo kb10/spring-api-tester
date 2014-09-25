@@ -201,6 +201,10 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 			}
 		}
 		$scope.requestObject.params = requestParams;
+
+        if($scope.selectedCallInfo.requestBodyParameters.length > 0) {
+            $scope.requestObject.requestBody = $scope.selectedCallInfo.requestBodyParameters[0].value;
+        }
 	};
 
 	$scope.hideConfigOfResponse = true;
