@@ -185,6 +185,9 @@ public class ApiCall {
 		for(ApiCallParameter acp : getPathParameters()) {
 			out.add(acp.getParameterType());
 		}
+		for(ApiCallParameter acp : getRequestBodyParameters()) {
+			out.add(acp.getParameterType());
+		}
 		if(getReturnType()!=null && getReturnType().getReturnClass()!=null) {
 			out.add(getReturnType().getReturnClass());
 		}
