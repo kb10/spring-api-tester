@@ -33,3 +33,49 @@ apitester.directive('myJsonEditor', function($parse) {
 		}
 	};
 });
+
+apitester.directive('myJsonEditor', function($parse) {
+	return {
+		restrict : 'A',
+		require: 'ngModel',
+		replace : false,
+		transclude : false,
+		link: function(scope, el, attrs, ngModel) {
+
+			ngModel.$formatters.push(function(modelValue) {
+				if(angular.isUndefined(modelValue)) {
+					return {};
+				}
+				return modelValue;
+			})
+
+			ngModel.$render = function() {
+			    editor.set(ngModel.$viewValue);
+			};
+
+
+			var options = { 
+				mode : attrs.defaultmode, 
+				modes: ['code', 'form', 'text', 'tree', 'view'], 
+				search: true
+			};
+
+			var editor = new JSONEditor(el[0], options, {});
+
+			var processChange = function () {
+				var json = editor.get();
+				//ngModel.$setViewValue(json);
+              	scope.$apply(function (scope) {
+                	ngModel.$setViewValue(json);
+               	});
+
+				console.log("----- new view value: ");
+				console.log(ngModel.$viewValue);
+				ngModel.$render();
+            };
+
+            el.on('focusout',processChange);
+
+		}
+	};
+});

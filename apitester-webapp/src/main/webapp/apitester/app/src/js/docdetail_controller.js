@@ -10,32 +10,6 @@ apitester.controller('docDetailController', ['$scope','$http','$location', funct
 		$scope.expanded = !$scope.expanded;
 	};
 
-	$scope.showParamDetails = function(name, event){
-		if(event) {
-			event.stopPropagation();
-			event.preventDefault();
-		}
-		
-		if(name.indexOf('java.') >= 0) {
-			return;
-		}
-
-		var baseUrl = $scope.getBaseUrl();
-		$scope.docparam = {
-			detail:'"{none}"',
-			showDetail:false
-		};		
-		$http({	method : 'GET',
-			url : baseUrl + '/api/objects/'+name+'/details',
-			params : '',
-			data : ''}). 
-		success(function(data, status, headers, config, statusText) {
-			$scope.docparam.detail = angular.toJson(data, true);
-			$scope.docparam.showDetail = true;
-		}).error(function(data, status, headers, config, statusText) {
-			$scope.docparam.detail = 'ERROR happened!';
-		});
-	};
 
 	$scope.isNoneParam = function() {
 		if($scope.docparam.detail.indexOf('{none}') >= 0) {
@@ -46,7 +20,42 @@ apitester.controller('docDetailController', ['$scope','$http','$location', funct
 
 	$scope.getBaseUrl = function() {
 		var absUrl = $location.absUrl(),
-		    pos = absUrl.indexOf('apitester');
+		    pos = absUrl.lastIndexOf('apitester');
 		return absUrl.substring(0, pos + 9);
 	};
  }]);
+
+apitester.controller('ParamController', ['$scope','$http','$location', function($scope, $http, $location) {
+
+	$scope.expanded = false;
+
+	$scope.toggle = function() {
+		console.log('toggle');
+		$scope.expanded = !$scope.expanded;
+		$scope.showParamDetails();
+	};
+
+	$scope.showParamDetails = function(){
+		
+		if($scope.param.parameterType.className.indexOf('java.') >= 0) {
+			return;
+		}
+
+		var baseUrl = $scope.getBaseUrl();
+		$scope.docparam = {
+			detail:'"{none}"',
+			showDetail:false
+		};		
+		url = baseUrl + '/api/objects/'+$scope.param.parameterType.className+'/details';
+		console.log(url);
+		$http({	method : 'GET',
+			url : url,
+			params : '',
+			data : ''}). 
+		success(function(data, status, headers, config, statusText) {
+			$scope.paramDetail = angular.toJson(data, true);
+		}).error(function(data, status, headers, config, statusText) {
+			$scope.paramDetail = 'ERROR happened!';
+		});
+	};
+}]);
