@@ -1,5 +1,7 @@
 apitester.controller('ObjectController', [ '$scope' , '$location', '$http', 'Restangular', function($scope, $location, $http, RA) {
 
+	$scope.searchTerm = "";
+
 	$scope.getBaseUrl = function() {
 		var absUrl = $location.absUrl(),
 		    pos = absUrl.lastIndexOf('apitester');
@@ -13,13 +15,28 @@ apitester.controller('ObjectController', [ '$scope' , '$location', '$http', 'Res
 	var baseUrl = $scope.getBaseUrl();
 	url = baseUrl + '/api/objects/';
 
-	$http({	method : 'GET',
-		url : url,
-		params : '',
-		data : ''}). 
-	success(function(data, status, headers, config, statusText) {
-		$scope.objects = data;
-	});
+	$scope.update = function() {
+
+		var params = {
+			params : {
+				searchTerm : $scope.seachTerm
+			}
+		};
+	
+		a = { searchTerm : $scope.searchTerm }; 
+	
+		console.log(a);
+	
+		$http({	
+			method : 'GET',
+			url : url,
+			params : a,
+			data : ''
+		}). 
+		success(function(data, status, headers, config, statusText) {
+			$scope.objects = data;
+		});
+	};
 
 	$scope.select = function(a) {
 		$scope.object=a;
@@ -35,6 +52,7 @@ apitester.controller('ObjectController', [ '$scope' , '$location', '$http', 'Res
 		});
 	};
 
+	$scope.update();
 
 }]);
 

@@ -64,8 +64,8 @@ public class ApiTesterController {
 
 	@RequestMapping(value="/objects",method=RequestMethod.GET,produces={"application/json"})
 	@ResponseBody
-	public List<ApiObject> getObjects() {
-		return getService().getObjects();
+	public List<ApiObject> getObjects(@RequestParam(required=false,defaultValue="") String searchTerm) {
+		return getService().getObjects(searchTerm);
 	}
 
 	@RequestMapping(value="/objects/{className:.*}",method=RequestMethod.GET,produces={"application/json"})

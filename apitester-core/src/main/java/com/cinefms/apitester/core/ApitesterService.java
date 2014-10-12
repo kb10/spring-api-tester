@@ -89,16 +89,20 @@ public class ApitesterService implements ApplicationContextAware {
 		return out;
 	}
 
-	public List<ApiObject> getObjects() {
+	public List<ApiObject> getObjects(String searchTerm) {
 		Set<ApiObject> out = new TreeSet<ApiObject>();
 		for(ApiCall ac : getCallsInternal()) {
-			out.addAll(ac.getApiObjects());
+			for(ApiObject ao : ac.getApiObjects()) {
+				if(ao.getClassName().toUpperCase().contains(searchTerm.toUpperCase())) {
+					out.add(ao);
+				}
+			}
 		}
 		return new ArrayList<ApiObject>(out);
 	}
 
 	public ApiObject getObject(String className) {
-		for(ApiObject ao : getObjects()) {
+		for(ApiObject ao : getObjects(className)) {
 			System.err.println("get object: "+className+" / found object: "+ao.getClassName());
 			if(ao.getClassName().compareTo(className)==0) {
 				System.err.println("found an object, description is: "+ao.getDescription());
