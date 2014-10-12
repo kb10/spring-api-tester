@@ -101,6 +101,7 @@ public class ApitesterService implements ApplicationContextAware {
 		for(ApiObject ao : getObjects()) {
 			System.err.println("get object: "+className+" / found object: "+ao.getClassName());
 			if(ao.getClassName().compareTo(className)==0) {
+				System.err.println("found an object, description is: "+ao.getDescription());
 				return ao;
 			}
 		}

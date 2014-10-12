@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(value={ ElementType.PARAMETER, ElementType.METHOD } )
+@Target(value={ ElementType.TYPE, ElementType.PARAMETER, ElementType.METHOD } )
 public @interface ApiDescription {
 
 	String value() default "";

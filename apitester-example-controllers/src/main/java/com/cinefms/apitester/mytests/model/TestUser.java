@@ -1,5 +1,8 @@
 package com.cinefms.apitester.mytests.model;
 
+import com.cinefms.apitester.annotations.ApiDescription;
+
+@ApiDescription(file="TestUser.md")
 public class TestUser {
 	private String name;
 	private String email;

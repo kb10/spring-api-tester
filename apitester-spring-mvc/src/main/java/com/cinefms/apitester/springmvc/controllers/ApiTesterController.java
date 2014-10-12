@@ -68,13 +68,13 @@ public class ApiTesterController {
 		return getService().getObjects();
 	}
 
-	@RequestMapping(value="/objects/{className}",method=RequestMethod.GET,produces={"application/json"})
+	@RequestMapping(value="/objects/{className:.*}",method=RequestMethod.GET,produces={"application/json"})
 	@ResponseBody
 	public ApiObject getObject(@PathVariable String className) {
 		return getService().getObject(className);
 	}
 	
-	@RequestMapping(value="/objects/{className}/details",method=RequestMethod.GET,produces={"application/json"})
+	@RequestMapping(value="/objects/{className:.*}/details",method=RequestMethod.GET,produces={"application/json"})
 	@ResponseBody
 	public Object getObjectDetails(@PathVariable String className,
 			@RequestParam(required=true, defaultValue="default") String requireParam,
