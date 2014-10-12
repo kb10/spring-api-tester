@@ -16,6 +16,7 @@
     "tests"
   ],
   "dependencies": {
+    "lodash": "~2.4.1",
     "underscore": "~1.7.0",
     "jshint": "~2.5.1",
     "markdown": "~0.5.0",
