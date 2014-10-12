@@ -53,7 +53,7 @@ apitester.controller('ObjectController', [ '$scope' , '$location', '$http', 'Res
 	};
 
 	$scope.update();
-
+	$scope.$watch("searchTerm", _.debounce($scope.update, 500));
 }]);
 
 
