@@ -12,6 +12,9 @@ var apitester = angular.module('fgApitester',
 			.when('/api/browse',{
 				templateUrl: 'app/src/templates/apibrowser.html'
 			})
+			.when('/api/objects',{
+				templateUrl: 'app/src/templates/objects.html'
+			})
 			.when('/', {
 				templateUrl: 'app/src/templates/tester.html'
 			})

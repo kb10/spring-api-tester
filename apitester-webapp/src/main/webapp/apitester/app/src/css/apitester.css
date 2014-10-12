@@ -9,13 +9,6 @@
 	height:400px
 }
 
-.pane-area__indexdb,
-.pane-area__tester,
-.pane-area__document {
-	height: 100%;
-	overflow-y: auto
-}
-
 .parameter-header--required-symbol,
 .parameter-lable--required-symbol {
 	color: red;

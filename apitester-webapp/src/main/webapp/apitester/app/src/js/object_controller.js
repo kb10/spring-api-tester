@@ -1,0 +1,41 @@
+apitester.controller('ObjectController', [ '$scope' , '$location', '$http', 'Restangular', function($scope, $location, $http, RA) {
+
+	$scope.getBaseUrl = function() {
+		var absUrl = $location.absUrl(),
+		    pos = absUrl.lastIndexOf('apitester');
+		return absUrl.substring(0, pos + 9);
+	};
+
+	$scope.selected = {
+		object : undefined
+	};
+
+	var baseUrl = $scope.getBaseUrl();
+	url = baseUrl + '/api/objects/';
+
+	$http({	method : 'GET',
+		url : url,
+		params : '',
+		data : ''}). 
+	success(function(data, status, headers, config, statusText) {
+		$scope.objects = data;
+	});
+
+	$scope.select = function(a) {
+		$scope.object=a;
+		$scope.active =  a.className;
+		url = baseUrl + '/api/objects/'+$scope.object.className+"/details";
+
+		$http({	method : 'GET',
+			url : url,
+			params : '',
+			data : ''}). 
+		success(function(data, status, headers, config, statusText) {
+			$scope.objectdetails = angular.toJson(angular.fromJson(data),true);
+		});
+	};
+
+
+}]);
+
+

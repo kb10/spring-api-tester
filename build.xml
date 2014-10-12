@@ -14,6 +14,9 @@
 		</sync>	
 	</target>
 	<target name="sync">
+		<sync todir="apitester-webapp/src/main/webapp/apitester">
+			<fileset dir="${webapps}/apitester/apitester"/>
+		</sync>
 		<sync todir="${webapps}/apitester/apitester">
 			<fileset dir="apitester-webapp/src/main/webapp/apitester"/>
 		</sync>
