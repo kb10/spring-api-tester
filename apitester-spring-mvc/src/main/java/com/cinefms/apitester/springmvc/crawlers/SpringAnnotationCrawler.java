@@ -317,6 +317,11 @@ public class SpringAnnotationCrawler implements ApiCrawler,
 				ao.setPrimitive(true);
 				break;
 			}
+			if(ao.getClassName().compareTo(s+"[]")==0) {
+				ao.setPrimitive(true);
+				out.setCollection(true);
+				break;
+			}
 		}
 		if(!ao.isPrimitive()) {
 			try {
