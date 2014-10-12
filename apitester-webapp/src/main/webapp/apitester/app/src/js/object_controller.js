@@ -16,7 +16,7 @@ apitester.controller('ObjectController', [ '$scope' , '$location', '$http', 'Res
 	url = baseUrl + '/api/objects/';
 
 	$scope.update = function() {
-
+		$scope.objects = [];
 		var params = {
 			params : {
 				searchTerm : $scope.seachTerm
@@ -55,5 +55,3 @@ apitester.controller('ObjectController', [ '$scope' , '$location', '$http', 'Res
 	$scope.update();
 	$scope.$watch("searchTerm", _.debounce($scope.update, 500));
 }]);
-
-

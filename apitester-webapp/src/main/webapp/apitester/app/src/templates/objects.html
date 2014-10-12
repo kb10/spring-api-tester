@@ -4,6 +4,8 @@
 			<li>
 				<input class="form-control" ng-model="searchTerm">
 			</li>
+		</ul>
+		<ul class="nav nav-pills nav-stacked limitnav" >
 			<li ng-repeat="object in objects" class="" ng-class="{'active' : active==object.className}" ng-if="!object.primitive">
 				<a ng-click="select(object)">{{object.className |shorttype}}</a>
 			</li>
