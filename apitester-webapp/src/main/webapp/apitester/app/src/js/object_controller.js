@@ -12,10 +12,9 @@ apitester.controller('ObjectController', [ '$scope' , '$location', '$http', 'Res
 		object : undefined
 	};
 
-	var baseUrl = $scope.getBaseUrl();
-	url = baseUrl + '/api/objects/';
-
 	$scope.update = function() {
+		var baseUrl = $scope.getBaseUrl();
+		var url = baseUrl + '/api/objects/';
 		$scope.objects = [];
 		var params = {
 			params : {

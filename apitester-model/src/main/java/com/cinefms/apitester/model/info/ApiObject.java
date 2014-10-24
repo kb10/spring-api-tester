@@ -5,6 +5,7 @@ public class ApiObject implements Comparable<ApiObject> {
 	private String className;
 	private String description;
 	private boolean primitive;
+	private boolean collection;
 
 	public String getClassName() {
 		return className;
@@ -41,6 +42,14 @@ public class ApiObject implements Comparable<ApiObject> {
 
 	public void setPrimitive(boolean primitive) {
 		this.primitive = primitive;
+	}
+
+	public boolean isCollection() {
+		return collection;
+	}
+
+	public void setCollection(boolean collection) {
+		this.collection = collection;
 	}
 	
 }

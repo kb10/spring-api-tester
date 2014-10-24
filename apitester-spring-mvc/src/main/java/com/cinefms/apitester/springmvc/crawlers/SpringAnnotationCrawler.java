@@ -312,6 +312,11 @@ public class SpringAnnotationCrawler implements ApiCrawler,
 			}
 		}
 		
+		if(ao.getClassName().endsWith("[]")) {
+			ao.setClassName(ao.getClassName().substring(0, ao.getClassName().length()-2));
+			ao.setCollection(true);
+		}
+		
 		for(String s : new String[] {"void","byte","short","int","long","double","float","char","boolean"}) {
 			if(ao.getClassName().compareTo(s)==0) {
 				ao.setPrimitive(true);
@@ -325,7 +330,6 @@ public class SpringAnnotationCrawler implements ApiCrawler,
 		}
 		if(!ao.isPrimitive()) {
 			try {
-				
 				Class<?> c = Class.forName(ao.getClassName());
 				ApiDescription ad = c.getAnnotation(ApiDescription.class);
 				if (ad != null) {
