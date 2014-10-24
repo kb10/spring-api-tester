@@ -19,7 +19,7 @@
 	</div>
 	<div class="row" ng-show="expanded">
 		<div class="col-md-12">
-			<table class="table table-striped" style="word-wrap: break-word; word-break: break-all" ng-show="apicall.pathParameters.length || apicall.requestParameters.length || apicall.requestBodyParameters.length">
+			<table class="table table-striped" style="word-wrap: break-word; word-break: break-all">
 				<tr>
 					<th style="width: 5%">*</th>
 					<th style="width: 5%"></th>
@@ -47,10 +47,10 @@
 							<span ng-show="param.format">{{param.format}}</span><span ng-show="!param.format">--</span>
 						</td>
 					</tr>
-					<tr>
-						<div ng-if="expanded">
+					<tr ng-if="expanded">
+						<td colspan="6">
 							<pre>{{paramDetail}}</pre>
-						</div>
+						</td>
 					</tr>
 				</tbody>
 				<tbody ng-repeat="param in apicall.requestParameters" ng-controller="ParamController">
@@ -110,7 +110,7 @@
 							<pre>{{paramDetail}}</pre>
 						</td>
 					</tr>
-				</tbody>					
+				</tbody>			
 				<tr>
 					<td>--</td>
 					<td colspan="2">
