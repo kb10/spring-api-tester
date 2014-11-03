@@ -2,7 +2,11 @@
 	<div ng-click="toggle()" class="row">
 		<div class="col-md-12">
 			<div class="well well-sm">
-				<h4>{{apicall.fullPath}}
+				<h4>
+					{{apicall.fullPath}}
+					<span class="label label-danger" ng-if="apicall.deprecated" >
+						<i class="glyphicon glyphicon-thumbs-down ng-scope"> </i>
+					</span>
 					<span class="label pull-right" ng-class="
 						{
 							'label-primary':apicall.method=='POST',
