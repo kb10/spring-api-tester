@@ -22,7 +22,7 @@
 		<dependency>
 			<groupId>com.cinefms.apitester</groupId>
 			<artifactId>apitester-spring-mvc</artifactId>
-			<version>0.8.0-SNAPSHOT</version>
+			<version>0.9.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 	<build>
