@@ -3,7 +3,7 @@
   <parent>
     <groupId>com.cinefms.apitester</groupId>
     <artifactId>apitester-parent</artifactId>
-    <version>0.9.0</version>
+    <version>0.9.1-SNAPSHOT</version>
   </parent>
   <artifactId>apitester-model</artifactId>
 </project>
