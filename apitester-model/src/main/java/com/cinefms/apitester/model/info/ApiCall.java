@@ -177,6 +177,28 @@ public class ApiCall {
 	}
 	
 	
+	public void addParameter(ApiCallParameter acp) {
+		if(acp.getType()==ApiCallParameter.Type.BODY) {
+			if(requestBodyParameters==null) {
+				requestBodyParameters = new ArrayList<ApiCallParameter>();
+			}
+			requestBodyParameters.add(acp);
+		}
+		if(acp.getType()==ApiCallParameter.Type.PATH) {
+			if(pathParameters==null) {
+				pathParameters = new ArrayList<ApiCallParameter>();
+			}
+			pathParameters.add(acp);
+		}
+		if(acp.getType()==ApiCallParameter.Type.REQUEST) {
+			if(requestParameters==null) {
+				requestParameters = new ArrayList<ApiCallParameter>();
+			}
+			requestParameters.add(acp);
+		}
+		
+	}
+	
 	public List<ApiObject> getApiObjects() {
 		Set<ApiObject> out = new TreeSet<ApiObject>();
 		for(ApiCallParameter acp : getRequestParameters()) {

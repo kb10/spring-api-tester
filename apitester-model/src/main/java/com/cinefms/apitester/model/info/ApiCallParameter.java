@@ -1,6 +1,13 @@
 package com.cinefms.apitester.model.info;
 
 public class ApiCallParameter {
+
+	public static enum Type {
+		BODY, PATH, REQUEST
+	};
+	
+	
+	private Type type; 
 	
 	private String parameterName;
 	private ApiObject parameterType;
@@ -14,7 +21,6 @@ public class ApiCallParameter {
 	
 	private boolean mandatory;
 	private boolean deprecated;
-	private boolean collection;
 	
 	public ApiCallParameter() {
 	}
@@ -74,12 +80,12 @@ public class ApiCallParameter {
 		this.deprecated = deprecated;
 	}
 
-	public boolean isCollection() {
-		return collection;
+	public Type getType() {
+		return type;
 	}
 
-	public void setCollection(boolean collection) {
-		this.collection = collection;
+	public void setType(Type type) {
+		this.type = type;
 	}
 	
 

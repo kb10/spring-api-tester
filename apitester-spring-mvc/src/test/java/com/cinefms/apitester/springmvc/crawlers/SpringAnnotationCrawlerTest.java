@@ -23,6 +23,7 @@ import org.springframework.web.context.support.GenericWebApplicationContext;
 
 import com.cinefms.apitester.core.ApitesterService;
 import com.cinefms.apitester.model.info.ApiCall;
+import com.cinefms.apitester.model.info.ApiResult;
 
 public class SpringAnnotationCrawlerTest {
 
@@ -131,13 +132,11 @@ public class SpringAnnotationCrawlerTest {
 
 		// second param
 		assertEquals(String.class.getCanonicalName(), calls.get(0).getPathParameters().get(1).getParameterType().getClassName());
-		assertEquals(true, calls.get(0).getPathParameters().get(1).isCollection());
 		assertEquals(null, calls.get(0).getPathParameters().get(1).getDefaultValue());
 		assertEquals("value", calls.get(0).getPathParameters().get(1).getParameterName());
 
 		// thrid param
 		assertEquals("int", calls.get(0).getPathParameters().get(2).getParameterType().getClassName());
-		assertEquals(false, calls.get(0).getPathParameters().get(2).isCollection());
 		assertEquals(null, calls.get(0).getPathParameters().get(2).getDefaultValue());
 		assertEquals("a", calls.get(0).getPathParameters().get(2).getParameterName());
 	}
@@ -197,7 +196,6 @@ public class SpringAnnotationCrawlerTest {
 		//
 		assertEquals("id", calls.get(0).getRequestParameters().get(0).getParameterName());
 		assertEquals(String.class.getCanonicalName(), calls.get(0).getRequestParameters().get(0).getParameterType().getClassName());
-		assertEquals(false, calls.get(0).getRequestParameters().get(0).isCollection());
 		assertEquals(true, calls.get(0).getRequestParameters().get(0).isMandatory());
 		assertEquals(true, calls.get(0).getRequestParameters().get(0).isDeprecated());
 		assertEquals("dd-mm-yyyy", calls.get(0).getRequestParameters().get(0).getFormat());
@@ -205,7 +203,6 @@ public class SpringAnnotationCrawlerTest {
 		//
 		assertEquals("id2", calls.get(0).getRequestParameters().get(1).getParameterName());
 		assertEquals(String.class.getCanonicalName(), calls.get(0).getRequestParameters().get(1).getParameterType().getClassName());
-		assertEquals(false, calls.get(0).getRequestParameters().get(1).isCollection());
 		assertEquals(false, calls.get(0).getRequestParameters().get(1).isMandatory());
 		assertEquals(false, calls.get(0).getRequestParameters().get(1).isDeprecated());
 		assertEquals("0.9", calls.get(0).getRequestParameters().get(1).getSince());
@@ -366,7 +363,5 @@ public class SpringAnnotationCrawlerTest {
 		assertEquals(true, calls.get(4).isDeprecated());
 		
 	}
-	
-	
 	
 }

@@ -8,6 +8,10 @@ public class ApiResult {
 	private int statusCode;
 	private boolean collection;
 
+	public ApiResult(ApiObject returnClass) {
+		this.returnClass = returnClass;
+	}
+	
 	public ApiObject getReturnClass() {
 		return returnClass;
 	}

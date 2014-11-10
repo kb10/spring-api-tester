@@ -21,6 +21,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.javaruntype.type.TypeParameter;
 import org.javaruntype.type.Types;
+import org.javaruntype.typedef.TypeDef;
+import org.javaruntype.typedef.TypeDefVariable;
+import org.javaruntype.typedef.TypeDefs;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -119,12 +122,10 @@ public class SpringAnnotationCrawler implements ApiCrawler,
 		if (ctx.getId() != null) {
 			namespace = ctx.getId();
 		}
-		return scanControllers(namespace, new ArrayList<Object>(ctx
-				.getBeansWithAnnotation(Controller.class).values()));
+		return scanControllers(namespace, new ArrayList<Object>(ctx.getBeansWithAnnotation(Controller.class).values()));
 	}
 
-	public List<ApiCall> scanControllers(String namespace,
-			List<Object> controllers) {
+	public List<ApiCall> scanControllers(String namespace, List<Object> controllers) {
 
 		List<ApiCall> out = new ArrayList<ApiCall>();
 
@@ -132,8 +133,7 @@ public class SpringAnnotationCrawler implements ApiCrawler,
 
 			String handlerClass = controller.getClass().getName();
 
-			log.info(" ##  FOUND " + controllers.size() + " CONTROLLERS ... "
-					+ handlerClass);
+			log.info(" ##  FOUND " + controllers.size() + " CONTROLLERS ... " + handlerClass);
 
 			Method[] methods = controller.getClass().getMethods();
 
@@ -176,6 +176,7 @@ public class SpringAnnotationCrawler implements ApiCrawler,
 
 					String handlerMethod = m.getName();
 					RequestMapping rmm = m.getAnnotation(RequestMapping.class);
+
 					if (rmm != null) {
 
 						List<String> mappings = new ArrayList<String>();
@@ -220,10 +221,15 @@ public class SpringAnnotationCrawler implements ApiCrawler,
 								a.setHandlerMethod(handlerMethod);
 								a.setMethod(method.toString());
 								a.setDefaultRequestParameters(getDefaultReqParams());
-								a.setRequestParameters(getRequestParameters(m));
-								a.setRequestBodyParameters(getRequestBodyParameters(m));
-								a.setPathParameters(getPathParameters(m));
-								a.setReturnType(getResult(m));
+								a.setReturnType(
+										new ApiResult(
+												Reflection.getReturnType(controller.getClass(), m)
+										)
+								);
+								for(ApiCallParameter acp : Reflection.getCallParameters(controller.getClass(), m)) {
+									a.addParameter(acp);
+								}
+								
 								out.add(a);
 							}
 						}
@@ -267,190 +273,6 @@ public class SpringAnnotationCrawler implements ApiCrawler,
 
 	public String getBasePath(String path) {
 		return getPath(path.replaceAll("/*\\{.*", ""));
-	}
-
-	public List<ApiCallParameter> getRequestParameters(Method m) {
-		return getApiCalls(m, false, false, true);
-	}
-
-	public List<ApiCallParameter> getPathParameters(Method m) {
-		return getApiCalls(m, true, false, false);
-	}
-
-	public List<ApiCallParameter> getRequestBodyParameters(Method m) {
-		return getApiCalls(m, false, true, false);
-	}
-
-	private ApiObjectInfo getApiObjectInfo(Type t) {
-		
-		ApiObjectInfo out = new ApiObjectInfo();
-		ApiObject ao = new ApiObject();
-		out.setApiObject(ao);
-		out.setCollection(false);
-		if(t==null) {
-			return out;
-		}
-			
-		ao.setPrimitive(false);
-
-		@SuppressWarnings("unchecked")
-		org.javaruntype.type.Type<String> strType = (org.javaruntype.type.Type<String>) Types.forJavaLangReflectType(t);
-		String paramClass = strType.getRawClass().getCanonicalName();
-		ao.setClassName(paramClass);
-		if (Collection.class.isAssignableFrom(strType.getRawClass())) {
-			out.setCollection(true);
-			ao.setClassName(paramClass);
-			System.err.println(strType.getTypeParameters().size()+" type parameters");
-			ao.setClassName("[unknown]");
-			for (TypeParameter<?> tp : strType.getTypeParameters()) {
-				if(tp.toString().compareTo("?")!=0) {
-					paramClass = tp.getType().getName();
-					ao.setClassName(paramClass);
-				} else {
-					ao.setClassName("[unknown]");
-				}
-			}
-		}
-		
-		if(ao.getClassName().endsWith("[]")) {
-			ao.setClassName(ao.getClassName().substring(0, ao.getClassName().length()-2));
-			ao.setCollection(true);
-		}
-		
-		for(String s : new String[] {"void","byte","short","int","long","double","float","char","boolean"}) {
-			if(ao.getClassName().compareTo(s)==0) {
-				ao.setPrimitive(true);
-				break;
-			}
-			if(ao.getClassName().compareTo(s+"[]")==0) {
-				ao.setPrimitive(true);
-				out.setCollection(true);
-				break;
-			}
-		}
-		if(!ao.isPrimitive()) {
-			try {
-				Class<?> c = Class.forName(ao.getClassName());
-				ApiDescription ad = c.getAnnotation(ApiDescription.class);
-				if (ad != null) {
-					String s = "no description"; 
-					if (ad.value().length() > 0) {
-						s = ad.value();
-					}
-					if (ad.file().length() > 0) {
-						s = loadResource(c, ad.file());
-					}
-					ao.setDescription(s);
-					System.err.println(" ---- DESCRIPTION READ: "+s);
-				}		
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		
-		return out;
-	}
-
-	private List<ApiCallParameter> getApiCalls(Method m, boolean path,
-			boolean body, boolean request) {
-		List<ApiCallParameter> out = new ArrayList<ApiCallParameter>();
-		Annotation[][] anns = m.getParameterAnnotations();
-		Type[] params = m.getGenericParameterTypes();
-		String[] paramNames = new LocalVariableTableParameterNameDiscoverer().getParameterNames(m);
-		for (int i = 0; i < params.length; i++) {
-
-			PathVariable p = null;
-			RequestParam r = null;
-			RequestBody rb = null;
-			Deprecated d = null;
-			ApiDescription ad = null;
-
-			for (Annotation a : anns[i]) {
-				if (a.annotationType() == PathVariable.class) {
-					p = (PathVariable) a;
-				}
-				if (a.annotationType() == RequestParam.class) {
-					r = (RequestParam) a;
-				}
-				if (a.annotationType() == RequestBody.class) {
-					rb = (RequestBody) a;
-				}
-				if (a.annotationType() == Deprecated.class) {
-					d = (Deprecated) a;
-				}
-				if (a.annotationType() == ApiDescription.class) {
-					ad = (ApiDescription) a;
-				}
-			}
-
-			if ((p != null && path) || (r != null && request)
-					|| (rb != null && body)) {
-				ApiCallParameter acp = new ApiCallParameter();
-				acp.setCollection(false);
-				
-				ApiObjectInfo aoi = getApiObjectInfo(params[i]);
-				
-				acp.setParameterType(aoi.getApiObject());
-				acp.setCollection(aoi.isCollection());
-
-
-				String field = "[unknown]";
-				if (paramNames != null && paramNames.length == params.length) {
-					field = paramNames[i];
-				}
-				if (path && p != null) {
-					if (p.value() != null && p.value().length() > 0) {
-						field = p.value();
-					}
-					acp.setMandatory(true);
-				} else if (request && r != null) {
-					if (r.value() != null && r.value().length() > 0) {
-						field = r.value();
-					}
-					acp.setMandatory(r.required());
-					if (r.defaultValue() != null
-							&& r.defaultValue().compareTo(
-									ValueConstants.DEFAULT_NONE) != 0) {
-						acp.setDefaultValue(r.defaultValue());
-					}
-				} else if (body && rb != null) {
-					acp.setMandatory(rb.required());
-				}
-				if (d != null) {
-					acp.setDeprecated(true);
-				}
-				if (ad != null) {
-					acp.setDescription(ad.value());
-					if (ad.format().length() > 0) {
-						acp.setFormat(ad.format());
-					}
-					if (ad.since().length() > 0) {
-						acp.setSince(ad.since());
-					}
-					acp.setDeprecatedSince(ad.deprecatedSince());
-					if (ad.deprecatedSince() != null
-							&& ad.deprecatedSince().length() > 0) {
-						acp.setDeprecated(true);
-					}
-				}
-
-				acp.setParameterName(field);
-				out.add(acp);
-			}
-
-		}
-		return out;
-	}
-
-	public ApiResult getResult(Method m) {
-		ApiResult ar = new ApiResult();
-		
-		ApiObjectInfo aoi = getApiObjectInfo(m.getGenericReturnType());
-
-		ar.setReturnClass(aoi.getApiObject());
-		ar.setCollection(aoi.isCollection());
-
-		return ar;
 	}
 
 	public String getPrefix() {
