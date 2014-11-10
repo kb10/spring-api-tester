@@ -67,10 +67,9 @@ public class Reflection {
 		List<ApiCallParameter> out = new ArrayList<ApiCallParameter>();
 
 		for (ResolvedMethod rm : resolvedTypeWithMembers.getMemberMethods()) {
-			System.err.println(rm.toString() + " : " + rm.getRawMember().toGenericString() + " -- " + method.toGenericString());
+
 			if (rm.getRawMember().toGenericString().compareTo(method.toGenericString()) == 0) {
 
-				System.err.println(rm.getArgumentCount());
 		        String[] paramNames = new LocalVariableTableParameterNameDiscoverer().getParameterNames(method);
 		        
 

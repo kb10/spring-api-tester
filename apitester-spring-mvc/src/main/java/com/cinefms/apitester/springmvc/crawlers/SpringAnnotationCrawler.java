@@ -246,10 +246,8 @@ public class SpringAnnotationCrawler implements ApiCrawler,
 
 	private String loadResource(Class<?> thatClass, String file) {
 		try {
-			System.err.println("thatClass: "+thatClass);
 
 			URL u = thatClass.getResource(file);
-			System.err.println("url: " + u);
 
 
 			InputStream is = thatClass.getResourceAsStream(file);

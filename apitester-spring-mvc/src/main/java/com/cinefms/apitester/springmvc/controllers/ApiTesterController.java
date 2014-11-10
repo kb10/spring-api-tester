@@ -32,7 +32,6 @@ public class ApiTesterController {
 	private ApitesterService service;
 	
 	public ApiTesterController() {
-		System.err.println(ApiTesterController.class.getCanonicalName()+" initialized ... ");
 	}
 	
 
