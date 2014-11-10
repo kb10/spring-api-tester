@@ -1,14 +1,17 @@
 package com.cinefms.apitester.springmvc.crawlers;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.cinefms.apitester.annotations.ApiDescription;
 import com.cinefms.apitester.model.info.ApiCallParameter;
 import com.cinefms.apitester.model.info.ApiObject;
 import com.fasterxml.classmate.MemberResolver;
@@ -26,17 +29,20 @@ public class Reflection {
 
 		ResolvedType resolvedType = typeResolver.resolve(clazz);
 		ResolvedTypeWithMembers resolvedTypeWithMembers = memberResolver.resolve(resolvedType, null, null);
-		for(ResolvedMethod rm : resolvedTypeWithMembers.getMemberMethods()) {
-			System.err.println(rm.toString()+" : "+rm.getRawMember().toGenericString()+" -- "+method.toGenericString());
-			if(rm.getRawMember().toGenericString().compareTo(method.toGenericString())==0) {
+		for (ResolvedMethod rm : resolvedTypeWithMembers.getMemberMethods()) {
+			if (rm.getRawMember().toGenericString().compareTo(method.toGenericString()) == 0) {
+
 				ResolvedType r = rm.getReturnType();
-				if(r.getArrayElementType()!=null) {
+
+				if (r == null) {
+					out.setClassName("void");
+				} else if (r.getArrayElementType() != null) {
 					out.setCollection(true);
 					out.setPrimitive(r.getArrayElementType().isPrimitive());
 					out.setClassName(r.getArrayElementType().getErasedType().getCanonicalName());
-				} else if(Collection.class.isAssignableFrom(r.getErasedType())) {
+				} else if (Collection.class.isAssignableFrom(r.getErasedType())) {
 					out.setCollection(true);
-					if(r.getTypeParameters()!=null && r.getTypeParameters().size()==1) {
+					if (r.getTypeParameters() != null && r.getTypeParameters().size() == 1) {
 						out.setClassName(r.getTypeParameters().get(0).getErasedType().getCanonicalName());
 						out.setPrimitive(r.getTypeParameters().get(0).isPrimitive());
 					}
@@ -49,8 +55,7 @@ public class Reflection {
 		}
 		return out;
 	}
-	
-	
+
 	public static List<ApiCallParameter> getCallParameters(Class<?> clazz, Method method) {
 
 		TypeResolver typeResolver = new TypeResolver();
@@ -58,60 +63,112 @@ public class Reflection {
 
 		ResolvedType resolvedType = typeResolver.resolve(clazz);
 		ResolvedTypeWithMembers resolvedTypeWithMembers = memberResolver.resolve(resolvedType, null, null);
-		
-		List<ApiCallParameter> out = new ArrayList<ApiCallParameter>(); 
-		
-		for(ResolvedMethod rm : resolvedTypeWithMembers.getMemberMethods()) {
-			for(int i=0; i < rm.getArgumentCount();i++) {
 
-				ApiCallParameter apc = new ApiCallParameter();
-				ApiObject ao = new ApiObject();
-				apc.setParameterType(ao);
+		List<ApiCallParameter> out = new ArrayList<ApiCallParameter>();
 
-				
-				ResolvedType rt = rm.getArgumentType(i);
-				RequestBody rb = rt.getErasedType().getAnnotation(RequestBody.class);
-				RequestParam rp = rt.getErasedType().getAnnotation(RequestParam.class);
-				PathVariable pv = rt.getErasedType().getAnnotation(PathVariable.class);
-				
-				if(rb==null && rp==null && pv==null) {
-					continue;
-				}
-				
-				if(rb!=null) {
-					apc.setType(ApiCallParameter.Type.BODY);
-					apc.setMandatory(rb.required());
-				} else if(rp!=null) {
-					apc.setType(ApiCallParameter.Type.REQUEST);
-					apc.setMandatory(rb.required());
-				} else if(pv!=null) {
-					apc.setType(ApiCallParameter.Type.PATH);
-					apc.setMandatory(true);
-				}
-				
-				System.err.println(rm.toString()+" : "+rm.getRawMember().toGenericString()+" -- "+method.toGenericString());
-				if(rm.getRawMember().toGenericString().compareTo(method.toGenericString())==0) {
-					ResolvedType r = rm.getReturnType();
-					if(r.getArrayElementType()!=null) {
+		for (ResolvedMethod rm : resolvedTypeWithMembers.getMemberMethods()) {
+			System.err.println(rm.toString() + " : " + rm.getRawMember().toGenericString() + " -- " + method.toGenericString());
+			if (rm.getRawMember().toGenericString().compareTo(method.toGenericString()) == 0) {
+
+				System.err.println(rm.getArgumentCount());
+		        String[] paramNames = new LocalVariableTableParameterNameDiscoverer().getParameterNames(method);
+		        
+
+				for (int i = 0; i < rm.getArgumentCount(); i++) {
+
+					ApiCallParameter apc = new ApiCallParameter();
+					ApiObject ao = new ApiObject();
+					apc.setParameterType(ao);
+
+					String field = "[unknown]";
+					
+					if (paramNames != null) {
+						field = paramNames[i];
+					}
+
+					
+					RequestBody rb = null;
+					RequestParam rp = null;
+					PathVariable pv = null;
+					Deprecated d = null;
+					ApiDescription ad = null;
+					for(Annotation a : method.getParameterAnnotations()[i]) {
+						if(a instanceof Deprecated) {
+							apc.setDeprecated(true);
+						}
+						if(a instanceof ApiDescription) {
+							ad = (ApiDescription)a;
+							if(ad.deprecatedSince().length()>0) {
+								apc.setDeprecated(true);
+								apc.setDeprecatedSince(ad.deprecatedSince());
+							}
+							if(ad.value().length()>0) {
+								apc.setDescription(ad.value());
+							}
+							if(ad.format().length()>0) {
+								apc.setFormat(ad.format());
+							}
+							if(ad.since().length()>0) {
+								apc.setSince(ad.since());
+							}
+						}
+						if(a instanceof PathVariable) {
+							pv = (PathVariable)a;
+							apc.setType(ApiCallParameter.Type.PATH);
+							apc.setMandatory(true);
+							if(pv.value().length()>0) {
+								field = pv.value();
+							}
+						}
+						if(a instanceof RequestParam) {
+							rp = (RequestParam)a;
+							apc.setType(ApiCallParameter.Type.REQUEST);
+							apc.setMandatory(rp.required());
+							apc.setParameterName(field);
+							if(rp.value().length()>0) {
+								field = rp.value();
+							}
+						}
+						if(a instanceof RequestBody) {
+							rb = (RequestBody)a;
+							apc.setType(ApiCallParameter.Type.BODY);
+							apc.setMandatory(rb.required());
+						}
+					}
+					if (rb == null && rp == null && pv == null) {
+						continue;
+					}
+
+					apc.setParameterName(field);
+					
+					ResolvedType rt = rm.getArgumentType(i);
+
+					if (rt.getArrayElementType() != null) {
 						ao.setCollection(true);
-						ao.setPrimitive(r.getArrayElementType().isPrimitive());
-						ao.setClassName(r.getArrayElementType().getErasedType().getCanonicalName());
-					} else if(Collection.class.isAssignableFrom(r.getErasedType())) {
+						ao.setPrimitive(rt.getArrayElementType().isPrimitive());
+						ao.setClassName(rt.getArrayElementType().getErasedType().getCanonicalName());
+					} else if (Collection.class.isAssignableFrom(rt.getErasedType())) {
 						ao.setCollection(true);
-						if(r.getTypeParameters()!=null && r.getTypeParameters().size()==1) {
-							ao.setClassName(r.getTypeParameters().get(0).getErasedType().getCanonicalName());
-							ao.setPrimitive(r.getTypeParameters().get(0).isPrimitive());
+						if (rt.getTypeParameters() != null && rt.getTypeParameters().size() == 1) {
+							ao.setClassName(rt.getTypeParameters().get(0).getErasedType().getCanonicalName());
+							ao.setPrimitive(rt.getTypeParameters().get(0).isPrimitive());
 						}
 					} else {
 						ao.setCollection(false);
-						ao.setClassName(r.getErasedType().getCanonicalName());
-						ao.setPrimitive(r.getErasedType().isPrimitive());
+						ao.setClassName(rt.getErasedType().getCanonicalName());
+						ao.setPrimitive(rt.getErasedType().isPrimitive());
 					}
+					
+					
+					out.add(apc);
+					
 				}
 			}
 		}
+		String[] paramNames = new LocalVariableTableParameterNameDiscoverer().getParameterNames(method);
+		
+		
 		return out;
 	}
-	
-	
+
 }

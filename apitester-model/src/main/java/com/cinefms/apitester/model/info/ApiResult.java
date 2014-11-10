@@ -6,7 +6,6 @@ public class ApiResult {
 	private String exception;
 	private String status;
 	private int statusCode;
-	private boolean collection;
 
 	public ApiResult(ApiObject returnClass) {
 		this.returnClass = returnClass;
@@ -45,11 +44,8 @@ public class ApiResult {
 	}
 
 	public boolean isCollection() {
-		return collection;
+		return returnClass!=null && returnClass.isCollection();
 	}
 
-	public void setCollection(boolean collection) {
-		this.collection = collection;
-	}
 
 }
