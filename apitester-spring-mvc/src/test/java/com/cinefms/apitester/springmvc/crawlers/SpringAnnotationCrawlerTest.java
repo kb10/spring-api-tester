@@ -15,6 +15,9 @@ import java.util.Map;
 
 import javax.servlet.ServletContext;
 
+import net.sf.cglib.proxy.Enhancer;
+import net.sf.cglib.proxy.NoOp;
+
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.context.ApplicationContext;
@@ -23,7 +26,6 @@ import org.springframework.web.context.support.GenericWebApplicationContext;
 
 import com.cinefms.apitester.core.ApitesterService;
 import com.cinefms.apitester.model.info.ApiCall;
-import com.cinefms.apitester.model.info.ApiResult;
 
 public class SpringAnnotationCrawlerTest {
 
@@ -85,6 +87,21 @@ public class SpringAnnotationCrawlerTest {
 		List<ApiCall> calls = sac.scanControllers("A",controllers);
 		assertNotNull(calls);
 		assertEquals(0, calls.size());
+	}
+
+	@Test
+	public void testProxiedSimpleClassExtractionExpectEmptyListSuccess() {
+		SpringAnnotationCrawler sac = new SpringAnnotationCrawler();
+		List<Object> controllers = new ArrayList<Object>();
+		Enhancer enhancer = new Enhancer();
+        enhancer.setSuperclass(TestController2.class);
+        enhancer.setCallback(NoOp.INSTANCE);
+        controllers.add(enhancer.create());
+		List<ApiCall> calls = sac.scanControllers("A",controllers);
+		assertNotNull(calls);
+		assertEquals(1, calls.size());
+		assertEquals("com.cinefms.apitester.springmvc.crawlers.TestController2", calls.get(0).getHandlerClass());
+		System.err.println(calls.get(0).getHandlerClass());
 	}
 
 	@Test
