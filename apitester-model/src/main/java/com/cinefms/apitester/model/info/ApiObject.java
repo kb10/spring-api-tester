@@ -25,7 +25,12 @@ public class ApiObject implements Comparable<ApiObject> {
 
 	@Override
 	public int compareTo(ApiObject arg) {
-		return getClassName().compareTo(arg.getClassName());
+		try {
+			return getClassName().compareTo(arg.getClassName());
+		} catch (Exception e) {
+			System.err.println("unable to compare: "+getClassName()+" / "+arg.getClassName());
+			return 0;
+		}
 	}
 
 	public String getDescription() {
