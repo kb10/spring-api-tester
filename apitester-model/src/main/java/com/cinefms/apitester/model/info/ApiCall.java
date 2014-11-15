@@ -202,19 +202,15 @@ public class ApiCall {
 	public List<ApiObject> getApiObjects() {
 		Set<ApiObject> out = new TreeSet<ApiObject>();
 		for(ApiCallParameter acp : getRequestParameters()) {
-			System.err.println(" --- adding request parameter: "+acp.getParameterType().getClassName());
 			out.add(acp.getParameterType());
 		}
 		for(ApiCallParameter acp : getPathParameters()) {
-			System.err.println(" --- adding path parameter: "+acp.getParameterType().getClassName());
 			out.add(acp.getParameterType());
 		}
 		for(ApiCallParameter acp : getRequestBodyParameters()) {
-			System.err.println(" --- adding request body: "+acp.getParameterType().getClassName());
 			out.add(acp.getParameterType());
 		}
 		if(getReturnType()!=null && getReturnType().getReturnClass()!=null) {
-			System.err.println(" --- adding return type: "+getReturnType().getReturnClass());
 			out.add(getReturnType().getReturnClass());
 		}
 		return new ArrayList<ApiObject>(out);
