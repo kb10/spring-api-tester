@@ -2,12 +2,9 @@ package com.cinefms.apitester.springmvc.crawlers;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -19,22 +16,12 @@ import javax.servlet.ServletContext;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.javaruntype.type.TypeParameter;
-import org.javaruntype.type.Types;
-import org.javaruntype.typedef.TypeDef;
-import org.javaruntype.typedef.TypeDefVariable;
-import org.javaruntype.typedef.TypeDefs;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ValueConstants;
 import org.springframework.web.context.ServletContextAware;
 
 import com.cinefms.apitester.annotations.ApiDescription;
@@ -42,7 +29,6 @@ import com.cinefms.apitester.core.ApitesterService;
 import com.cinefms.apitester.model.ApiCrawler;
 import com.cinefms.apitester.model.info.ApiCall;
 import com.cinefms.apitester.model.info.ApiCallParameter;
-import com.cinefms.apitester.model.info.ApiObject;
 import com.cinefms.apitester.model.info.ApiResult;
 
 public class SpringAnnotationCrawler implements ApiCrawler,
@@ -133,9 +119,9 @@ public class SpringAnnotationCrawler implements ApiCrawler,
 
 			// com.cinefms.apitester.springmvc.crawlers.TestController2$$EnhancerByCGLIB$$84793797
 
-			Class clazz = controller.getClass();
+			Class<?> clazz = controller.getClass();
 			
-			String handlerClass = controller.getClass().getName();
+			String handlerClass = clazz.getName();
 			
 			if(handlerClass.indexOf("$$")>-1) {
 				handlerClass = handlerClass.substring(0,handlerClass.indexOf("$$"));
@@ -182,7 +168,7 @@ public class SpringAnnotationCrawler implements ApiCrawler,
 							description = ad.value();
 						}
 						if (ad.file().length() > 0) {
-							description = loadResource(controller.getClass(),
+							description = loadResource(clazz,
 									ad.file());
 						}
 					}
@@ -236,10 +222,10 @@ public class SpringAnnotationCrawler implements ApiCrawler,
 								a.setDefaultRequestParameters(getDefaultReqParams());
 								a.setReturnType(
 										new ApiResult(
-												Reflection.getReturnType(controller.getClass(), m)
+												Reflection.getReturnType(clazz, m)
 										)
 								);
-								for(ApiCallParameter acp : Reflection.getCallParameters(controller.getClass(), m)) {
+								for(ApiCallParameter acp : Reflection.getCallParameters(clazz, m)) {
 									a.addParameter(acp);
 								}
 								
@@ -321,29 +307,6 @@ public class SpringAnnotationCrawler implements ApiCrawler,
 
 	public void setDefaultReqParams(Map<String, String> defaultReqParams) {
 		this.defaultReqParams = defaultReqParams;
-	}
-
-	private class ApiObjectInfo {
-
-		private ApiObject apiObject;
-		private boolean collection;
-
-		public ApiObject getApiObject() {
-			return apiObject;
-		}
-
-		public void setApiObject(ApiObject apiObject) {
-			this.apiObject = apiObject;
-		}
-
-		public boolean isCollection() {
-			return collection;
-		}
-
-		public void setCollection(boolean collection) {
-			this.collection = collection;
-		}
-
 	}
 
 }
