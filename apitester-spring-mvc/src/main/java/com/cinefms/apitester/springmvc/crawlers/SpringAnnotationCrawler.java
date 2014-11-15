@@ -131,16 +131,29 @@ public class SpringAnnotationCrawler implements ApiCrawler,
 
 		for (Object controller : controllers) {
 
+			// com.cinefms.apitester.springmvc.crawlers.TestController2$$EnhancerByCGLIB$$84793797
+
+			Class clazz = controller.getClass();
+			
 			String handlerClass = controller.getClass().getName();
+			
+			if(handlerClass.indexOf("$$")>-1) {
+				handlerClass = handlerClass.substring(0,handlerClass.indexOf("$$"));
+				try {
+					clazz = Class.forName(handlerClass);
+				} catch (ClassNotFoundException e) {
+				}
+			}
+			
+			
 
 			log.info(" ##  FOUND " + controllers.size() + " CONTROLLERS ... " + handlerClass);
 
-			Method[] methods = controller.getClass().getMethods();
+			Method[] methods = clazz.getMethods();
 
 			String[] classLevelPaths = new String[] { "" };
 
-			RequestMapping rmType = controller.getClass().getAnnotation(
-					RequestMapping.class);
+			RequestMapping rmType = (RequestMapping) clazz.getAnnotation(RequestMapping.class);
 			if (rmType != null) {
 				classLevelPaths = rmType.value();
 			}
