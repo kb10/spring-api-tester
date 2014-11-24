@@ -3,3 +3,5 @@
 .DS_Store
 .classpath
 /target
+pom.xml.releaseBackup
+release.properties
