@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>com.cinefms.apitester</groupId>
 		<artifactId>apitester-parent</artifactId>
-		<version>1.0.0</version>
+		<version>1.0.1-SNAPSHOT</version>
 	</parent>
 	<groupId>com.cinefms.apitester</groupId>
 	<artifactId>apitester-spring-mvc</artifactId>
@@ -11,17 +11,17 @@
 		<dependency>
 			<groupId>com.cinefms.apitester</groupId>
 			<artifactId>apitester-annotations</artifactId>
-			<version>1.0.0</version>
+			<version>1.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.cinefms.apitester</groupId>
 			<artifactId>apitester-model</artifactId>
-			<version>1.0.0</version>
+			<version>1.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.cinefms.apitester</groupId>
 			<artifactId>apitester-core</artifactId>
-			<version>1.0.0</version>
+			<version>1.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml</groupId>
