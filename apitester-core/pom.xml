@@ -10,7 +10,7 @@
 >>>>>>> develop
 	</parent>
 	<artifactId>apitester-core</artifactId>
-
+	<groupId>com.cinefms.apitester</groupId>
 	<dependencies>
 		<dependency>
 			<groupId>com.cinefms.apitester</groupId>
