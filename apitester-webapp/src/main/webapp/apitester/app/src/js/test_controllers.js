@@ -1,10 +1,8 @@
-apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Restangular', 'apitesterDBConf','$indexedDB', '$modal', '$window',
- function($scope, $http, $interval, RA, apitesterDBConf, $indexedDB, $modal, $window) {
+apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Restangular', 'apitesterDBConf','$modal', '$window',
+ function($scope, $http, $interval, RA, apitesterDBConf, $modal, $window) {
 	$scope.requestConfig = {};
 	$scope.selectedCallInfo = {};
 	$scope.showRequestButton = {};
-	$scope.historyObjectStore = $indexedDB.objectStore(apitesterDBConf.historyStore);
-	$scope.db = {savedObjArr:[], dbgroups:[], groupName:null, reqName:null};
 	
 	RA.all('basepaths').getList().then(
 		function(basepaths) {
@@ -233,81 +231,6 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 			return true;
 		}
 		return false;
-	};
-
-	/*
-	 *	Below are operations on indexedDB.
-	 */
-	$scope.getSavedData = function() {
-		$scope.historyObjectStore.getAll().then(function(result) {
-			$scope.db = {savedObjArr:[], dbgroups:[], groupName:null, reqName:null};
-			if(result.length) {
-				$scope.db.dbgroups = _(result).pluck('group').uniq().value();
-			}
-			for(i=0; i<$scope.db.dbgroups.length; i++) {
-				var item = {group:"", dataArr:[]};
-				item.group = $scope.db.dbgroups[i];
-				item.dataArr = _.filter(result, {'group' : $scope.db.dbgroups[i]});
-				$scope.db.savedObjArr.push(item);
-			}
-		});
-	};
-
-	$scope.getSavedData();
-
-	$scope.saveData = function() {
- 		$scope.historyObjectStore.insert(
- 			{
- 				'id': "savedata-" + new Date().getTime(),
- 				'name': $scope.db.reqName, 
- 				'group': $scope.db.groupName,
- 				'method': $scope.selectedCallInfo.method,
- 				'req': angular.toJson($scope.selectedCallInfo),
- 				'res': angular.toJson($scope.responseObject)
- 			}
- 		, true).then(function() {
- 			$scope.getSavedData();	
- 		});
-	};
-
-	$scope.deleteData = function(id) {
-		$scope.historyObjectStore.delete(id, true).then(function() {
-			$scope.getSavedData();
-		});
-		
-	};
-
-	$scope.reloadData = function(id) {
-		$scope.historyObjectStore.find(id).then(function(data) {
-			var reqData = angular.fromJson(data.req);
-
-			$scope.requestConfig.basePath = reqData.basePath;
-			RA.all('calls').getList({basePath:$scope.requestConfig.basePath}).then(
-				function(calls) {
-					$scope.setFullPath(calls, reqData.fullPath);
-					$scope.setRequestInfo(reqData.method, reqData.fullPath, reqData);
-				}
-			);			
-		});
-	};
-
-	$scope.openDlg = function (size) {
-		var modalInstance = $modal.open({
-		  templateUrl: 'app/src/templates/savedlg.html',
-		  controller: saveModalController,
-		  size: size,
-		  resolve: {
-		    groups: function () {
-		      return $scope.db.dbgroups;
-		    }
-		  }
-		});
-
-		modalInstance.result.then(function (names) {
-		  $scope.db.groupName = names.selectgroup ? names.selectgroup : (names.creategroup ? names.creategroup : 'defaultGroup');
-		  $scope.db.reqName = names.requsestname ? names.requsestname : 'defaultName';
-		  $scope.saveData();
-		}, function() {});
 	};
 
 	$scope.exportData = function() {
