@@ -6,7 +6,7 @@
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>apitester-core</artifactId>
-
+	<groupId>com.cinefms.apitester</groupId>
 	<dependencies>
 		<dependency>
 			<groupId>com.cinefms.apitester</groupId>
