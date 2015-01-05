@@ -1,34 +1,22 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.cinefms.apitester</groupId>
 		<artifactId>apitester-parent</artifactId>
-<<<<<<< HEAD
-		<version>1.0.2-SNAPSHOT</version>
-=======
 		<version>1.1.0-SNAPSHOT</version>
->>>>>>> develop
 	</parent>
 	<artifactId>apitester-core</artifactId>
-	<groupId>com.cinefms.apitester</groupId>
 	<dependencies>
 		<dependency>
 			<groupId>com.cinefms.apitester</groupId>
 			<artifactId>apitester-annotations</artifactId>
-<<<<<<< HEAD
-			<version>1.0.2-SNAPSHOT</version>
-=======
 			<version>1.1.0-SNAPSHOT</version>
->>>>>>> develop
 		</dependency>
 		<dependency>
 			<groupId>com.cinefms.apitester</groupId>
 			<artifactId>apitester-model</artifactId>
-<<<<<<< HEAD
-			<version>1.0.2-SNAPSHOT</version>
-=======
 			<version>1.1.0-SNAPSHOT</version>
->>>>>>> develop
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
