@@ -49,6 +49,7 @@
 							<a popover-trigger="mouseenter" popover-placement="right" popover-popup-delay="200" popover="{{param.parameterType.className}}"  ng-click="toggle()">
 								{{param.parameterType.className | shorttype}}
 							</a>
+							<span ng-show="param.parameterType.collection"> [ ]</span>
 						</td>
 						<td>--</td>
 						<td>
@@ -76,7 +77,7 @@
 							<a popover-trigger="mouseenter" popover-placement="right" popover-popup-delay="200" popover="{{param.parameterType.className}}" ng-click="toggle()">
 								{{param.parameterType.className | shorttype}}
 							</a>
-							<span ng-show="param.collection"> [ ]</span>
+							<span ng-show="param.parameterType.collection"> [ ]</span>
 						</td>
 						<td>
 							{{param.defaultValue}}
@@ -106,7 +107,7 @@
 							<a popover-trigger="mouseenter" popover-placement="right" popover-popup-delay="200" popover="{{param.parameterType.className}}" ng-click="toggle()">
 								{{param.parameterType.className | shorttype}}
 							</a>
-							<span ng-show="param.collection"> [ ]</span>
+							<span ng-show="param.parameterType.collection"> [ ]</span>
 						</td>
 						<td>--</td>
 						<td>
