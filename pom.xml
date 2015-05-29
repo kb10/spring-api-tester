@@ -90,32 +90,21 @@
 		<developerConnection>scm:git:https://github.com/rmalchow/spring-api-tester</developerConnection>
 		<url>https://github.com/rmalchow/spring-api-tester</url>
 	</scm>
+	<distributionManagement>
+		<repository>
+			<id>skjlls-release</id>
+			<name>skjlls release repo</name>
+			<url>https://infra.skjlls.com/nexus/content/repositories/releases-oss/</url>
+			<uniqueVersion>false</uniqueVersion>
+		</repository>
+		<snapshotRepository>
+			<id>skjlls-snapshot</id>
+			<name>skjlls snapshot repo</name>
+			<url>https://infra.skjlls.com/nexus/content/repositories/snapshots-oss/</url>
+			<uniqueVersion>false</uniqueVersion>
+		</snapshotRepository>
+	</distributionManagement>
 	<!-- 
-	<distributionManagement>
-		<repository>
-			<id>fg-release</id>
-			<name>smp release repo</name>
-			<url>${dev.nexus.host}/nexus/content/repositories/smp-release/</url>
-			<uniqueVersion>false</uniqueVersion>
-		</repository>
-		<snapshotRepository>
-			<id>fg-snapshot</id>
-			<name>smp snapshot repo</name>
-			<url>${dev.nexus.host}/nexus/content/repositories/smp-snapshot/</url>
-			<uniqueVersion>false</uniqueVersion>
-		</snapshotRepository>
-	</distributionManagement>
-	 -->
-	<distributionManagement>
-		<repository>
-			<id>apitester-release</id>
-			<url>https://infra.cinefms.com/nexus/content/repositories/apitester-release/</url>
-		</repository>
-		<snapshotRepository>
-			<id>apitester-snapshot</id>
-			<url>https://infra.cinefms.com/nexus/content/repositories/apitester-snapshot/</url>
-		</snapshotRepository>
-	</distributionManagement>
 	<repositories>
 		<repository>
 			<id>apitester-release</id>
@@ -126,6 +115,7 @@
 			<url>https://infra.cinefms.com/nexus/content/repositories/apitester-snapshot/</url>
 		</repository>
 	</repositories>	
+	 -->
 	<build>
 		<pluginManagement>
 			<plugins>
