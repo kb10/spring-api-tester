@@ -225,6 +225,9 @@ public class SpringAnnotationCrawlerTest {
 		assertEquals("0.9", calls.get(0).getRequestParameters().get(1).getSince());
 		assertNull(calls.get(0).getRequestParameters().get(1).getFormat());
 		assertEquals(null,calls.get(0).getRequestParameters().get(1).getDefaultValue());
+
+		assertEquals("ID", calls.get(0).getRequestParameters().get(3).getParameterName());
+		assertEquals("someDefault", calls.get(0).getRequestParameters().get(3).getDefaultValue());
 	}
 	
 	

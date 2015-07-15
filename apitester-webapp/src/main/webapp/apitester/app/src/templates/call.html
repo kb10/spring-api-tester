@@ -108,8 +108,11 @@
 								{{param.parameterType.className | shorttype}}
 							</a>
 							<span ng-show="param.parameterType.collection"> [ ]</span>
+							<span ng-show="param.parameterType.mandatory"><i class="glyphicon glyphicon-asterisk"> </i></span>
 						</td>
-						<td>--</td>
+						<td>
+							{{param.defaultValue}}
+						</td>
 						<td>
 							<span ng-show="param.format">{{param.format}}</span><span ng-show="!param.format">--</span>
 						</td>

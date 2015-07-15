@@ -98,7 +98,6 @@ public class ApitesterService implements ApplicationContextAware {
 				}
 			}
 		}
-		
 		return new ArrayList<ApiObject>(out);
 	}
 

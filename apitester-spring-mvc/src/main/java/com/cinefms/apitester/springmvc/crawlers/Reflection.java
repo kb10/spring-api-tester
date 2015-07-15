@@ -10,6 +10,7 @@ import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ValueConstants;
 
 import com.cinefms.apitester.annotations.ApiDescription;
 import com.cinefms.apitester.model.info.ApiCallParameter;
@@ -124,6 +125,10 @@ public class Reflection {
 							apc.setType(ApiCallParameter.Type.REQUEST);
 							apc.setMandatory(rp.required());
 							apc.setParameterName(field);
+							String dv = ((RequestParam)a).defaultValue();
+							if(dv!=null && !dv.equals(ValueConstants.DEFAULT_NONE)) {
+								apc.setDefaultValue(dv);
+							}
 							if(rp.value().length()>0) {
 								field = rp.value();
 							}

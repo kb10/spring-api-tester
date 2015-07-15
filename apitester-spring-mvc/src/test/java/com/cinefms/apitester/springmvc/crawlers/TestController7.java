@@ -26,7 +26,7 @@ public class TestController7 {
 			@RequestParam(required=false,defaultValue="aaa") boolean id3,
 			
 			@ApiDescription(value="",deprecatedSince="1.4")
-			@RequestParam(required=false,value="ID") int id4,
+			@RequestParam(required=false,value="ID",defaultValue="someDefault") int id4,
 			
 			@Deprecated
 			@RequestParam(required=true,value="id") List<String> ids
