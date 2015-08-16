@@ -7,6 +7,9 @@ public class ApiObject implements Comparable<ApiObject> {
 	private boolean primitive;
 	private boolean collection;
 
+	public ApiObject() {
+	}
+	
 	public String getClassName() {
 		return className;
 	}

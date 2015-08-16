@@ -93,8 +93,12 @@ public class ApitesterService implements ApplicationContextAware {
 		Set<ApiObject> out = new TreeSet<ApiObject>();
 		for(ApiCall ac : getCallsInternal()) {
 			for(ApiObject ao : ac.getApiObjects()) {
-				if(ao.getClassName().toUpperCase().contains(searchTerm.toUpperCase())) {
-					out.add(ao);
+				if(ao.getClassName()==null) {
+					log.warn("classname of an api object is NULL ("+ac.getMethod()+":"+ac.getFullPath()+" / "+ao.getDescription());
+				} else {
+					if(ao.getClassName().toUpperCase().contains(searchTerm.toUpperCase())) {
+						out.add(ao);
+					}
 				}
 			}
 		}

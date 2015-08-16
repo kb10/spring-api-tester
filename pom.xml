@@ -8,12 +8,13 @@
 	<properties>
 		<dev.nexus.host>http://fg-nexus-dev.etower.pek.mcon.net</dev.nexus.host>
 
-		<org.springframework.version>3.2.5.RELEASE</org.springframework.version>
+		<org.springframework.version>4.1.1.RELEASE</org.springframework.version>
 		<cobertura.plugin.version>2.6</cobertura.plugin.version>
 		<cobertura.version>2.0.3</cobertura.version>
 		<sonar.plugin.version>3.7</sonar.plugin.version>
 		<surefire.plugin.version>2.16</surefire.plugin.version>
 		<mockito.version>1.9.5</mockito.version>
+		<jackson.version>2.4.1</jackson.version>
 
 		<sonar.host.url>http://172.20.180.20:8093/sonar/</sonar.host.url>
 		<sonar.jdbc.url>jdbc:mysql://172.20.180.20/sonarqube?useUnicode=true&amp;characterEncoding=utf8&amp;rewriteBatchedStatements=true</sonar.jdbc.url>

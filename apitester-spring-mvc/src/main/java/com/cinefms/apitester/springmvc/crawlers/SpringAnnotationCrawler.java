@@ -61,12 +61,10 @@ public class SpringAnnotationCrawler implements ApiCrawler,
 			apiCalls.addAll(scanControllers(applicationContext));
 			log.info(" ############################################################### ");
 			log.info(" ##  ");
-			log.info(" ##  FOUND " + apiCalls.size()
-					+ " API CALLS in context: " + applicationContext);
+			log.info(" ##  FOUND " + apiCalls.size() + " API CALLS in context: " + applicationContext);
 			log.info(" ##  ");
 			for (ApiCall ac : apiCalls) {
-				log.info(" ##  " + ac.getBasePath() + " --- "
-						+ ac.getFullPath());
+				log.info(" ##  " + ac.getMethod()+": "+ac.getBasePath() + " --- " + ac.getFullPath());
 			}
 			log.info(" ##  ");
 			log.info(" ############################################################### ");
@@ -81,8 +79,7 @@ public class SpringAnnotationCrawler implements ApiCrawler,
 		});
 		getService().registerCalls(apiCalls);
 		log.info(" ##  ");
-		log.info(" ##  GOT: "
-				+ getService().getCalls(null, null, true, null, null));
+		log.info(" ##  GOT: "+ getService().getCalls(null, null, true, null, null));
 		log.info(" ##  ");
 		log.info(" ############################################################### ");
 		return apiCalls;
