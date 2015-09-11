@@ -17,6 +17,7 @@ import javax.servlet.ServletContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Controller;
@@ -31,14 +32,17 @@ import com.cinefms.apitester.model.info.ApiCall;
 import com.cinefms.apitester.model.info.ApiCallParameter;
 import com.cinefms.apitester.model.info.ApiResult;
 
-public class SpringAnnotationCrawler implements ApiCrawler,
-		ApplicationContextAware, ServletContextAware {
+public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAware, ServletContextAware {
 
 	private static Log log = LogFactory.getLog(SpringAnnotationCrawler.class);
 
+	@Autowired
 	private ApplicationContext applicationContext;
+
+	@Autowired
 	private ServletContext servletContext;
 
+	@Autowired
 	private ApitesterService service;
 
 	private String prefix = "";

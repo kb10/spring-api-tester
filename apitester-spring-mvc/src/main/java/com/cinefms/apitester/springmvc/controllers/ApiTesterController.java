@@ -29,6 +29,7 @@ public class ApiTesterController {
 	@Autowired
 	private ApplicationContext applicationContext;
 	
+	@Autowired
 	private ApitesterService service;
 	
 	public ApiTesterController() {
