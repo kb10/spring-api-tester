@@ -88,5 +88,10 @@ public class ApiCallParameter {
 		this.type = type;
 	}
 	
+	@Override
+	public String toString() {
+		return getParameterName()+" ["+(isMandatory()?"*":" ")+"] "+getParameterType().getClassName();
+	}
+	
 
 }

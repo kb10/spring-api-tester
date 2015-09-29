@@ -23,6 +23,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.ServletContextAware;
 
 import com.cinefms.apitester.annotations.ApiDescription;
@@ -109,7 +110,12 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 		if (ctx.getId() != null) {
 			namespace = ctx.getId();
 		}
-		return scanControllers(namespace, new ArrayList<Object>(ctx.getBeansWithAnnotation(Controller.class).values()));
+		List<ApiCall> outa = scanControllers(namespace, new ArrayList<Object>(ctx.getBeansWithAnnotation(Controller.class).values()));
+		List<ApiCall> outb = scanControllers(namespace, new ArrayList<Object>(ctx.getBeansWithAnnotation(RestController.class).values()));
+		System.err.println(outa.size());
+		System.err.println(outb.size());
+		outa.addAll(outb);
+		return outa;
 	}
 
 	public List<ApiCall> scanControllers(String namespace, List<Object> controllers) {

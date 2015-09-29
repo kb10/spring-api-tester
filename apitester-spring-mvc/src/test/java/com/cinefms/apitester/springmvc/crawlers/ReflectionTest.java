@@ -1,8 +1,12 @@
 package com.cinefms.apitester.springmvc.crawlers;
 
+import java.lang.reflect.Method;
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.cinefms.apitester.model.info.ApiCallParameter;
 import com.cinefms.apitester.model.info.ApiObject;
 
 public class ReflectionTest {
@@ -105,6 +109,27 @@ public class ReflectionTest {
 		Assert.assertEquals("com.cinefms.apitester.springmvc.crawlers.TestGenericsImpl", ao.getClassName());
 		Assert.assertEquals(false, ao.isCollection());
 		Assert.assertEquals(false, ao.isPrimitive());
+	}
+	
+	@Test 
+	public void testSubclassOfGenericControllerExpectCorrectReturnType() throws NoSuchMethodException, SecurityException {
+		ApiObject ao = Reflection.getReturnType(GenericTestControllerImpl.class,GenericTestControllerImpl.class.getMethod("get", new Class[0] ));
+		Assert.assertNotNull(ao);
+		//Assert.assertEquals("java.lang.String", ao.getClassName());
+		Assert.assertEquals(false, ao.isCollection());
+		Assert.assertEquals(false, ao.isPrimitive());
+	}
+	
+	@Test 
+	public void testSubclassOfGenericControllerExpectCorrectParameterTypes() throws NoSuchMethodException, SecurityException {
+		GenericTestControllerImpl tci = new GenericTestControllerImpl();
+		Method m = tci.getClass().getMethods()[1];
+		System.err.println(m.getName());
+		List<ApiCallParameter> acps = Reflection.getCallParameters(GenericTestControllerImpl.class,m);
+		Assert.assertNotNull(acps);
+		Assert.assertEquals(2, acps.size());
+		//Assert.assertEquals(acps.get(0).getParameterType().getClassName(),"java.lang.String");
+		//Assert.assertEquals(acps.get(1).getParameterType().getClassName(),"java.lang.String");
 	}
 	
 	

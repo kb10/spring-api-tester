@@ -120,9 +120,13 @@ public class ApitesterService implements ApplicationContextAware {
 			try {
 				String fieldname = null;
 				if((m.getName().startsWith("get")) && m.getParameterTypes().length==0 ) {
-					if(clazz.getMethod("set"+m.getName().substring(3), m.getReturnType())!=null) {
-						fieldname = m.getName().substring(3);
-						fieldname = fieldname.substring(0,1).toLowerCase()+fieldname.substring(1);
+					try {
+						if(clazz.getMethod("set"+m.getName().substring(3), m.getReturnType())!=null) {
+							fieldname = m.getName().substring(3);
+							fieldname = fieldname.substring(0,1).toLowerCase()+fieldname.substring(1);
+						}
+					} catch (NoSuchMethodException e) {
+						log.debug("assymetrics: "+m.getName()+" does not have a setter");
 					}
 				}
 				if((m.getName().startsWith("is")) && m.getParameterTypes().length==0 ) {
@@ -155,7 +159,7 @@ public class ApitesterService implements ApplicationContextAware {
 					}
 				}
 			} catch (Exception e) {
-				log.warn("exception while trying to get object structure: "+e.getMessage());
+				log.warn("exception while trying to get object structure: "+e.getMessage()+"/"+e.getClass(),e);
 			}
 		}
 		return out;

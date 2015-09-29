@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.support.GenericWebApplicationContext;
 
 import com.cinefms.apitester.core.ApitesterService;
@@ -381,6 +382,31 @@ public class SpringAnnotationCrawlerTest {
 		assertEquals(true, calls.get(3).isDeprecated());
 
 		assertEquals(true, calls.get(4).isDeprecated());
+		
+	}
+	
+	@Test
+	public void testGenericController() {
+		ApplicationContext acc = mock(ApplicationContext.class);
+		
+		Map<String,Object> cMap = new HashMap<String, Object>();
+		Map<String,Object> rcMap = new HashMap<String, Object>();
+		Object a = new GenericTestControllerImpl();
+		rcMap.put("a",a);
+		
+		when(acc.getBeansWithAnnotation(Controller.class)).thenReturn(cMap);
+		when(acc.getBeansWithAnnotation(RestController.class)).thenReturn(rcMap);
+		
+		SpringAnnotationCrawler sac = new SpringAnnotationCrawler();
+		sac.setApplicationContext(acc);
+		sac.setService(new ApitesterService());
+		
+		List<ApiCall> calls = sac.getApiCalls();
+		
+		assertEquals(3, calls.size());
+		//assertEquals("java.lang.String", calls.get(0).getReturnType().getReturnClass().getClassName());
+		assertEquals("put", calls.get(1).getHandlerMethod());
+		assertEquals(1, calls.get(1).getPathParameters().size());
 		
 	}
 	

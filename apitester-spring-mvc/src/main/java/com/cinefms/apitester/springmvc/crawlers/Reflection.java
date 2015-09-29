@@ -2,6 +2,9 @@ package com.cinefms.apitester.springmvc.crawlers;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -22,7 +25,7 @@ import com.fasterxml.classmate.TypeResolver;
 import com.fasterxml.classmate.members.ResolvedMethod;
 
 public class Reflection {
-
+	
 	public static ApiObject getReturnType(Class<?> clazz, Method method) {
 		ApiObject out = new ApiObject();
 		TypeResolver typeResolver = new TypeResolver();
@@ -57,19 +60,64 @@ public class Reflection {
 		return out;
 	}
 
+	private static List<ResolvedMethod> getAllMethods(Class<?> clazz) {
+		List<ResolvedMethod> out = new ArrayList<ResolvedMethod>();
+		System.err.println(clazz);
+		if(clazz!=null && clazz != Object.class) {
+			TypeResolver typeResolver = new TypeResolver();
+			MemberResolver memberResolver = new MemberResolver(typeResolver);
+			ResolvedType resolvedType = typeResolver.resolve(clazz);
+			ResolvedTypeWithMembers resolvedTypeWithMembers = memberResolver.resolve(resolvedType, null, null);
+			
+			
+			
+			for (ResolvedMethod rm : resolvedTypeWithMembers.getMemberMethods()) {
+				out.add(rm);
+			}
+			//out.addAll(getAllMethods(clazz.getSuperclass()));
+		}
+		return out;
+	}
+	
+	public static boolean match(Class clazz, Method m, ResolvedMethod rm) {
+		if(rm.getArgumentCount()!=m.getParameterCount()) {
+			System.err.println(rm.getArgumentCount()+" != "+m.getParameterCount());
+			return false;
+		}
+		if(rm.getName().compareTo(m.getName())!=0) {
+			System.err.println(rm.getName()+" != "+m.getName());
+			return false;
+		}
+		for(int i=0;i<rm.getArgumentCount();i++) {
+			System.err.print(rm.getArgumentType(i).getErasedType()+" / "+m.getGenericParameterTypes()[i]+": ");
+			Type tt = m.getGenericParameterTypes()[i];
+			if(tt instanceof TypeVariable) {
+			} else if(tt instanceof ParameterizedType) {
+			} else if(!rm.getArgumentType(i).getErasedType().isAssignableFrom((Class)m.getGenericParameterTypes()[i])) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	
 	public static List<ApiCallParameter> getCallParameters(Class<?> clazz, Method method) {
+
+		List<ApiCallParameter> out = new ArrayList<ApiCallParameter>();
 
 		TypeResolver typeResolver = new TypeResolver();
 		MemberResolver memberResolver = new MemberResolver(typeResolver);
 
-		ResolvedType resolvedType = typeResolver.resolve(clazz);
-		ResolvedTypeWithMembers resolvedTypeWithMembers = memberResolver.resolve(resolvedType, null, null);
 
-		List<ApiCallParameter> out = new ArrayList<ApiCallParameter>();
+		List<ResolvedMethod> methods = getAllMethods(clazz);
+		System.err.println(" ==== SCANNING FOR PARAMETERS: "+clazz.getName()+"."+method.getName()+": "+methods.size()+" member methods");
+		
+		for (ResolvedMethod rm : methods) {
 
-		for (ResolvedMethod rm : resolvedTypeWithMembers.getMemberMethods()) {
-
-			if (rm.getRawMember().toGenericString().compareTo(method.toGenericString()) == 0) {
+			if (!match(clazz,method,rm)) {
+				System.err.println(rm.getRawMember().toGenericString()+" / "+method.toGenericString()+" - NO ");
+			} else {
+				System.err.println(rm.getRawMember().toGenericString()+" / "+method.toGenericString()+" - YES ");
 
 		        String[] paramNames = new LocalVariableTableParameterNameDiscoverer().getParameterNames(method);
 		        
@@ -85,7 +133,8 @@ public class Reflection {
 					if (paramNames != null) {
 						field = paramNames[i];
 					}
-
+					
+					System.err.println(clazz.getName()+"."+method.getName()+": "+field);
 					
 					RequestBody rb = null;
 					RequestParam rp = null;
@@ -119,6 +168,7 @@ public class Reflection {
 							if(pv.value().length()>0) {
 								field = pv.value();
 							}
+							System.err.println(clazz.getName()+"."+method.getName()+": "+field+" ---- PATH VARIABLE");
 						}
 						if(a instanceof RequestParam) {
 							rp = (RequestParam)a;
@@ -167,12 +217,18 @@ public class Reflection {
 					out.add(apc);
 					
 				}
+				
+				for(ApiCallParameter a : out) {
+					System.err.println(clazz.getName()+"."+method.getName()+": "+a.toString());
+				}
+				
+				return out;
+				
 			}
 		}
-		String[] paramNames = new LocalVariableTableParameterNameDiscoverer().getParameterNames(method);
 		
 		
-		return out;
+		return null;
 	}
 
 }
