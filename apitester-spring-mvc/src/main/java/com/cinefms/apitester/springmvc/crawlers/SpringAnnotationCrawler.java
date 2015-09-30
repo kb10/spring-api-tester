@@ -112,8 +112,6 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 		}
 		List<ApiCall> outa = scanControllers(namespace, new ArrayList<Object>(ctx.getBeansWithAnnotation(Controller.class).values()));
 		List<ApiCall> outb = scanControllers(namespace, new ArrayList<Object>(ctx.getBeansWithAnnotation(RestController.class).values()));
-		System.err.println(outa.size());
-		System.err.println(outb.size());
 		outa.addAll(outb);
 		return outa;
 	}

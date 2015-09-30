@@ -62,7 +62,6 @@ public class Reflection {
 
 	private static List<ResolvedMethod> getAllMethods(Class<?> clazz) {
 		List<ResolvedMethod> out = new ArrayList<ResolvedMethod>();
-		System.err.println(clazz);
 		if(clazz!=null && clazz != Object.class) {
 			TypeResolver typeResolver = new TypeResolver();
 			MemberResolver memberResolver = new MemberResolver(typeResolver);
@@ -81,15 +80,12 @@ public class Reflection {
 	
 	public static boolean match(Class clazz, Method m, ResolvedMethod rm) {
 		if(rm.getArgumentCount()!=m.getParameterCount()) {
-			System.err.println(rm.getArgumentCount()+" != "+m.getParameterCount());
 			return false;
 		}
 		if(rm.getName().compareTo(m.getName())!=0) {
-			System.err.println(rm.getName()+" != "+m.getName());
 			return false;
 		}
 		for(int i=0;i<rm.getArgumentCount();i++) {
-			System.err.print(rm.getArgumentType(i).getErasedType()+" / "+m.getGenericParameterTypes()[i]+": ");
 			Type tt = m.getGenericParameterTypes()[i];
 			if(tt instanceof TypeVariable) {
 			} else if(tt instanceof ParameterizedType) {
@@ -110,14 +106,10 @@ public class Reflection {
 
 
 		List<ResolvedMethod> methods = getAllMethods(clazz);
-		System.err.println(" ==== SCANNING FOR PARAMETERS: "+clazz.getName()+"."+method.getName()+": "+methods.size()+" member methods");
 		
 		for (ResolvedMethod rm : methods) {
 
-			if (!match(clazz,method,rm)) {
-				System.err.println(rm.getRawMember().toGenericString()+" / "+method.toGenericString()+" - NO ");
-			} else {
-				System.err.println(rm.getRawMember().toGenericString()+" / "+method.toGenericString()+" - YES ");
+			if (match(clazz,method,rm)) {
 
 		        String[] paramNames = new LocalVariableTableParameterNameDiscoverer().getParameterNames(method);
 		        
@@ -133,8 +125,6 @@ public class Reflection {
 					if (paramNames != null) {
 						field = paramNames[i];
 					}
-					
-					System.err.println(clazz.getName()+"."+method.getName()+": "+field);
 					
 					RequestBody rb = null;
 					RequestParam rp = null;
@@ -168,7 +158,6 @@ public class Reflection {
 							if(pv.value().length()>0) {
 								field = pv.value();
 							}
-							System.err.println(clazz.getName()+"."+method.getName()+": "+field+" ---- PATH VARIABLE");
 						}
 						if(a instanceof RequestParam) {
 							rp = (RequestParam)a;
@@ -216,10 +205,6 @@ public class Reflection {
 					
 					out.add(apc);
 					
-				}
-				
-				for(ApiCallParameter a : out) {
-					System.err.println(clazz.getName()+"."+method.getName()+": "+a.toString());
 				}
 				
 				return out;
