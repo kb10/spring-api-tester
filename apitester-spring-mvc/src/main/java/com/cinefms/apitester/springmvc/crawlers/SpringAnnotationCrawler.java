@@ -133,7 +133,10 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 			Class<?> clazz = controller.getClass();
 			
 			if(clazz.getAnnotation(ApiIgnore.class)!=null) {
+				log.info(" ##  IGNORING CLASS: "+ clazz.getCanonicalName());
 				continue;
+			} else {
+				log.info(" ##  NOT IGNORING CLASS: "+ clazz.getCanonicalName());
 			}
 			
 			String handlerClass = clazz.getName();
@@ -160,7 +163,10 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 			for (Method m : methods) {
 
 				if(m.getAnnotation(ApiIgnore.class)!=null) {
+					log.info(" ##  IGNORING METHOD: "+ clazz.getCanonicalName()+"."+m.getName());
 					continue;
+				} else {
+					log.info(" ##  NOT IGNORING METHOD: "+ clazz.getCanonicalName()+"."+m.getName());
 				}
 				
 				try {
