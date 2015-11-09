@@ -16,12 +16,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.cinefms.apitester.annotations.ApiIgnore;
 import com.cinefms.apitester.core.ApitesterService;
 import com.cinefms.apitester.model.info.ApiCall;
 import com.cinefms.apitester.model.info.ApiObject;
 
 @Controller
-@RequestMapping(value={""})
+@RequestMapping(value={"/apitester/api"})
+@ApiIgnore
 public class ApiTesterController {
 
 	private static Log log = LogFactory.getLog(ApiTesterController.class);

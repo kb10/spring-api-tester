@@ -40,7 +40,7 @@ public class TestController12 {
 		return null;
 	}
 	
-	@RequestMapping(value={"/d/{id}"},method=RequestMethod.GET)
+	@RequestMapping(value={"/d/{id}"},method=RequestMethod.PUT)
 	@ResponseBody
 	@Deprecated
 	public Map<String,Object> getBasic5() {

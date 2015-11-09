@@ -1,0 +1,33 @@
+<div> 
+	<div ng-show="!saveExpanded" ng-click="toggleSave()" style="width: 25; padding: 10;">
+		<i class="glyphicon glyphicon-save"> </i>
+	</div>
+	<div class="col-md-2" ng-show="saveExpanded">
+		<h4 ng-click="toggleSave()">
+			Request Storage
+		</h4>
+		<div ng-repeat="item in db.savedObjArr">
+			<div style="cursor:pointer">
+				<strong>{{item.group}}</strong>
+				<ul>
+					<li ng-repeat="obj in item.dataArr">
+						<div class="form-group" id="{{obj.id}}">
+							<span class="label" ng-class="
+								{
+									'label-primary':obj.method=='POST',
+									'label-success':obj.method=='GET',
+									'label-info':obj.method=='PUT',
+									'label-danger':obj.method=='DELETE',
+									'label-default':obj.method=='OPTIONS',
+								}">
+								{{obj.method}}
+							</span>
+							<span class="text-center" ng-click="reloadData(obj.id)">{{obj.name}}</span>
+							<span class="pull-right glyphicon glyphicon-remove-circle" ng-click="deleteData(obj.id)"></span>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>

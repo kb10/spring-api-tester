@@ -22,12 +22,12 @@ import org.javaruntype.type.Types;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.cinefms.apitester.model.info.ApiCall;
 import com.cinefms.apitester.model.info.ApiObject;
 
-@Component
+@Service
 public class ApitesterService implements ApplicationContextAware {
 	
 	private static Log log = LogFactory.getLog(ApitesterService.class);

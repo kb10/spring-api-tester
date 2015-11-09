@@ -85,6 +85,7 @@
 		<module>apitester-webapp-example</module>
 		<module>apitester-spring-mvc</module>
 		<module>apitester-example-controllers</module>
+		<module>apitester-ui</module>
 	</modules>
 	<scm>
 		<connection>scm:git:https://github.com/rmalchow/spring-api-tester</connection>

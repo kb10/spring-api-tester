@@ -22,18 +22,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.ServletContextAware;
 
 import com.cinefms.apitester.annotations.ApiDescription;
+import com.cinefms.apitester.annotations.ApiIgnore;
 import com.cinefms.apitester.core.ApitesterService;
 import com.cinefms.apitester.model.ApiCrawler;
 import com.cinefms.apitester.model.info.ApiCall;
 import com.cinefms.apitester.model.info.ApiCallParameter;
 import com.cinefms.apitester.model.info.ApiResult;
 
+@Component
 public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAware, ServletContextAware {
 
 	private static Log log = LogFactory.getLog(SpringAnnotationCrawler.class);
@@ -57,8 +60,7 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 	public List<ApiCall> getApiCalls() {
 		log.info("################################################################ ");
 		log.info("##");
-		log.info("## SpringAnnotationCrawler initialized: "
-				+ applicationContext);
+		log.info("## SpringAnnotationCrawler initialized: " + applicationContext);
 		log.info("## ApitesterService is                : " + getService());
 		log.info("##");
 		log.info("################################################################ ");
@@ -127,7 +129,12 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 		List<ApiCall> out = new ArrayList<ApiCall>();
 
 		for (Object controller : controllers) {
-			Class<?> clazz = controller.getClass();			
+			
+			Class<?> clazz = controller.getClass();
+			
+			if(clazz.getAnnotation(ApiIgnore.class)!=null) {
+				continue;
+			}
 			
 			String handlerClass = clazz.getName();
 			
@@ -152,6 +159,10 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 
 			for (Method m : methods) {
 
+				if(m.getAnnotation(ApiIgnore.class)!=null) {
+					continue;
+				}
+				
 				try {
 
 					String description = null;
