@@ -3,19 +3,19 @@
 	<parent>
 		<groupId>com.cinefms.apitester</groupId>
 		<artifactId>apitester-parent</artifactId>
-		<version>1.1.13-SNAPSHOT</version>
+		<version>1.1.13</version>
 	</parent>
 	<artifactId>apitester-core</artifactId>
 	<dependencies>
 		<dependency>
 			<groupId>com.cinefms.apitester</groupId>
 			<artifactId>apitester-annotations</artifactId>
-			<version>1.1.13-SNAPSHOT</version>
+			<version>1.1.13</version>
 		</dependency>
 		<dependency>
 			<groupId>com.cinefms.apitester</groupId>
 			<artifactId>apitester-model</artifactId>
-			<version>1.1.13-SNAPSHOT</version>
+			<version>1.1.13</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
