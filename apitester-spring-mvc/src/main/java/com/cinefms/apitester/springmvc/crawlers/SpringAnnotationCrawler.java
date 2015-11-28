@@ -249,6 +249,8 @@ public class SpringAnnotationCrawler implements ApiCrawler, ApplicationContextAw
 												Reflection.getReturnType(clazz, m)
 										)
 								);
+								log.info(" --- CLAZZ  : "+clazz);
+								log.info(" --- METHOD : "+m);
 								for(ApiCallParameter acp : Reflection.getCallParameters(clazz, m)) {
 									a.addParameter(acp);
 								}
