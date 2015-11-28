@@ -22,7 +22,7 @@ import com.cinefms.apitester.model.info.ApiCall;
 import com.cinefms.apitester.model.info.ApiObject;
 
 @Controller
-@RequestMapping(value={"/apitester/api"})
+@RequestMapping(value={""})
 @ApiIgnore
 public class ApiTesterController {
 
