@@ -1,22 +1,32 @@
 package com.cinefms.apitester.core;
 
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Test;
-import org.springframework.context.ApplicationContext;
 
+import com.cinefms.apitester.core.test.IObjectA;
 import com.cinefms.apitester.model.ApiCrawler;
 import com.cinefms.apitester.model.info.ApiCall;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ApiTesterServiceTest {
 
+	@Test
+	public void testCreateMapWithInterface() throws JsonProcessingException {
+		ApitesterService as = new ApitesterService();
+		Object o = as.createMap(IObjectA.class, new ArrayList<>());
+		
+		System.err.println("result: "+new ObjectMapper().writeValueAsString(o));
+		
+		
+	}
+
+	
 	@Test
 	public void testCollectApiCallsExpectSuccess() {
 		ApiCrawler aCrawl = mock(ApiCrawler.class);
