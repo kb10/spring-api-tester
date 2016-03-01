@@ -138,10 +138,12 @@ public class ApitesterService implements ApplicationContextAware {
 					 **/
 				}
 				if ((m.getName().startsWith("is")) && m.getParameterTypes().length == 0) {
+					fieldname = m.getName().substring(2);
+					fieldname = fieldname.substring(0, 1).toLowerCase() + fieldname.substring(1);
+					/**
 					if (clazz.getMethod("set" + m.getName().substring(2), m.getReturnType()) != null) {
-						fieldname = m.getName().substring(2);
-						fieldname = fieldname.substring(0, 1).toLowerCase() + fieldname.substring(1);
 					}
+					**/
 				}
 
 				if (fieldname != null) {
