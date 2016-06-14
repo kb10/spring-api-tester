@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.cinefms.apitester</groupId>
 		<artifactId>apitester-parent</artifactId>
-		<version>1.2.8-SNAPSHOT</version>
+		<version>1.3.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>apitester-webapp</artifactId>
 	<packaging>war</packaging>
@@ -18,7 +18,7 @@
 		<dependency>
 			<groupId>com.cinefms.apitester</groupId>
 			<artifactId>apitester-spring-mvc</artifactId>
-			<version>1.2.8-SNAPSHOT</version>
+			<version>1.3.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 	<build>
