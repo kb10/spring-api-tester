@@ -72,8 +72,6 @@ public class Reflection {
 			ResolvedType resolvedType = typeResolver.resolve(clazz);
 			ResolvedTypeWithMembers resolvedTypeWithMembers = memberResolver.resolve(resolvedType, null, null);
 			
-			
-			
 			for (ResolvedMethod rm : resolvedTypeWithMembers.getMemberMethods()) {
 				out.add(rm);
 			}
