@@ -1,6 +1,12 @@
 spring-api-tester
 =================
 
+--------------------------------------------
+
+this readme is outdated. i am in the process of switching this to work with spring boot. spring boot has a similar functionality, but i think it is slightly less nice. 
+
+--------------------------------------------
+
 spring-api-tester is an application that scans your spring application 
 for API controllers, tries to extract information from them, and 
 display them in a simple angular / bootstrap app. 
