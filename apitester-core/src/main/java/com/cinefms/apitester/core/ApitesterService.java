@@ -122,8 +122,6 @@ public class ApitesterService implements ApplicationContextAware {
 			try {
 				String fieldname = null;
 				if ((m.getName().startsWith("get")) && m.getParameterTypes().length == 0) {
-					fieldname = m.getName().substring(3);
-					fieldname = fieldname.substring(0, 1).toLowerCase() + fieldname.substring(1);
 					try {
 						if (clazz.getMethod("set" + m.getName().substring(3), m.getReturnType()) != null) {
 							fieldname = m.getName().substring(3);
@@ -132,18 +130,12 @@ public class ApitesterService implements ApplicationContextAware {
 					} catch (NoSuchMethodException e) {
 						log.debug("assymetrics: " + m.getName() + " does not have a setter");
 					}
-					/**
-					 * // another option: also check if the corresponding SET method exists
-					 * 
-					 **/
 				}
 				if ((m.getName().startsWith("is")) && m.getParameterTypes().length == 0) {
-					fieldname = m.getName().substring(2);
-					fieldname = fieldname.substring(0, 1).toLowerCase() + fieldname.substring(1);
-					/**
 					if (clazz.getMethod("set" + m.getName().substring(2), m.getReturnType()) != null) {
+						fieldname = m.getName().substring(2);
+						fieldname = fieldname.substring(0, 1).toLowerCase() + fieldname.substring(1);
 					}
-					**/
 				}
 
 				if (fieldname != null) {
