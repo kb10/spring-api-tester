@@ -3,14 +3,14 @@
 	<parent>
 		<groupId>com.cinefms.apitester</groupId>
 		<artifactId>apitester-parent</artifactId>
-		<version>1.3.1-SNAPSHOT</version>
+		<version>1.3.1</version>
 	</parent>
 	<artifactId>apitester-springboot-example</artifactId>
 	<dependencies>
 		<dependency>
 			<groupId>com.cinefms.apitester</groupId>
 			<artifactId>apitester-springboot</artifactId>
-			<version>1.3.1-SNAPSHOT</version>
+			<version>1.3.1</version>
 		</dependency>
 	</dependencies>
 </project>
