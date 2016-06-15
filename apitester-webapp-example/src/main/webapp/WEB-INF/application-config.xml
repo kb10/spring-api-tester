@@ -30,5 +30,7 @@
 	">
 	<!-- component scan for my tests -->
     <context:component-scan base-package="com.cinefms.apitester.mytests.service" />
+	<bean class="com.cinefms.apitester.core.ApitesterService">
+	</bean>
 
 </beans>

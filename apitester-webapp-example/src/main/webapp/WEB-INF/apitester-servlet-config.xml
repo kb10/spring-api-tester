@@ -28,9 +28,47 @@
        http://www.springframework.org/schema/mvc
        http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
 	">
+	
+	<!--  regular spring servlet config -->
+	<context:component-scan base-package="com.cinefms.apitester.webapp" />
 
-	<bean class="com.cinefms.apitester.springmvc.crawlers.SpringAnnotationCrawler">
-		<property name="prefix" value="/api"></property>
-	</bean>
+
+	<!-- setup message converters and request maping for api tester servlet -->
+	<bean id="jsonConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
+	<bean id="stringHttpMessageConverter" class="org.springframework.http.converter.StringHttpMessageConverter"/>
+	
+	<!-- Method Annotation Mapping -->
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
+    	<property name="urlDecode" value="true"/>
+    	<property name="interceptors">
+	    	<list>	    		
+	    	</list>
+	    </property>
+    </bean>
+
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+    	<property name="messageConverters">
+	       <list>
+	       		<ref bean="jsonConverter" />
+	       </list>
+	   	</property>
+    </bean> 
+    
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver ">
+    	<property name="messageConverters">
+	       <list>
+	       		<ref bean="jsonConverter" />
+	       </list>
+	   	</property>
+    </bean> 
+   
+	<bean id="handlerMapping" class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+    	<property name="useDefaultSuffixPattern" value="false"/>
+	    <property name="interceptors">
+	    	<list>	    		
+	    	</list>
+	    </property>
+	</bean> 
+	
 
 </beans>
