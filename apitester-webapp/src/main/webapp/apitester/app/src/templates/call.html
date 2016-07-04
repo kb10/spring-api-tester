@@ -21,7 +21,8 @@
 				<br>
 				{{apicall.handlerClass}}.{{apicall.handlerMethod}}()
 			</div>
-			<div class="col-md-12">
+			<div class="col-md-12" ng-if="apicall.description">
+				{{apicall.description}}
 			</div>
 		</div>
 	</div>
