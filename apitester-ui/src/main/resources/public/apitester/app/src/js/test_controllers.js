@@ -186,8 +186,7 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 	    }
 	  };
 
-	   fileUpload.uploadFileToUrl(file); //-kb10- code this accordingly, so that your file object will be picked up in service call below.
-
+	 
 
 	$scope.prepareRequest = function() {
 		var requestUrl = $scope.selectedCallInfo.fullPath;
