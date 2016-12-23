@@ -94,7 +94,7 @@
 							({{reqParam.parameterType.className}})
 						</div>
 						<div class="col-md-8">
-							<input type="text" class="form-control" placeholder="{{reqParam.defaultValue}}" ng-model="reqParam.value">
+							<input type="{{getParameterType(pathParam.parameterType.className)}}" class="form-control" placeholder="{{reqParam.defaultValue}}" ng-model="reqParam.value">
 						</div>
 					</div>
 				</div>
