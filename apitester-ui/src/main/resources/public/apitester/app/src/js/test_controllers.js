@@ -177,6 +177,17 @@ apitester.controller('testRootController', [ '$scope' , '$http', '$interval','Re
 		}
 		return result;
 	};
+	$scope.getParameterType = function(type) {
+	    console.log(type);
+	    if (type === "org.springframework.web.multipart.MultipartFile") {
+	      return "file";
+	    } else {
+	      return "text";
+	    }
+	  };
+
+	   fileUpload.uploadFileToUrl(file); //-kb10- code this accordingly, so that your file object will be picked up in service call below.
+
 
 	$scope.prepareRequest = function() {
 		var requestUrl = $scope.selectedCallInfo.fullPath;

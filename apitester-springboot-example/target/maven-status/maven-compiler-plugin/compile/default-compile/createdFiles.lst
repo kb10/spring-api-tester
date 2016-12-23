@@ -1,0 +1,4 @@
+com/cinefms/apitester/springboot/example/entities/AnotherEntity.class
+com/cinefms/apitester/springboot/example/entities/SomeEntity.class
+com/cinefms/apitester/springboot/example/Application.class
+com/cinefms/apitester/springboot/example/controllers/TestController.class
