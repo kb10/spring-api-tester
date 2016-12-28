@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.cinefms.apitester.springboot.example.entities.SomeEntity;
 
@@ -21,6 +22,10 @@ public class TestController {
 	public SomeEntity entity(@PathVariable String xx) {
 		return new SomeEntity();
 	}
-	
+
+ 	@RequestMapping(value="",headers = "content-type=multipart/*", method=RequestMethod.POST)
+ 	public void uploadFileTest(@RequestParam MultipartFile file){
+ 		System.out.println("====START TO PARSE THE FILE========");
+ 	}
 	
 }
