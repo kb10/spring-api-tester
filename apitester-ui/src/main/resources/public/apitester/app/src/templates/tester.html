@@ -94,7 +94,7 @@
 							({{reqParam.parameterType.className}})
 						</div>
 						<div class="col-md-8">
-							<input ng-if="isFile(reqParam.parameterType.className)" type="file" class="form-control" placeholder="{{reqParam.defaultValue}}" onchange="angular.element(this).scope().setFile(this.files,angular.element(this).scope().reqParam)" ng-model="this.files" >
+							<input ng-if="isFile(reqParam.parameterType.className)" type="file" class="form-control" placeholder="{{reqParam.defaultValue}}" onchange="angular.element(this).scope().setFile(this.files)" ng-model="this.files" >
 						<input ng-if="!isFile(reqParam.parameterType.className)" type="text" class="form-control" placeholder="{{reqParam.defaultValue}}" ng-model="reqParam.value">
 						</div>
 					</div>

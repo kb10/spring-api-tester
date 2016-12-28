@@ -137,6 +137,7 @@ apitester.controller('testRootController', [ '$scope' , '$http','$q', '$interval
 		$http({	method : $scope.selectedCallInfo.method,
 				url : $scope.host+$scope.requestObject.url,
 				headers:{'Content-Type': undefined},
+				transformRequest: angular.identity,
 				params : $scope.requestObject.params,
 				data : $scope.requestObject.requestBody}).
 			success($scope.ajaxFinished).
@@ -180,7 +181,6 @@ apitester.controller('testRootController', [ '$scope' , '$http','$q', '$interval
 		return result;
 	};
 	$scope.isFile = function(type) {
-	    console.log(type);
 	    if (type === "org.springframework.web.multipart.MultipartFile") {
 	      return true;
 	    } else {
@@ -188,64 +188,15 @@ apitester.controller('testRootController', [ '$scope' , '$http','$q', '$interval
 	    }
 	  };
 
-	  $scope.setFile = function(files,reqParam) {
+	  $scope.setFile = function(files) {
 	    console.log(files);
 	    var file=files[0];
-	    var reader = new FileReader();
-	    reader.readAsBinaryString(file);
-	    reader.onload = function(e) {
-	    	var fd = new FormData();
-	    	fd.append('file', file);
-//	    	reqParam.value=fd.toString();
-	    	reqParam.value=this;
-	    	console.log("read ===>",this.content);
-	    	console.log("===>",reqParam);
-	    	console.log(fd.toString());
-	      if (reader.result) reader.content = reader.result;
-	      var base64Data = btoa(reader.content);
-	    } 
 	    
-	    
-//	    fileToBytesArray(file).then(function(result){
-//	    	console.log(result);
-//	    	var fd = new FormData();
-//            fd.append('file', result);
-//            console.log(fd);
-//	    	reqParam.value='[' + result.toString() + ']';
-//	    	console.log(reqParam);
-////	    	Restangular.one('/api/files/end points').withHttpConfig({transformRequest: angular.identity})
-////            .customPOST(fd, '', undefined, {'Content-Type': undefined})
-//	    });
-	    	console.log("select file");
+	    var fd = new FormData();
+        fd.append('file', file);
+        $scope.requestObject.requestBody=fd;
+	    	console.log("select file",fd);
 	  };
-	  
-// convert file to bytes array
-
-		function fileToBytesArray(file) {
-	    var deferred = $q.defer();
-	    var reader = new FileReader();
-	    
-	    reader.readAsArrayBuffer(file);
-	    reader.onloadend = function() {
-	    	//bk change
-	    	var fd = new FormData();
-	    	fd.append('file', file);
-
-	    	var bytesArray = [];
-	        var bufferArray = new Uint8Array(this.result);
-	        var bufferLength = bufferArray.length;
-	        for (var i = 0; i < bufferLength; i++) {
-	            bytesArray.push(bufferArray[i]);
-	        }
-	        deferred.resolve(bytesArray);
-	    };
-	    
-	    reader.onerror = function(e) {
-	        console.warn('Processing file to bytesArray failed');
-	    };
-	    return deferred.promise;
-	}
-		
 		
 	$scope.prepareRequest = function() {
 		var requestUrl = $scope.selectedCallInfo.fullPath;
