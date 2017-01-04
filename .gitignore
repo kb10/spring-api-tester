@@ -3,5 +3,7 @@
 .DS_Store
 .classpath
 target/
+/target
+/target/
 pom.xml.releaseBackup
 release.properties
