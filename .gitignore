@@ -2,6 +2,6 @@
 .settings
 .DS_Store
 .classpath
-/target
+target/
 pom.xml.releaseBackup
 release.properties
