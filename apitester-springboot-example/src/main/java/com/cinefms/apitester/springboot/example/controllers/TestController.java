@@ -1,5 +1,6 @@
 package com.cinefms.apitester.springboot.example.controllers;
 
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,9 +24,15 @@ public class TestController {
 		return new SomeEntity();
 	}
 
- 	@RequestMapping(value="",headers = "content-type=multipart/*", method=RequestMethod.POST)
+ 	@RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE,value="",headers = "content-type=multipart/*", method=RequestMethod.POST)
  	public void uploadFileTest(@RequestParam MultipartFile file){
  		System.out.println("====START TO PARSE THE FILE========");
  	}
-	
+	@RequestMapping(value="/aa", method=RequestMethod.POST)
+ 	public String testPost(@RequestParam String a){
+		if(a!=null){
+			System.out.println("value of a"+a);
+		}
+ 		return "the value of a is , "+a+"!";
+ 	}
 }

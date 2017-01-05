@@ -4,22 +4,20 @@ apitester.controller('testRootController', [ '$scope' , '$http','$q', '$interval
 	$scope.selectedCallInfo = {};
 	$scope.showRequestButton = {};
 	$scope.host = "";
+	//config object
+	var configObject ={};
 	
 	RA.all('basepaths').getList().then(
 		function(basepaths) {
 			$scope.basePaths = basepaths;
 		}
 	);
-
-
 	$scope.saveExpanded = false;
 
 	$scope.toggleSave = function() {
 		$scope.saveExpanded = !$scope.saveExpanded;		
 		console.log("saveExpanded: "+$scope.saveExpanded);
 	}
-
-
 	$scope.resetAll = function() {
 		$scope.selectedDocIndex = {};
 		$scope.buttonClasses = {disabledBtn:{}, availableBtn:{}, deprecatedBtn:{}, activeBtn:{}};
@@ -129,22 +127,33 @@ apitester.controller('testRootController', [ '$scope' , '$http','$q', '$interval
 	$scope.$on('$destroy', function() {
 		$scope.stopCount();
 	});
-
+		
+//		$http(configObject, successCallback, errorCallback);
+	
+//		$scope.submit = function() {
+//			$scope.communicatingToServer = true;
+//			$scope.prepareRequest();
+//			$scope.startCount();
+//			$http({configObject}).
+//				success($scope.ajaxFinished).
+//				error($scope.ajaxFinished);
+//		};
 	$scope.submit = function() {
 		$scope.communicatingToServer = true;
 		$scope.prepareRequest();
 		$scope.startCount();
+		console.log("header 145--->",configObject);
 		$http({	method : $scope.selectedCallInfo.method,
 				url : $scope.host+$scope.requestObject.url,
-				headers:{'Content-Type': undefined},
+				headers:{configObject},
+//				headers:{'Content-Type': undefined},
 				transformRequest: angular.identity,
 				params : $scope.requestObject.params,
 				data : $scope.requestObject.requestBody}).
 			success($scope.ajaxFinished).
 			error($scope.ajaxFinished);
-		console.log($scope.requestObject.requestBody);
+		console.log("request body 153--->",$scope.requestObject.requestBody);
 	};
-
 	$scope.ajaxFinished = function(data, status, headers, config, statusText) {
 		$scope.stopCount();
 		$scope.communicatingToServer = false;
@@ -182,8 +191,22 @@ apitester.controller('testRootController', [ '$scope' , '$http','$q', '$interval
 	};
 	$scope.isFile = function(type) {
 	    if (type === "org.springframework.web.multipart.MultipartFile") {
-	      return true;
+	    	configObject = {'Content-Type': undefined};
+//					method : $scope.selectedCallInfo.method,
+//					url : $scope.host+$scope.requestObject.url,
+//					headers : {'Content-Type': undefined},
+//					transformRequest : 'angular.identity',
+//					params : $scope.requestObject.params,
+//					data : $scope.requestObject.requestBody
+//	    	};
+	    	return true;
 	    } else {
+	    	configObject = {};
+//					method : $scope.selectedCallInfo.method,
+//					url : $scope.host+$scope.requestObject.url,
+//					params : $scope.requestObject.params,
+//					data : $scope.requestObject.requestBody
+//			};
 	      return false;
 	    }
 	  };
@@ -262,6 +285,24 @@ apitester.controller('testRootController', [ '$scope' , '$http','$q', '$interval
 		exportDataWin.document.write(angular.toJson($scope.responseObject, true));
 		exportDataWin.document.write("</pre>");
 	};
-
-
+//add logic for $http
+//	function  setConfigObject() {
+//		if ($scope.isFile) {
+//			configObject = {
+//					method : $scope.selectedCallInfo.method,
+//					url : $scope.host+$scope.requestObject.url,
+//					headers : {'Content-Type': undefined},
+//					params : $scope.requestObject.params,
+//					data : $scope.requestObject.requestBody,
+//					transformRequest : 'angular.identity'
+//			};
+//		} else {
+//			configObject = {
+//					method : $scope.selectedCallInfo.method,
+//					url : $scope.host+$scope.requestObject.url,
+//					params : $scope.requestObject.params,
+//					data : $scope.requestObject.requestBody
+//			};
+//		}
+//	}
 }]);
