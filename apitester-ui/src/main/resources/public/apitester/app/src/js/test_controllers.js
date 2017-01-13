@@ -5,7 +5,8 @@ apitester.controller('testRootController', [ '$scope' , '$http','$q', '$interval
 	$scope.showRequestButton = {};
 	$scope.host = "";
 	//config object
-	var configObject ={};
+	var fileObject ={};
+	var isfl;
 	
 	RA.all('basepaths').getList().then(
 		function(basepaths) {
@@ -91,6 +92,7 @@ apitester.controller('testRootController', [ '$scope' , '$http','$q', '$interval
 	$scope.setRequestInfo = function(method, fullPath, reqData) {
 		$scope.selectedDocIndex = _.findIndex($scope.calls, {fullPath:fullPath, method:method});
 		$scope.selectedCallInfo = reqData ? angular.fromJson(reqData) : angular.copy($scope.calls[$scope.selectedDocIndex]);
+		console.log("----------->reqData  ",reqData);
 		$scope.buttonClasses.availableBtn[method] = false;
 		$scope.buttonClasses.deprecatedBtn[method] = false;
 		$scope.buttonClasses.activeBtn = {};
@@ -127,34 +129,35 @@ apitester.controller('testRootController', [ '$scope' , '$http','$q', '$interval
 	$scope.$on('$destroy', function() {
 		$scope.stopCount();
 	});
-		
-//		$http(configObject, successCallback, errorCallback);
-	
-//		$scope.submit = function() {
-//			$scope.communicatingToServer = true;
-//			$scope.prepareRequest();
-//			$scope.startCount();
-//			$http({configObject}).
-//				success($scope.ajaxFinished).
-//				error($scope.ajaxFinished);
-//		};
-	$scope.submit = function() {
+		$scope.submit = function() {
 		$scope.communicatingToServer = true;
 		$scope.prepareRequest();
 		$scope.startCount();
-		console.log("header 145--->",configObject);
-		$http({	method : $scope.selectedCallInfo.method,
+		console.log("isfl===>",isfl);
+		console.log("req body before ===>",$scope.requestObject.requestBody);
+//		Object.assign($scope.requestObject.requestBody,fileObject);
+		$scope.requestObject.requestBody.file=fileObject;
+		console.log("req body after ===>",$scope.requestObject.requestBody);
+		if (isfl) {
+			$http({	method : $scope.selectedCallInfo.method,
 				url : $scope.host+$scope.requestObject.url,
-				headers:{configObject},
-//				headers:{'Content-Type': undefined},
+				headers:{'Content-Type': undefined},
 				transformRequest: angular.identity,
 				params : $scope.requestObject.params,
 				data : $scope.requestObject.requestBody}).
 			success($scope.ajaxFinished).
 			error($scope.ajaxFinished);
-		console.log("request body 153--->",$scope.requestObject.requestBody);
-	};
-	$scope.ajaxFinished = function(data, status, headers, config, statusText) {
+		} else {
+			$http({	method : $scope.selectedCallInfo.method,
+				url : $scope.host+$scope.requestObject.url,
+				params : $scope.requestObject.params,
+				data : $scope.requestObject.requestBody}).
+			success($scope.ajaxFinished).
+			error($scope.ajaxFinished);
+		}
+		};
+		
+	$scope.ajaxFinished = function(data,status,headers, config, statusText) {
 		$scope.stopCount();
 		$scope.communicatingToServer = false;
 		$scope.responseObject = {
@@ -191,22 +194,10 @@ apitester.controller('testRootController', [ '$scope' , '$http','$q', '$interval
 	};
 	$scope.isFile = function(type) {
 	    if (type === "org.springframework.web.multipart.MultipartFile") {
-	    	configObject = {'Content-Type': undefined};
-//					method : $scope.selectedCallInfo.method,
-//					url : $scope.host+$scope.requestObject.url,
-//					headers : {'Content-Type': undefined},
-//					transformRequest : 'angular.identity',
-//					params : $scope.requestObject.params,
-//					data : $scope.requestObject.requestBody
-//	    	};
+	    	isfl=true;
 	    	return true;
 	    } else {
-	    	configObject = {};
-//					method : $scope.selectedCallInfo.method,
-//					url : $scope.host+$scope.requestObject.url,
-//					params : $scope.requestObject.params,
-//					data : $scope.requestObject.requestBody
-//			};
+	    	isfl=false;
 	      return false;
 	    }
 	  };
@@ -217,12 +208,18 @@ apitester.controller('testRootController', [ '$scope' , '$http','$q', '$interval
 	    
 	    var fd = new FormData();
         fd.append('file', file);
-        $scope.requestObject.requestBody=fd;
+//        $scope.requestObject.requestBody=fd;
+        fileObject=fd;
+        
 	    	console.log("select file",fd);
+	    	console.log("req body---------------------->",$scope.requestObject.requestBody);
 	  };
 		
 	$scope.prepareRequest = function() {
 		var requestUrl = $scope.selectedCallInfo.fullPath;
+		console.log("select info------==>",$scope.selectedCallInfo);
+		console.log("req info------==>",$scope.setRequestInfo);
+		console.log("doc info------==>",$scope.selectedDocIndex);
 		if($scope.selectedCallInfo.pathParameters.length > 0) {
 			for(i = 0; i < $scope.selectedCallInfo.pathParameters.length; i++) {
 				requestUrl = requestUrl.replace("{" + $scope.selectedCallInfo.pathParameters[i].parameterName + "}", 
@@ -234,6 +231,7 @@ apitester.controller('testRootController', [ '$scope' , '$http','$q', '$interval
 		var requestParams = {};
 		angular.forEach($scope.selectedCallInfo.defaultRequestParameters, function(value, key){
 			requestParams[key] = value;
+			console.log("==>",key,"-----",value);
 		});
 
 		if($scope.selectedCallInfo.requestParameters.length > 0) {
@@ -245,8 +243,16 @@ apitester.controller('testRootController', [ '$scope' , '$http','$q', '$interval
 		$scope.requestObject.params = requestParams;
 
         if($scope.selectedCallInfo.requestBodyParameters.length > 0) {
-            $scope.requestObject.requestBody = $scope.selectedCallInfo.requestBodyParameters[0].value;
+        	
+        	console.log("req body---------------222------->",$scope.requestObject.requestBody);
+       		$scope.requestObject.requestBody = $scope.selectedCallInfo.requestBodyParameters[0].value;
+       		console.log("req body---------------2------->",$scope.requestObject.requestBody);
+//       		if(fileObject=!null){
+//       			Object.assign($scope.requestObject.requestBody,fileObject);
+//       		}
+//        		$scope.requestObject.requestBody = $scope.selectedCallInfo.requestBodyParameters[0].value;
         }
+        
 	};
 
 	$scope.hideConfigOfResponse = true;
@@ -285,24 +291,4 @@ apitester.controller('testRootController', [ '$scope' , '$http','$q', '$interval
 		exportDataWin.document.write(angular.toJson($scope.responseObject, true));
 		exportDataWin.document.write("</pre>");
 	};
-//add logic for $http
-//	function  setConfigObject() {
-//		if ($scope.isFile) {
-//			configObject = {
-//					method : $scope.selectedCallInfo.method,
-//					url : $scope.host+$scope.requestObject.url,
-//					headers : {'Content-Type': undefined},
-//					params : $scope.requestObject.params,
-//					data : $scope.requestObject.requestBody,
-//					transformRequest : 'angular.identity'
-//			};
-//		} else {
-//			configObject = {
-//					method : $scope.selectedCallInfo.method,
-//					url : $scope.host+$scope.requestObject.url,
-//					params : $scope.requestObject.params,
-//					data : $scope.requestObject.requestBody
-//			};
-//		}
-//	}
 }]);
