@@ -31,6 +31,7 @@ public class ApiCall {
 	private List<ApiCallParameter> pathParameters = new ArrayList<ApiCallParameter>();
 	private List<ApiCallParameter> requestParameters = new ArrayList<ApiCallParameter>();
 	private List<ApiCallParameter> requestBodyParameters = new ArrayList<ApiCallParameter>();
+	private List<ApiCallParameter> requestPart = new ArrayList<ApiCallParameter>();
 	
 	private ApiResult returnType;
 	
@@ -222,6 +223,14 @@ public class ApiCall {
 
 	public void setRequestBodyParameters(List<ApiCallParameter> requestBodyParameters) {
 		this.requestBodyParameters = requestBodyParameters;
+	}
+
+	public List<ApiCallParameter> getRequestPart() {
+		return requestPart;
+	}
+
+	public void setRequestPart(List<ApiCallParameter> requestPart) {
+		this.requestPart = requestPart;
 	}
 	
 

@@ -15,6 +15,7 @@ import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ValueConstants;
 
 import com.cinefms.apitester.annotations.ApiDescription;
@@ -137,6 +138,7 @@ public class Reflection {
 				
 				RequestBody rb = null;
 				RequestParam rp = null;
+				RequestPart rpt = null;
 				PathVariable pv = null;
 				Deprecated d = null;
 				ApiDescription ad = null;
@@ -185,6 +187,27 @@ public class Reflection {
 						rb = (RequestBody)a;
 						apc.setType(ApiCallParameter.Type.BODY);
 						apc.setMandatory(rb.required());
+					}
+					if(a instanceof RequestPart) {
+						rpt = (RequestPart)a;
+						apc.setType(ApiCallParameter.Type.REQUEST);
+						apc.setMandatory(rpt.required());
+						apc.setParameterName(field);
+						String dv = ((RequestPart)a).value();
+						if(dv!=null && !dv.equals(ValueConstants.DEFAULT_NONE)) {
+							apc.setDefaultValue(dv);
+						}
+//						  if (MultipartFile.class.isAssignableFrom(ct.getRawClass())) {
+//				                schema = new FileProperty();
+//				            } else if (ct.isContainerType() &&
+//				                    MultipartFile.class.isAssignableFrom(ct.getContentType().getRawClass())) {
+//				                schema = new ArrayProperty().items(new FileProperty());
+//				            } else {
+//				                schema = ModelConverters.getInstance().readAsProperty(type);
+//				            }
+						if(rpt.value().length()>0) {
+							field = rpt.value();
+						}
 					}
 				}
 				if (rb == null && rp == null && pv == null) {
